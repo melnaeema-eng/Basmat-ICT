@@ -1,3 +1,4 @@
+import Services from "../../components/Services/Services";
 import Hero from "../../components/Hero/Hero";
 import {
   FaBuilding,
@@ -10,6 +11,8 @@ export default function Home() {
   return (
     <>
       <Hero />
+
+      <Services />
 
       {/* About */}
       <section
