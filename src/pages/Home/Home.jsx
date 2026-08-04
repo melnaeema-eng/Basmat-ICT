@@ -1,3 +1,4 @@
+import Projects from "../../components/Projects/Projects";
 import Services from "../../components/Services/Services";
 import Hero from "../../components/Hero/Hero";
 import {
@@ -13,7 +14,7 @@ export default function Home() {
       <Hero />
 
       <Services />
-
+<Projects />
       {/* About */}
       <section
         id="about"
