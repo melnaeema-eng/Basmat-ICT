@@ -1,129 +1,101 @@
 import { useState } from "react";
 import {
   FaBars,
-  FaEnvelope,
-  FaLocationDot,
-  FaPhone,
+  FaHeadset,
   FaXmark,
 } from "react-icons/fa6";
 
 const navigation = [
   { label: "الرئيسية", href: "#home" },
-  { label: "من نحن", href: "#about" },
+  { label: "عن الشركة", href: "#about" },
   { label: "خدماتنا", href: "#services" },
-  { label: "مشاريعنا", href: "#projects" },
-  { label: "تواصل معنا", href: "#contact" },
+  { label: "المشاريع", href: "#projects" },
+  { label: "منظومة التقنيات", href: "#technology" },
+  { label: "اتصل بنا", href: "#contact" },
 ];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  function closeMenu() {
-    setMenuOpen(false);
-  }
-
   return (
-    <header className="relative z-50">
-      <div className="bg-[#071d49] text-white">
-        <div className="company-container flex min-h-10 flex-wrap items-center justify-between gap-3 py-2 text-xs sm:text-sm">
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              href="tel:+966000000000"
-              className="flex items-center gap-2 hover:text-blue-200"
-            >
-              <FaPhone />
-              <span dir="ltr">+966 00 000 0000</span>
-            </a>
+    <header className="relative z-50 bg-[#041632] text-white">
+      <div className="company-container flex min-h-[104px] items-center justify-between gap-6">
+        <a href="#home" className="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="بصمة النوابغ"
+            className="h-[88px] w-[88px] rounded-full bg-white object-contain"
+          />
 
-            <a
-              href="mailto:info@basmat-alnawabig.com.sa"
-              className="flex items-center gap-2 hover:text-blue-200"
-            >
-              <FaEnvelope />
-              <span>info@basmat-alnawabig.com.sa</span>
-            </a>
+          <div className="hidden xl:block">
+            <p className="text-2xl font-black">بصمة النوابغ</p>
+            <p className="text-sm text-blue-100">
+              لتقنية المعلومات والاتصالات
+            </p>
+            <p className="mt-1 text-xs font-bold tracking-wide text-blue-200">
+              BASMAT ALNAWABIGH ICT
+            </p>
           </div>
+        </a>
 
-          <div className="hidden items-center gap-2 md:flex">
-            <FaLocationDot />
-            <span>الرياض، المملكة العربية السعودية</span>
-          </div>
-        </div>
-      </div>
+        <nav className="hidden items-center gap-8 lg:flex">
+          {navigation.map((item, index) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className={`relative py-9 font-bold transition hover:text-cyan-300 ${
+                index === 0 ? "text-white" : "text-blue-100"
+              }`}
+            >
+              {item.label}
 
-      <div className="border-b border-slate-200 bg-white shadow-sm">
-        <div className="company-container flex min-h-24 items-center justify-between gap-5">
-          <a href="#home" className="flex items-center">
-           <img
-  src="/logo.png"
-  alt="Basmat Alnawabigh ICT"
-  className="h-20 md:h-24 w-auto object-contain"
-/>
+              {index === 0 && (
+                <span className="absolute bottom-5 right-0 h-[3px] w-full rounded-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.9)]" />
+              )}
+            </a>
+          ))}
+        </nav>
+
+        <div className="hidden items-center gap-4 lg:flex">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 rounded-full border border-blue-400/50 px-6 py-3 font-bold transition hover:bg-white/10"
+          >
+            <FaHeadset />
+            تواصل معنا
           </a>
-
-          <nav className="hidden items-center gap-7 lg:flex">
-            {navigation.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="font-semibold text-slate-700 hover:text-[#123878]"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="hidden items-center gap-3 lg:flex">
-            <a
-              href="#contact"
-              className="rounded-lg bg-[#123878] px-6 py-3 font-bold text-white hover:bg-[#0b285d]"
-            >
-              طلب عرض سعر
-            </a>
-
-            <button
-              type="button"
-              className="rounded-lg border border-slate-300 px-4 py-3 font-bold text-[#123878] hover:bg-slate-50"
-            >
-              EN
-            </button>
-          </div>
 
           <button
             type="button"
-            aria-label="فتح القائمة"
-            onClick={() => setMenuOpen((current) => !current)}
-            className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#123878] text-xl text-white lg:hidden"
+            className="rounded-full border border-white/25 px-6 py-3 font-black"
           >
-            {menuOpen ? <FaXmark /> : <FaBars />}
+            EN
           </button>
         </div>
 
-        {menuOpen && (
-          <div className="border-t border-slate-200 bg-white lg:hidden">
-            <nav className="company-container flex flex-col py-4">
-              {navigation.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={closeMenu}
-                  className="border-b border-slate-100 px-2 py-4 font-semibold text-slate-700 hover:text-[#123878]"
-                >
-                  {item.label}
-                </a>
-              ))}
-
-              <a
-                href="#contact"
-                onClick={closeMenu}
-                className="mt-4 rounded-lg bg-[#123878] px-6 py-3 text-center font-bold text-white"
-              >
-                طلب عرض سعر
-              </a>
-            </nav>
-          </div>
-        )}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((value) => !value)}
+          className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 text-xl lg:hidden"
+        >
+          {menuOpen ? <FaXmark /> : <FaBars />}
+        </button>
       </div>
+
+      {menuOpen && (
+        <nav className="company-container flex flex-col border-t border-white/10 py-4 lg:hidden">
+          {navigation.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+              className="border-b border-white/10 py-4 font-bold text-blue-100"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
