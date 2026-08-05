@@ -1,6 +1,7 @@
+import TechnologyEcosystem from "../../components/TechnologyEcosystem/TechnologyEcosystem";
 import Footer from "../../components/Footer/Footer";
 import CTA from "../../components/CTA/CTA";
-import Partners from "../../components/Partners/Partners";
+//import Partners from "../../components/Partners/Partners";
 import WhyUs from "../../components/WhyUs/WhyUs";
 import Projects from "../../components/Projects/Projects";
 import Services from "../../components/Services/Services";
@@ -21,8 +22,9 @@ export default function Home() {
       <Services />
 <Projects />
       <WhyUs />
-      <Partners />
+      <TechnologyEcosystem />
       <CTA />
+      
       <Footer />
       {/* About */}
       <section
