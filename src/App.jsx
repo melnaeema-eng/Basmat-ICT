@@ -3,9 +3,9 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-
+import Quote from "./pages/Quote/Quote";
 import MainLayout from "./layouts/MainLayout";
-
+import Consultation from "./pages/Consultation/Consultation";
 import Home from "./pages/Home/Home";
 import Contact from "./pages/Contact/Contact";
 import PlaceholderPage from "./pages/Placeholder/PlaceholderPage";
@@ -61,7 +61,8 @@ export default function App() {
             path="/contact"
             element={<Contact />}
           />
-
+          <Route path="/consultation" element={<Consultation />} />
+          <Route path="/quote" element={<Quote />} />
           <Route
             path="*"
             element={

@@ -88,23 +88,31 @@ export default function Hero() {
             الأنظمة الذكية والاستشارات الهندسية.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-5">
-            <a
-              href="#services"
-              className="inline-flex min-w-[250px] items-center justify-center gap-4 rounded-2xl bg-[#ff7417] px-9 py-5 text-xl font-black text-white shadow-xl shadow-orange-950/20 transition hover:-translate-y-1 hover:bg-[#ff812d]"
-            >
-              اكتشف حلولنا
-              <FaArrowLeft />
-            </a>
+          <div className="mt-9 flex flex-wrap gap-4">
+  <Link
+    to="/quote"
+    className="inline-flex items-center gap-3 rounded-xl bg-[#ff7417] px-7 py-4 font-bold text-white transition hover:-translate-y-1 hover:bg-[#ff8b3d]"
+  >
+    اطلب عرض سعر
+    <FaArrowLeft />
+  </Link>
 
-            <Link
-              to="/contact"
-              className="inline-flex min-w-[225px] items-center justify-center gap-4 rounded-2xl border border-cyan-400/60 bg-blue-950/30 px-9 py-5 text-xl font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/10"
-            >
-              <FaHeadset />
-              تواصل معنا
-            </Link>
-          </div>
+  <Link
+    to="/consultation"
+    className="inline-flex items-center gap-3 rounded-xl bg-[#0d6efd] px-7 py-4 font-bold text-white transition hover:-translate-y-1 hover:bg-[#2b7fff]"
+  >
+    🎁 احجز استشارة مجانية
+  </Link>
+
+  <Link
+    to="/contact"
+    className="inline-flex items-center gap-3 rounded-xl border border-white/40 bg-white/10 px-7 py-4 font-bold text-white backdrop-blur transition hover:bg-white/20"
+  >
+    <FaHeadset />
+    تواصل معنا
+  </Link>
+
+</div>
 
           <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
             {statistics.map((stat, index) => {
