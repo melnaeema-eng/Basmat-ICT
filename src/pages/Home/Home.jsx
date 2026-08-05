@@ -1,3 +1,4 @@
+import WhyUs from "../../components/WhyUs/WhyUs";
 import Projects from "../../components/Projects/Projects";
 import Services from "../../components/Services/Services";
 import Hero from "../../components/Hero/Hero";
@@ -13,8 +14,10 @@ export default function Home() {
     <>
       <Hero />
 
+      
       <Services />
 <Projects />
+      <WhyUs />
       {/* About */}
       <section
         id="about"
