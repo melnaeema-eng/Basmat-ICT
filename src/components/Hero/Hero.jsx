@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FaArrowLeft,
@@ -96,13 +97,13 @@ export default function Hero() {
               <FaArrowLeft />
             </a>
 
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               className="inline-flex min-w-[225px] items-center justify-center gap-4 rounded-2xl border border-cyan-400/60 bg-blue-950/30 px-9 py-5 text-xl font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/10"
             >
               <FaHeadset />
               تواصل معنا
-            </a>
+            </Link>
           </div>
 
           <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">

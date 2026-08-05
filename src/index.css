@@ -8,7 +8,20 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
+.form-input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  padding: 0.9rem 1rem;
+  outline: none;
+  transition: 0.2s ease;
+}
 
+.form-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
 html {
   scroll-behavior: smooth;
 }
