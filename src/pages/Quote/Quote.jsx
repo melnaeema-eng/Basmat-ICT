@@ -1,29 +1,66 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import {
+  FaFile,
+  FaFileArrowUp,
+  FaTrash,
+} from "react-icons/fa6";
+
 import { supabase } from "../../lib/supabase";
 import SectionWaves from "../../components/SectionWaves/SectionWaves";
 
-const initialForm = {
-  full_name: "",
-  company: "",
-  phone: "",
-  email: "",
-  city: "",
-  project_type: "",
-  project_value: "",
-  expected_start_date: "",
-  project_description: "",
-};
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
+const allowedExtensions = [
+  "pdf",
+  "dwg",
+  "dxf",
+  "doc",
+  "docx",
+  "xls",
+  "xlsx",
+  "zip",
+  "rar",
+  "jpg",
+  "jpeg",
+  "png",
+];
+
+const documentTypes = [
+  { value: "shop-drawing", label: "Shop Drawing" },
+  { value: "material-submittal", label: "Material Submittal" },
+  { value: "method-statement", label: "Method Statement" },
+  { value: "boq", label: "BOQ" },
+  { value: "specification", label: "Specification" },
+  { value: "rfi", label: "RFI" },
+  { value: "mir", label: "MIR" },
+  { value: "wir", label: "WIR" },
+  { value: "fat", label: "FAT" },
+  { value: "sat", label: "SAT" },
+  { value: "itp", label: "ITP" },
+  { value: "as-built", label: "As-Built Drawing" },
+  { value: "site-photos", label: "Site Photos" },
+  { value: "other", label: "Other" },
+];
 
 const projectTypes = [
   { value: "data-center", label: "مراكز البيانات" },
   { value: "ict", label: "تقنية المعلومات" },
   { value: "cyber-security", label: "الأمن السيبراني" },
-  { value: "network-infrastructure", label: "الشبكات والبنية التحتية" },
-  { value: "elv", label: "أنظمة ELV والمباني الذكية" },
+  {
+    value: "network-infrastructure",
+    label: "الشبكات والبنية التحتية",
+  },
+  {
+    value: "elv",
+    label: "أنظمة ELV والمباني الذكية",
+  },
   { value: "fiber-optic", label: "الألياف الضوئية" },
   { value: "osp", label: "شبكات OSP" },
   { value: "cloud", label: "الحوسبة السحابية" },
-  { value: "engineering-consultancy", label: "الاستشارات الهندسية" },
+  {
+    value: "engineering-consultancy",
+    label: "الاستشارات الهندسية",
+  },
   { value: "other", label: "أخرى" },
 ];
 
@@ -35,9 +72,29 @@ const projectValues = [
   "غير محدد",
 ];
 
+const initialForm = {
+  full_name: "",
+  company: "",
+  phone: "",
+  email: "",
+  city: "",
+  project_type: "",
+  project_value: "",
+  expected_start_date: "",
+  project_description: "",
+  document_type: "",
+  nda_required: false,
+};
+
 export default function Quote() {
+  const fileInputRef = useRef(null);
+
   const [form, setForm] = useState(initialForm);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [dragging, setDragging] = useState(false);
+
   const [submitting, setSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successData, setSuccessData] = useState(null);
 
@@ -55,11 +112,140 @@ export default function Quote() {
     return `RFQ-${year}-${timestamp}`;
   }
 
+  function getFileExtension(fileName) {
+    return fileName.split(".").pop()?.toLowerCase() || "";
+  }
+
+  function validateFile(file) {
+    const extension = getFileExtension(file.name);
+
+    if (!allowedExtensions.includes(extension)) {
+      return `نوع الملف غير مسموح: ${file.name}`;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      return `حجم الملف أكبر من 50MB: ${file.name}`;
+    }
+
+    return "";
+  }
+
+  function addFiles(fileList) {
+    setErrorMessage("");
+
+    const incomingFiles = Array.from(fileList);
+
+    for (const file of incomingFiles) {
+      const validationError = validateFile(file);
+
+      if (validationError) {
+        setErrorMessage(validationError);
+        return;
+      }
+    }
+
+    setSelectedFiles((current) => {
+      const existingKeys = new Set(
+        current.map(
+          (file) =>
+            `${file.name}-${file.size}-${file.lastModified}`
+        )
+      );
+
+      const newFiles = incomingFiles.filter(
+        (file) =>
+          !existingKeys.has(
+            `${file.name}-${file.size}-${file.lastModified}`
+          )
+      );
+
+      return [...current, ...newFiles];
+    });
+  }
+
+  function handleFileChange(event) {
+    addFiles(event.target.files);
+    event.target.value = "";
+  }
+
+  function handleDrop(event) {
+    event.preventDefault();
+    setDragging(false);
+
+    if (event.dataTransfer.files?.length) {
+      addFiles(event.dataTransfer.files);
+    }
+  }
+
+  function removeFile(indexToRemove) {
+    setSelectedFiles((current) =>
+      current.filter((_, index) => index !== indexToRemove)
+    );
+  }
+
+  function sanitizeFileName(fileName) {
+    const extension = getFileExtension(fileName);
+    const baseName = fileName
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[^a-zA-Z0-9-_]/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 80);
+
+    return `${baseName || "document"}.${extension}`;
+  }
+
+  async function uploadFiles(requestNumber) {
+    const attachments = [];
+
+    for (let index = 0; index < selectedFiles.length; index += 1) {
+      const file = selectedFiles[index];
+
+      setUploadProgress(
+        `جارٍ رفع الملف ${index + 1} من ${selectedFiles.length}`
+      );
+
+      const safeName = sanitizeFileName(file.name);
+      const uniqueName = `${Date.now()}-${index}-${safeName}`;
+
+      const storagePath = [
+        "rfq",
+        requestNumber,
+        form.document_type || "general",
+        uniqueName,
+      ].join("/");
+
+      const { error } = await supabase.storage
+        .from("engineering-documents")
+        .upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type || undefined,
+        });
+
+      if (error) {
+        throw new Error(
+          `تعذر رفع الملف ${file.name}: ${error.message}`
+        );
+      }
+
+      attachments.push({
+        original_name: file.name,
+        storage_path: storagePath,
+        document_type: form.document_type || "general",
+        mime_type: file.type || null,
+        size: file.size,
+      });
+    }
+
+    return attachments;
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
 
     setErrorMessage("");
     setSuccessData(null);
+    setUploadProgress("");
 
     if (
       !form.full_name.trim() ||
@@ -72,38 +258,57 @@ export default function Quote() {
       return;
     }
 
+    if (selectedFiles.length > 0 && !form.document_type) {
+      setErrorMessage(
+        "يرجى اختيار نوع المستند قبل رفع المرفقات."
+      );
+      return;
+    }
+
     const requestNumber = createRequestNumber();
 
     try {
       setSubmitting(true);
 
-const { error } = await supabase
-  .from("ict_rfq_requests")
-  .insert({
-    request_no: requestNumber,
-    full_name: form.full_name.trim(),
-    company: form.company.trim() || null,
-    phone: form.phone.trim(),
-    email: form.email.trim(),
-    city: form.city.trim() || null,
-    project_type: form.project_type,
-    project_value: form.project_value || null,
-    expected_start_date:
-      form.expected_start_date || null,
-    project_description:
-      form.project_description.trim(),
-    status: "new",
-  });
+      let attachments = [];
+
+      if (selectedFiles.length > 0) {
+        attachments = await uploadFiles(requestNumber);
+      }
+
+      setUploadProgress("جارٍ حفظ طلب عرض السعر...");
+
+      const { error } = await supabase
+        .from("ict_rfq_requests")
+        .insert({
+          request_no: requestNumber,
+          full_name: form.full_name.trim(),
+          company: form.company.trim() || null,
+          phone: form.phone.trim(),
+          email: form.email.trim().toLowerCase(),
+          city: form.city.trim() || null,
+          project_type: form.project_type,
+          project_value: form.project_value || null,
+          expected_start_date:
+            form.expected_start_date || null,
+          project_description:
+            form.project_description.trim(),
+          attachments,
+          nda_required: form.nda_required,
+          status: "new",
+        });
+
       if (error) {
         throw error;
       }
 
       setForm(initialForm);
+      setSelectedFiles([]);
       setSuccessData({
-       requestNumber,
+        requestNumber,
       });
     } catch (error) {
-      console.error("خطأ في إرسال طلب عرض السعر:", error);
+      console.error("خطأ في طلب عرض السعر:", error);
 
       setErrorMessage(
         error.message ||
@@ -111,6 +316,7 @@ const { error } = await supabase
       );
     } finally {
       setSubmitting(false);
+      setUploadProgress("");
     }
   }
 
@@ -133,9 +339,9 @@ const { error } = await supabase
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-9 text-blue-100">
-            أرسل تفاصيل مشروعك، وسيتولى فريق بصمة النوابغ
-            مراجعة المتطلبات والتواصل معك لإعداد العرض الفني
-            والمالي المناسب.
+            أرسل تفاصيل مشروعك والمرفقات الهندسية، وسيتولى
+            فريق بصمة النوابغ مراجعة المتطلبات وإعداد العرض
+            الفني والمالي المناسب.
           </p>
         </div>
 
@@ -160,19 +366,13 @@ const { error } = await supabase
                 onSubmit={handleSubmit}
                 className="rounded-3xl border border-slate-200 bg-slate-50 p-7 shadow-sm md:p-10"
               >
-                <div>
-                  <span className="font-bold text-blue-700">
-                    RFQ FORM
-                  </span>
+                <h2 className="text-3xl font-black text-[#071d49]">
+                  معلومات طلب عرض السعر
+                </h2>
 
-                  <h2 className="mt-3 text-3xl font-black text-[#071d49]">
-                    معلومات طلب عرض السعر
-                  </h2>
-
-                  <p className="mt-3 leading-8 text-slate-600">
-                    الحقول التي تحمل علامة النجمة مطلوبة لإرسال الطلب.
-                  </p>
-                </div>
+                <p className="mt-3 leading-8 text-slate-600">
+                  الحقول التي تحمل علامة النجمة مطلوبة.
+                </p>
 
                 {errorMessage && (
                   <div className="mt-7 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
@@ -191,7 +391,6 @@ const { error } = await supabase
                           event.target.value
                         )
                       }
-                      placeholder="اكتب الاسم الكامل"
                       className="form-input"
                     />
                   </FormField>
@@ -206,7 +405,6 @@ const { error } = await supabase
                           event.target.value
                         )
                       }
-                      placeholder="اسم الشركة"
                       className="form-input"
                     />
                   </FormField>
@@ -216,10 +414,7 @@ const { error } = await supabase
                       type="tel"
                       value={form.phone}
                       onChange={(event) =>
-                        updateField(
-                          "phone",
-                          event.target.value
-                        )
+                        updateField("phone", event.target.value)
                       }
                       placeholder="+966"
                       dir="ltr"
@@ -232,12 +427,8 @@ const { error } = await supabase
                       type="email"
                       value={form.email}
                       onChange={(event) =>
-                        updateField(
-                          "email",
-                          event.target.value
-                        )
+                        updateField("email", event.target.value)
                       }
-                      placeholder="name@company.com"
                       dir="ltr"
                       className="form-input"
                     />
@@ -248,12 +439,8 @@ const { error } = await supabase
                       type="text"
                       value={form.city}
                       onChange={(event) =>
-                        updateField(
-                          "city",
-                          event.target.value
-                        )
+                        updateField("city", event.target.value)
                       }
-                      placeholder="الرياض"
                       className="form-input"
                     />
                   </FormField>
@@ -282,7 +469,7 @@ const { error } = await supabase
                     </select>
                   </FormField>
 
-                  <FormField label="القيمة التقديرية للمشروع">
+                  <FormField label="القيمة التقديرية">
                     <select
                       value={form.project_value}
                       onChange={(event) =>
@@ -293,9 +480,7 @@ const { error } = await supabase
                       }
                       className="form-input"
                     >
-                      <option value="">
-                        اختر القيمة التقديرية
-                      </option>
+                      <option value="">اختر القيمة</option>
 
                       {projectValues.map((value) => (
                         <option key={value} value={value}>
@@ -330,18 +515,143 @@ const { error } = await supabase
                             event.target.value
                           )
                         }
-                        placeholder="اكتب نطاق المشروع والمتطلبات الأساسية"
                         className="form-input resize-none"
                       />
                     </FormField>
                   </div>
                 </div>
 
-                <div className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 p-5 text-sm leading-7 text-blue-900">
-                  سيتم إضافة رفع المرفقات الهندسية مثل BOQ،
-                  Shop Drawing، Material Submittal، RFI، MIR،
-                  WIR وSAT في الخطوة التالية.
+                <div className="mt-10 border-t border-slate-200 pt-10">
+                  <h3 className="text-2xl font-black text-[#071d49]">
+                    المرفقات الهندسية
+                  </h3>
+
+                  <p className="mt-3 text-slate-600">
+                    يمكنك رفع عدة ملفات داعمة للمشروع.
+                  </p>
+
+                  <div className="mt-6">
+                    <FormField label="نوع المستند">
+                      <select
+                        value={form.document_type}
+                        onChange={(event) =>
+                          updateField(
+                            "document_type",
+                            event.target.value
+                          )
+                        }
+                        className="form-input"
+                      >
+                        <option value="">
+                          اختر نوع المستند
+                        </option>
+
+                        {documentTypes.map((item) => (
+                          <option
+                            key={item.value}
+                            value={item.value}
+                          >
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </FormField>
+                  </div>
+
+                  <div
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setDragging(true);
+                    }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`mt-6 cursor-pointer rounded-3xl border-2 border-dashed p-10 text-center transition ${
+                      dragging
+                        ? "border-blue-500 bg-blue-100"
+                        : "border-blue-300 bg-blue-50 hover:border-blue-500"
+                    }`}
+                  >
+                    <FaFileArrowUp className="mx-auto text-5xl text-blue-700" />
+
+                    <p className="mt-5 text-xl font-black text-[#071d49]">
+                      اسحب الملفات هنا أو اضغط للاختيار
+                    </p>
+
+                    <p className="mt-3 text-sm leading-7 text-slate-600">
+                      PDF، DWG، DOCX، XLSX، ZIP، RAR والصور
+                      <br />
+                      الحد الأقصى 50MB لكل ملف
+                    </p>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept=".pdf,.dwg,.dxf,.doc,.docx,.xls,.xlsx,.zip,.rar,.jpg,.jpeg,.png"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </div>
+
+                  {selectedFiles.length > 0 && (
+                    <div className="mt-6 space-y-3">
+                      {selectedFiles.map((file, index) => (
+                        <div
+                          key={`${file.name}-${file.lastModified}`}
+                          className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4"
+                        >
+                          <div className="flex min-w-0 items-center gap-3">
+                            <FaFile className="shrink-0 text-xl text-blue-700" />
+
+                            <div className="min-w-0">
+                              <p className="truncate font-bold text-slate-800">
+                                {file.name}
+                              </p>
+
+                              <p className="mt-1 text-xs text-slate-500">
+                                {formatFileSize(file.size)}
+                              </p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => removeFile(index)}
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600 hover:bg-red-100"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
+
+                <label className="mt-8 flex cursor-pointer items-start gap-3 rounded-2xl border border-orange-200 bg-orange-50 p-5">
+                  <input
+                    type="checkbox"
+                    checked={form.nda_required}
+                    onChange={(event) =>
+                      updateField(
+                        "nda_required",
+                        event.target.checked
+                      )
+                    }
+                    className="mt-1 h-5 w-5"
+                  />
+
+                  <span className="leading-7 text-orange-950">
+                    أحتاج إلى توقيع اتفاقية سرية المعلومات
+                    (NDA) قبل مراجعة المستندات.
+                  </span>
+                </label>
+
+                {uploadProgress && (
+                  <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-4 font-bold text-blue-800">
+                    {uploadProgress}
+                  </div>
+                )}
 
                 <button
                   type="submit"
@@ -349,7 +659,7 @@ const { error } = await supabase
                   className="mt-8 w-full rounded-2xl bg-[#ff7417] px-9 py-4 text-lg font-black text-white transition hover:bg-[#ff812d] disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
                 >
                   {submitting
-                    ? "جارٍ إرسال الطلب..."
+                    ? "جارٍ رفع الملفات وإرسال الطلب..."
                     : "إرسال طلب عرض السعر"}
                 </button>
               </form>
@@ -376,7 +686,7 @@ function SuccessMessage({
       </h2>
 
       <p className="mt-4 text-lg leading-8 text-green-800">
-        سيقوم فريقنا بمراجعة متطلبات المشروع والتواصل معك.
+        تم حفظ بيانات الطلب والمرفقات الهندسية بنجاح.
       </p>
 
       <div className="mx-auto mt-7 max-w-md rounded-2xl bg-white p-5 shadow-sm">
@@ -395,7 +705,7 @@ function SuccessMessage({
       <button
         type="button"
         onClick={onNewRequest}
-        className="mt-8 rounded-2xl bg-[#071d49] px-8 py-4 font-black text-white transition hover:bg-[#123878]"
+        className="mt-8 rounded-2xl bg-[#071d49] px-8 py-4 font-black text-white"
       >
         إرسال طلب جديد
       </button>
@@ -421,4 +731,16 @@ function FormField({
       {children}
     </div>
   );
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
