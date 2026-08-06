@@ -53,7 +53,10 @@ const technologyGroups = [
 
 export default function TechnologyEcosystem() {
   return (
-    <section className="bg-slate-50 py-24">
+  <section
+  id="technology"
+  className="bg-slate-50 py-24"
+>
       <div className="company-container">
         <div className="text-center">
           <span className="font-bold tracking-wider text-blue-700">

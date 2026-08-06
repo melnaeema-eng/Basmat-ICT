@@ -121,15 +121,15 @@ export default function Contact() {
             <ContactCard
               icon={<FaPhone />}
               title="الهاتف"
-              value="+966 XX XXX XXXX"
-              href="tel:+966000000000"
+              value="+966 55 007 3576"
+href="tel:+966550073576"
             />
 
             <ContactCard
               icon={<FaWhatsapp />}
               title="واتساب"
-              value="+966 XX XXX XXXX"
-              href="https://wa.me/966000000000"
+              value="+966 55 007 3576"
+href="https://wa.me/966550073576?text=السلام عليكم، أرغب في الاستفسار عن خدمات بصمة النوابغ لتقنية المعلومات والاتصالات."
             />
 
             <ContactCard
@@ -144,7 +144,25 @@ export default function Contact() {
               title="الموقع"
               value="الرياض، المملكة العربية السعودية"
             />
+<div className="grid gap-4 pt-2">
+  <a
+    href="tel:+966550073576"
+    className="flex items-center justify-center gap-3 rounded-2xl bg-[#ff7417] px-6 py-4 text-lg font-black text-white transition hover:bg-[#ff812d]"
+  >
+    <FaPhone />
+    اتصل الآن
+  </a>
 
+  <a
+    href="https://wa.me/966550073576?text=السلام عليكم، أرغب في الاستفسار عن خدمات بصمة النوابغ لتقنية المعلومات والاتصالات."
+    target="_blank"
+    rel="noreferrer"
+    className="flex items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-6 py-4 text-lg font-black text-white transition hover:opacity-90"
+  >
+    <FaWhatsapp />
+    راسلنا عبر واتساب
+  </a>
+</div>
             <div className="rounded-3xl bg-[#071d49] p-8 text-white shadow-xl">
               <h2 className="text-2xl font-black">
                 ساعات العمل

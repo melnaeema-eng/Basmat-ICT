@@ -1,11 +1,11 @@
 import TechnologyEcosystem from "../../components/TechnologyEcosystem/TechnologyEcosystem";
 import Footer from "../../components/Footer/Footer";
 import CTA from "../../components/CTA/CTA";
-//import Partners from "../../components/Partners/Partners";
 import WhyUs from "../../components/WhyUs/WhyUs";
 import Projects from "../../components/Projects/Projects";
 import Services from "../../components/Services/Services";
 import Hero from "../../components/Hero/Hero";
+
 import {
   FaBuilding,
   FaChartLine,
@@ -18,23 +18,14 @@ export default function Home() {
     <>
       <Hero />
 
-      
-      <Services />
-<Projects />
-      <WhyUs />
-      <TechnologyEcosystem />
-      <CTA />
-      
-      <Footer />
       {/* About */}
       <section
         id="about"
         className="bg-white py-24"
       >
-        <div className="company-container grid gap-16 lg:grid-cols-2 items-center">
-
+        <div className="company-container grid items-center gap-16 lg:grid-cols-2">
           <div>
-            <span className="text-blue-700 font-bold">
+            <span className="font-bold text-blue-700">
               ABOUT BASMAT ICT
             </span>
 
@@ -52,7 +43,6 @@ export default function Home() {
             </p>
 
             <div className="mt-10 grid gap-5 sm:grid-cols-2">
-
               <Feature
                 icon={<FaBuilding />}
                 title="خبرة هندسية"
@@ -76,14 +66,11 @@ export default function Home() {
                 title="دعم فني"
                 text="فريق متخصص لخدمة العملاء."
               />
-
             </div>
           </div>
 
           <div>
-
             <div className="rounded-3xl bg-gradient-to-br from-[#0b2d6d] to-[#123878] p-10 text-white shadow-2xl">
-
               <h3 className="text-3xl font-black">
                 لماذا بصمة النوابغ؟
               </h3>
@@ -94,31 +81,29 @@ export default function Home() {
               </p>
 
               <div className="mt-10 grid grid-cols-2 gap-6">
-
                 <Stat number="50+" title="مشروع" />
-
                 <Stat number="20+" title="عميل" />
-
                 <Stat number="10+" title="سنوات خبرة" />
-
                 <Stat number="24/7" title="دعم فني" />
-
               </div>
-
             </div>
-
           </div>
-
         </div>
       </section>
+
+      <Services />
+      <Projects />
+      <WhyUs />
+      <TechnologyEcosystem />
+      <CTA />
+      <Footer />
     </>
   );
 }
 
 function Feature({ icon, title, text }) {
   return (
-    <div className="rounded-2xl border border-slate-200 p-5 hover:shadow-lg transition">
-
+    <div className="rounded-2xl border border-slate-200 p-5 transition hover:shadow-lg">
       <div className="text-3xl text-blue-700">
         {icon}
       </div>
@@ -127,10 +112,9 @@ function Feature({ icon, title, text }) {
         {title}
       </h3>
 
-      <p className="mt-2 text-slate-600 leading-7">
+      <p className="mt-2 leading-7 text-slate-600">
         {text}
       </p>
-
     </div>
   );
 }
@@ -138,7 +122,6 @@ function Feature({ icon, title, text }) {
 function Stat({ number, title }) {
   return (
     <div className="rounded-2xl bg-white/10 p-6 text-center">
-
       <h3 className="text-4xl font-black">
         {number}
       </h3>
@@ -146,7 +129,6 @@ function Stat({ number, title }) {
       <p className="mt-2 text-blue-100">
         {title}
       </p>
-
     </div>
   );
 }

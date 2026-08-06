@@ -3,11 +3,13 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import Quote from "./pages/Quote/Quote";
+
 import MainLayout from "./layouts/MainLayout";
-import Consultation from "./pages/Consultation/Consultation";
+
 import Home from "./pages/Home/Home";
 import Contact from "./pages/Contact/Contact";
+import Quote from "./pages/Quote/Quote";
+import Consultation from "./pages/Consultation/Consultation";
 import PlaceholderPage from "./pages/Placeholder/PlaceholderPage";
 
 export default function App() {
@@ -57,12 +59,18 @@ export default function App() {
             }
           />
 
+          <Route path="/quote" element={<Quote />} />
+
+          <Route
+            path="/consultation"
+            element={<Consultation />}
+          />
+
           <Route
             path="/contact"
             element={<Contact />}
           />
-          <Route path="/consultation" element={<Consultation />} />
-          <Route path="/quote" element={<Quote />} />
+
           <Route
             path="*"
             element={
