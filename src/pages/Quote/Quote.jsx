@@ -10,6 +10,22 @@ import SectionWaves from "../../components/SectionWaves/SectionWaves";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
+const publicEmailDomains = [
+  "gmail.com",
+  "googlemail.com",
+  "hotmail.com",
+  "outlook.com",
+  "live.com",
+  "msn.com",
+  "yahoo.com",
+  "yahoo.co.uk",
+  "icloud.com",
+  "me.com",
+  "aol.com",
+  "proton.me",
+  "protonmail.com",
+];
+
 const allowedExtensions = [
   "pdf",
   "dwg",
@@ -73,6 +89,7 @@ const projectValues = [
 ];
 
 const initialForm = {
+  customer_type: "individual",
   full_name: "",
   company: "",
   phone: "",
@@ -99,10 +116,31 @@ export default function Quote() {
   const [successData, setSuccessData] = useState(null);
 
   function updateField(name, value) {
-    setForm((current) => ({
-      ...current,
-      [name]: value,
-    }));
+    setForm((current) => {
+      if (name === "customer_type" && value === "individual") {
+        return {
+          ...current,
+          customer_type: value,
+          company: "",
+        };
+      }
+
+      return {
+        ...current,
+        [name]: value,
+      };
+    });
+  }
+
+  function isBusinessEmail(email) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const domain = normalizedEmail.split("@")[1];
+
+    if (!domain) {
+      return false;
+    }
+
+    return !publicEmailDomains.includes(domain);
   }
 
   function createRequestNumber() {
@@ -258,6 +296,26 @@ export default function Quote() {
       return;
     }
 
+    if (
+      form.customer_type === "company" &&
+      (!form.company.trim() || !form.city.trim())
+    ) {
+      setErrorMessage(
+        "اسم الشركة والمدينة مطلوبان عند اختيار شركة أو جهة."
+      );
+      return;
+    }
+
+    if (
+      form.customer_type === "company" &&
+      !isBusinessEmail(form.email)
+    ) {
+      setErrorMessage(
+        "يرجى استخدام البريد التجاري الرسمي للشركة، مثل name@company.com."
+      );
+      return;
+    }
+
     if (selectedFiles.length > 0 && !form.document_type) {
       setErrorMessage(
         "يرجى اختيار نوع المستند قبل رفع المرفقات."
@@ -282,6 +340,7 @@ export default function Quote() {
         .from("ict_rfq_requests")
         .insert({
           request_no: requestNumber,
+          customer_type: form.customer_type,
           full_name: form.full_name.trim(),
           company: form.company.trim() || null,
           phone: form.phone.trim(),
@@ -380,8 +439,62 @@ export default function Quote() {
                   </div>
                 )}
 
+                <div className="mt-8">
+                  <p className="mb-3 font-bold text-slate-700">
+                    نوع مقدم الطلب
+                    <span className="mr-1 text-red-500">*</span>
+                  </p>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateField("customer_type", "individual")
+                      }
+                      className={`rounded-2xl border-2 p-5 text-right transition ${
+                        form.customer_type === "individual"
+                          ? "border-blue-600 bg-blue-50 shadow-sm"
+                          : "border-slate-200 bg-white hover:border-blue-300"
+                      }`}
+                    >
+                      <p className="text-lg font-black text-[#071d49]">
+                        فرد
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        للأفراد وأصحاب المشاريع الشخصية.
+                      </p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateField("customer_type", "company")
+                      }
+                      className={`rounded-2xl border-2 p-5 text-right transition ${
+                        form.customer_type === "company"
+                          ? "border-[#ff7417] bg-orange-50 shadow-sm"
+                          : "border-slate-200 bg-white hover:border-orange-300"
+                      }`}
+                    >
+                      <p className="text-lg font-black text-[#071d49]">
+                        شركة أو جهة
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        يتطلب اسم الجهة وبريدًا تجاريًا رسميًا.
+                      </p>
+                    </button>
+                  </div>
+                </div>
+
                 <div className="mt-9 grid gap-6 md:grid-cols-2">
-                  <FormField label="الاسم الكامل" required>
+                  <FormField
+                    label={
+                      form.customer_type === "company"
+                        ? "اسم مسؤول التواصل"
+                        : "الاسم الكامل"
+                    }
+                    required
+                  >
                     <input
                       type="text"
                       value={form.full_name}
@@ -395,19 +508,25 @@ export default function Quote() {
                     />
                   </FormField>
 
-                  <FormField label="اسم الشركة أو الجهة">
-                    <input
-                      type="text"
-                      value={form.company}
-                      onChange={(event) =>
-                        updateField(
-                          "company",
-                          event.target.value
-                        )
-                      }
-                      className="form-input"
-                    />
-                  </FormField>
+                  {form.customer_type === "company" && (
+                    <FormField
+                      label="اسم الشركة أو الجهة"
+                      required
+                    >
+                      <input
+                        type="text"
+                        value={form.company}
+                        onChange={(event) =>
+                          updateField(
+                            "company",
+                            event.target.value
+                          )
+                        }
+                        placeholder="اسم الشركة أو الجهة"
+                        className="form-input"
+                      />
+                    </FormField>
+                  )}
 
                   <FormField label="رقم الجوال" required>
                     <input
@@ -422,25 +541,48 @@ export default function Quote() {
                     />
                   </FormField>
 
-                  <FormField label="البريد الإلكتروني" required>
+                  <FormField
+                    label={
+                      form.customer_type === "company"
+                        ? "البريد التجاري الرسمي"
+                        : "البريد الإلكتروني"
+                    }
+                    required
+                  >
                     <input
                       type="email"
                       value={form.email}
                       onChange={(event) =>
                         updateField("email", event.target.value)
                       }
+                      placeholder={
+                        form.customer_type === "company"
+                          ? "name@company.com"
+                          : "name@example.com"
+                      }
                       dir="ltr"
                       className="form-input"
                     />
+
+                    {form.customer_type === "company" && (
+                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                        لا تُقبل عناوين Gmail أو Hotmail أو Yahoo أو Outlook
+                        لطلبات الشركات.
+                      </p>
+                    )}
                   </FormField>
 
-                  <FormField label="المدينة">
+                  <FormField
+                    label="المدينة"
+                    required={form.customer_type === "company"}
+                  >
                     <input
                       type="text"
                       value={form.city}
                       onChange={(event) =>
                         updateField("city", event.target.value)
                       }
+                      placeholder="الرياض"
                       className="form-input"
                     />
                   </FormField>

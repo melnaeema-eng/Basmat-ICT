@@ -1,71 +1,46 @@
 import {
   BrowserRouter,
+  Outlet,
   Route,
   Routes,
 } from "react-router-dom";
 
+import AdminLayout from "./layouts/AdminLayout";
 import MainLayout from "./layouts/MainLayout";
 
-import Home from "./pages/Home/Home";
-import Contact from "./pages/Contact/Contact";
-import Quote from "./pages/Quote/Quote";
+import AdminConsultations from "./pages/Admin/AdminConsultations";
+import AdminContacts from "./pages/Admin/AdminContacts";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminDocuments from "./pages/Admin/AdminDocuments";
+import AdminPartners from "./pages/Admin/AdminPartners";
+import AdminProjects from "./pages/Admin/AdminProjects";
+import AdminRFQs from "./pages/Admin/AdminRFQs";
+import AdminServices from "./pages/Admin/AdminServices";
+import AdminSettings from "./pages/Admin/AdminSettings";
+
 import Consultation from "./pages/Consultation/Consultation";
+import Contact from "./pages/Contact/Contact";
+import Home from "./pages/Home/Home";
 import PlaceholderPage from "./pages/Placeholder/PlaceholderPage";
+import Quote from "./pages/Quote/Quote";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <MainLayout>
-        <Routes>
+      <Routes>
+        <Route
+          element={
+            <MainLayout>
+              <Outlet />
+            </MainLayout>
+          }
+        >
           <Route path="/" element={<Home />} />
-
-          <Route
-            path="/about"
-            element={
-              <PlaceholderPage
-                title="عن الشركة"
-                subtitle="تعرف على بصمة النوابغ ورؤيتها ورسالتها وخبراتها في الحلول الرقمية والهندسية."
-              />
-            }
-          />
-
-          <Route
-            path="/services"
-            element={
-              <PlaceholderPage
-                title="خدماتنا"
-                subtitle="حلول متكاملة في تقنية المعلومات، الأمن السيبراني، الشبكات ومراكز البيانات."
-              />
-            }
-          />
-
-          <Route
-            path="/projects"
-            element={
-              <PlaceholderPage
-                title="مشاريعنا"
-                subtitle="نماذج من مشاريعنا وخبراتنا في البنية التحتية الرقمية والحلول التقنية."
-              />
-            }
-          />
-
-          <Route
-            path="/technology"
-            element={
-              <PlaceholderPage
-                title="منظومة التقنيات"
-                subtitle="التقنيات والمنصات العالمية التي نستخدمها لتقديم حلول موثوقة وقابلة للتوسع."
-              />
-            }
-          />
-
           <Route path="/quote" element={<Quote />} />
-
           <Route
             path="/consultation"
             element={<Consultation />}
           />
-
           <Route
             path="/contact"
             element={<Contact />}
@@ -80,8 +55,50 @@ export default function App() {
               />
             }
           />
-        </Routes>
-      </MainLayout>
+        </Route>
+
+        <Route
+          path="/admin"
+          element={<AdminLayout />}
+        >
+          <Route
+            index
+            element={<AdminDashboard />}
+          />
+          <Route
+            path="contacts"
+            element={<AdminContacts />}
+          />
+          <Route
+            path="rfqs"
+            element={<AdminRFQs />}
+          />
+          <Route
+            path="consultations"
+            element={<AdminConsultations />}
+          />
+          <Route
+            path="documents"
+            element={<AdminDocuments />}
+          />
+          <Route
+            path="projects"
+            element={<AdminProjects />}
+          />
+          <Route
+            path="services"
+            element={<AdminServices />}
+          />
+          <Route
+            path="partners"
+            element={<AdminPartners />}
+          />
+          <Route
+            path="settings"
+            element={<AdminSettings />}
+          />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
