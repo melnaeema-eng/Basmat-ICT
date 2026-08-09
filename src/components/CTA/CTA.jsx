@@ -1,5 +1,5 @@
 import { FaArrowLeft } from "react-icons/fa6";
-
+import { Link } from "react-router-dom";
 export default function CTA() {
   return (
     <section className="py-24">
@@ -22,13 +22,12 @@ export default function CTA() {
             والبنية التحتية الرقمية.
           </p>
 
-          <button className="mt-10 inline-flex items-center gap-3 rounded-xl bg-white px-10 py-5 text-lg font-black text-[#123878] transition hover:scale-105">
-
-            اطلب عرض سعر
-
-            <FaArrowLeft />
-
-          </button>
+          <Link
+  to="/quote"
+  className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 font-black text-[#123878] transition hover:-translate-y-1 hover:shadow-xl"
+>
+  اطلب عرض سعر
+</Link>
 
         </div>
 
