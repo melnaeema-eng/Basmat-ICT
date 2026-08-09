@@ -1,0 +1,22 @@
+SPRINT 6 — APP.JSX PATCH
+
+1) أضف imports:
+
+import AdminOperationsDashboard from "./pages/Admin/AdminOperationsDashboard";
+import AdminProjectManagement from "./pages/Admin/AdminProjectManagement";
+import AdminProjectCommercial from "./pages/Admin/AdminProjectCommercial";
+
+2) داخل Route /admin أضف:
+
+<Route path="operations" element={<AdminOperationsDashboard />} />
+<Route path="project-management" element={<AdminProjectManagement />} />
+<Route path="project-commercial" element={<AdminProjectCommercial />} />
+
+3) Sidebar:
+أضف روابط:
+Operations Dashboard -> /admin/operations
+إدارة المشاريع -> /admin/project-management
+التنفيذ والتجاري -> /admin/project-commercial
+
+ملاحظة:
+لم يتم استبدال App.jsx أو Sidebar تلقائيًا في هذه الحزمة حتى لا نمس نسخة Sprint 5 الحالية أو أي تعديل محلي أحدث.

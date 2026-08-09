@@ -20,8 +20,11 @@ import AdminDocuments from "./pages/Admin/AdminDocuments";
 import AdminFollowUps from "./pages/Admin/AdminFollowUps";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
+import AdminOperationsDashboard from "./pages/Admin/AdminOperationsDashboard";
 import AdminPartners from "./pages/Admin/AdminPartners";
 import AdminPipeline from "./pages/Admin/AdminPipeline";
+import AdminProjectCommercial from "./pages/Admin/AdminProjectCommercial";
+import AdminProjectManagement from "./pages/Admin/AdminProjectManagement";
 import AdminProjects from "./pages/Admin/AdminProjects";
 import AdminQuotationEditor from "./pages/Admin/AdminQuotationEditor";
 import AdminQuotations from "./pages/Admin/AdminQuotations";
@@ -42,6 +45,8 @@ export default function App() {
     <BrowserRouter>
       <AdminAuthProvider>
         <Routes>
+
+          {/* الموقع العام */}
           <Route
             element={
               <MainLayout>
@@ -49,16 +54,26 @@ export default function App() {
               </MainLayout>
             }
           >
-            <Route path="/" element={<Home />} />
-            <Route path="/quote" element={<Quote />} />
+            <Route
+              path="/"
+              element={<Home />}
+            />
+
+            <Route
+              path="/quote"
+              element={<Quote />}
+            />
+
             <Route
               path="/consultation"
               element={<Consultation />}
             />
+
             <Route
               path="/contact"
               element={<Contact />}
             />
+
             <Route
               path="*"
               element={
@@ -70,85 +85,136 @@ export default function App() {
             />
           </Route>
 
+          {/* تسجيل دخول الإدارة */}
           <Route
             path="/admin/login"
             element={<AdminLogin />}
           />
 
+          {/* لوحة الإدارة المحمية */}
           <Route element={<ProtectedAdminRoute />}>
             <Route
               path="/admin"
               element={<AdminLayout />}
             >
-              <Route index element={<AdminDashboard />} />
-              <Route path="contacts" element={<AdminContacts />} />
-              <Route path="rfqs" element={<AdminRFQs />} />
+
+              <Route
+                index
+                element={<AdminDashboard />}
+              />
+
+              <Route
+                path="contacts"
+                element={<AdminContacts />}
+              />
+
+              <Route
+                path="rfqs"
+                element={<AdminRFQs />}
+              />
+
               <Route
                 path="consultations"
                 element={<AdminConsultations />}
               />
+
               <Route
                 path="documents"
                 element={<AdminDocuments />}
               />
 
+              {/* CRM */}
               <Route
                 path="crm"
                 element={<AdminSalesDashboard />}
               />
+
               <Route
                 path="customers"
                 element={<AdminCustomers />}
               />
+
               <Route
                 path="pipeline"
                 element={<AdminPipeline />}
               />
+
               <Route
                 path="followups"
                 element={<AdminFollowUps />}
               />
 
-              <Route path="team" element={<AdminTeam />} />
+              {/* Sprint 6 */}
+              <Route
+                path="operations"
+                element={<AdminOperationsDashboard />}
+              />
+
+              <Route
+                path="project-management"
+                element={<AdminProjectManagement />}
+              />
+
+              <Route
+                path="project-commercial"
+                element={<AdminProjectCommercial />}
+              />
+
+              {/* المبيعات */}
+              <Route
+                path="team"
+                element={<AdminTeam />}
+              />
+
               <Route
                 path="quotations"
                 element={<AdminQuotations />}
               />
+
               <Route
                 path="quotations/new"
                 element={<AdminQuotationEditor />}
               />
+
               <Route
                 path="quotations/:id"
                 element={<AdminQuotationEditor />}
               />
+
               <Route
                 path="notifications"
                 element={<AdminNotifications />}
               />
+
               <Route
                 path="analytics"
                 element={<AdminAnalytics />}
               />
 
+              {/* إدارة المحتوى */}
               <Route
                 path="projects"
                 element={<AdminProjects />}
               />
+
               <Route
                 path="services"
                 element={<AdminServices />}
               />
+
               <Route
                 path="partners"
                 element={<AdminPartners />}
               />
+
               <Route
                 path="settings"
                 element={<AdminSettings />}
               />
+
             </Route>
           </Route>
+
         </Routes>
       </AdminAuthProvider>
     </BrowserRouter>
