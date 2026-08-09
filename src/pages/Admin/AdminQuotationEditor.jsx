@@ -828,11 +828,17 @@ export default function AdminQuotationEditor() {
             </div>
           </div>
 
-          <div className="mt-10 border-t border-slate-200 pt-6 text-center text-sm leading-7 text-slate-500">
-            بصمة النوابغ لتقنية المعلومات والاتصالات
-            <br />
-            +966550073576
-          </div>
+          <div className="mt-10 border-t border-slate-200 pt-6 text-center">
+  <img
+    src="/logo.png"
+    alt="بصمة النوابغ"
+    className="mx-auto h-16 w-16 object-contain"
+  />
+
+  <p className="mt-3 text-sm font-bold text-slate-500">
+    بصمة النوابغ لتقنية المعلومات والاتصالات
+  </p>
+</div>
         </div>
       </div>
     </div>
