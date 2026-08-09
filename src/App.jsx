@@ -14,15 +14,19 @@ import MainLayout from "./layouts/MainLayout";
 import AdminAnalytics from "./pages/Admin/AdminAnalytics";
 import AdminConsultations from "./pages/Admin/AdminConsultations";
 import AdminContacts from "./pages/Admin/AdminContacts";
+import AdminCustomers from "./pages/Admin/AdminCustomers";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminDocuments from "./pages/Admin/AdminDocuments";
+import AdminFollowUps from "./pages/Admin/AdminFollowUps";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import AdminPartners from "./pages/Admin/AdminPartners";
+import AdminPipeline from "./pages/Admin/AdminPipeline";
 import AdminProjects from "./pages/Admin/AdminProjects";
 import AdminQuotationEditor from "./pages/Admin/AdminQuotationEditor";
 import AdminQuotations from "./pages/Admin/AdminQuotations";
 import AdminRFQs from "./pages/Admin/AdminRFQs";
+import AdminSalesDashboard from "./pages/Admin/AdminSalesDashboard";
 import AdminServices from "./pages/Admin/AdminServices";
 import AdminSettings from "./pages/Admin/AdminSettings";
 import AdminTeam from "./pages/Admin/AdminTeam";
@@ -87,8 +91,25 @@ export default function App() {
                 path="documents"
                 element={<AdminDocuments />}
               />
-              <Route path="team" element={<AdminTeam />} />
 
+              <Route
+                path="crm"
+                element={<AdminSalesDashboard />}
+              />
+              <Route
+                path="customers"
+                element={<AdminCustomers />}
+              />
+              <Route
+                path="pipeline"
+                element={<AdminPipeline />}
+              />
+              <Route
+                path="followups"
+                element={<AdminFollowUps />}
+              />
+
+              <Route path="team" element={<AdminTeam />} />
               <Route
                 path="quotations"
                 element={<AdminQuotations />}

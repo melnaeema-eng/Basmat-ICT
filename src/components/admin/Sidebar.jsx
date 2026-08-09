@@ -1,5 +1,6 @@
 import {
   FaBell,
+  FaCalendarCheck,
   FaChartPie,
   FaChartSimple,
   FaEnvelope,
@@ -11,6 +12,7 @@ import {
   FaLayerGroup,
   FaScrewdriverWrench,
   FaUserGroup,
+  FaUsers,
   FaUserTie,
 } from "react-icons/fa6";
 import { Link, NavLink } from "react-router-dom";
@@ -27,8 +29,12 @@ const groups = [
     ],
   },
   {
-    title: "المبيعات و CRM",
+    title: "CRM والمبيعات",
     items: [
+      ["CRM Dashboard", "/admin/crm", FaChartSimple],
+      ["العملاء", "/admin/customers", FaUsers],
+      ["Sales Pipeline", "/admin/pipeline", FaHandshake],
+      ["المتابعات", "/admin/followups", FaCalendarCheck],
       ["عروض الأسعار", "/admin/quotations", FaFileInvoiceDollar],
       ["الإشعارات", "/admin/notifications", FaBell],
       ["التحليلات", "/admin/analytics", FaChartSimple],
@@ -46,17 +52,12 @@ const groups = [
   },
 ];
 
-export default function Sidebar({
-  menuOpen,
-  onClose,
-}) {
+export default function Sidebar({ menuOpen, onClose }) {
   return (
     <aside
       className={[
         "fixed inset-y-0 right-0 z-40 w-72 bg-[#041632] text-white shadow-2xl transition-transform duration-300 lg:translate-x-0",
-        menuOpen
-          ? "translate-x-0"
-          : "translate-x-full",
+        menuOpen ? "translate-x-0" : "translate-x-full",
       ].join(" ")}
     >
       <div className="flex min-h-28 items-center gap-4 border-b border-white/10 px-6">
@@ -65,11 +66,8 @@ export default function Sidebar({
           alt="بصمة النوابغ"
           className="h-16 w-16 rounded-full bg-white object-contain"
         />
-
         <div>
-          <h1 className="text-xl font-black">
-            بصمة النوابغ
-          </h1>
+          <h1 className="text-xl font-black">بصمة النوابغ</h1>
           <p className="mt-1 text-xs font-bold tracking-wider text-blue-200">
             ADMIN PORTAL
           </p>
