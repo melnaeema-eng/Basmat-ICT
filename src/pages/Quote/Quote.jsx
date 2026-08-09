@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { useCustomerAuth } from "../../contexts/CustomerAuthContext";
 import {
   FaFile,
   FaFileArrowUp,
@@ -105,6 +107,7 @@ const initialForm = {
 
 export default function Quote() {
   const fileInputRef = useRef(null);
+  const { profile } = useCustomerAuth();
 
   const [form, setForm] = useState(initialForm);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -285,6 +288,11 @@ export default function Quote() {
     setSuccessData(null);
     setUploadProgress("");
 
+    if (!profile?.customer_id) {
+      setErrorMessage("يجب تسجيل الدخول بحساب العميل قبل إرسال طلب عرض السعر.");
+      return;
+    }
+
     if (
       !form.full_name.trim() ||
       !form.phone.trim() ||
@@ -340,6 +348,7 @@ export default function Quote() {
         .from("ict_rfq_requests")
         .insert({
           request_no: requestNumber,
+          customer_id: profile?.customer_id,
           customer_type: form.customer_type,
           full_name: form.full_name.trim(),
           company: form.company.trim() || null,
@@ -844,13 +853,22 @@ function SuccessMessage({
         </p>
       </div>
 
-      <button
-        type="button"
-        onClick={onNewRequest}
-        className="mt-8 rounded-2xl bg-[#071d49] px-8 py-4 font-black text-white"
-      >
-        إرسال طلب جديد
-      </button>
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link
+          to="/portal/requests"
+          className="rounded-2xl bg-[#ff7417] px-8 py-4 font-black text-white"
+        >
+          متابعة طلبي
+        </Link>
+
+        <button
+          type="button"
+          onClick={onNewRequest}
+          className="rounded-2xl bg-[#071d49] px-8 py-4 font-black text-white"
+        >
+          إرسال طلب جديد
+        </button>
+      </div>
     </div>
   );
 }

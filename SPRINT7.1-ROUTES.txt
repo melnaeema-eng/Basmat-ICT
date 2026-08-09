@@ -1,0 +1,32 @@
+SPRINT 7.1 ROUTES
+
+App.jsx imports:
+import RequireCustomerForQuote from "./components/customer/RequireCustomerForQuote";
+import PortalRegister from "./pages/PortalAuth/PortalRegister";
+import PortalRequests from "./pages/Portal/PortalRequests";
+
+1) REMOVE the public:
+<Route path="/quote" element={<Quote />} />
+
+2) ADD outside MainLayout:
+<Route path="/portal/register" element={<PortalRegister />} />
+
+3) ADD protected Quote:
+<Route element={<RequireCustomerForQuote />}>
+  <Route element={<MainLayout><Outlet /></MainLayout>}>
+    <Route path="/quote" element={<Quote />} />
+  </Route>
+</Route>
+
+4) INSIDE /portal:
+<Route path="requests" element={<PortalRequests />} />
+
+CustomerPortalLayout.jsx:
+Add a navigation item:
+<PortalLink to="/portal/requests" icon={<FaListCheck />} label="طلباتي" />
+
+and import:
+import { FaListCheck } from "react-icons/fa6";
+
+PortalLogin.jsx:
+Add a registration link to /portal/register if desired.

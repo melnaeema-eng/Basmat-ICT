@@ -16,31 +16,98 @@ import {
   FaUsers,
   FaUserTie,
 } from "react-icons/fa6";
-import { Link, NavLink } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+} from "react-router-dom";
 
 const groups = [
   {
     title: "إدارة الطلبات",
     items: [
-      ["لوحة التحكم", "/admin", FaChartPie, true],
-      ["رسائل التواصل", "/admin/contacts", FaEnvelope],
-      ["طلبات عرض السعر", "/admin/rfqs", FaFileInvoiceDollar],
-      ["طلبات الاستشارات", "/admin/consultations", FaUserTie],
-      ["المستندات", "/admin/documents", FaFolderOpen],
+      [
+        "لوحة التحكم",
+        "/admin",
+        FaChartPie,
+        true,
+      ],
+      [
+        "رسائل التواصل",
+        "/admin/contacts",
+        FaEnvelope,
+      ],
+      [
+        "طلبات عرض السعر",
+        "/admin/rfqs",
+        FaFileInvoiceDollar,
+      ],
+      [
+        "طلبات الاستشارات",
+        "/admin/consultations",
+        FaUserTie,
+      ],
+      [
+        "المستندات",
+        "/admin/documents",
+        FaFolderOpen,
+      ],
     ],
   },
 
   {
     title: "CRM والمبيعات",
     items: [
-      ["CRM Dashboard", "/admin/crm", FaChartSimple],
-      ["العملاء", "/admin/customers", FaUsers],
-      ["Sales Pipeline", "/admin/pipeline", FaHandshake],
-      ["المتابعات", "/admin/followups", FaCalendarCheck],
-      ["عروض الأسعار", "/admin/quotations", FaFileInvoiceDollar],
-      ["الإشعارات", "/admin/notifications", FaBell],
-      ["التحليلات", "/admin/analytics", FaChartSimple],
-      ["فريق العمل", "/admin/team", FaUserGroup],
+      [
+        "CRM Dashboard",
+        "/admin/crm",
+        FaChartSimple,
+      ],
+      [
+        "العملاء",
+        "/admin/customers",
+        FaUsers,
+      ],
+      [
+        "Sales Pipeline",
+        "/admin/pipeline",
+        FaHandshake,
+      ],
+      [
+        "المتابعات",
+        "/admin/followups",
+        FaCalendarCheck,
+      ],
+      [
+        "عروض الأسعار",
+        "/admin/quotations",
+        FaFileInvoiceDollar,
+      ],
+      [
+        "الإشعارات",
+        "/admin/notifications",
+        FaBell,
+      ],
+      [
+        "التحليلات",
+        "/admin/analytics",
+        FaChartSimple,
+      ],
+      [
+        "فريق العمل",
+        "/admin/team",
+        FaUserGroup,
+      ],
+    ],
+  },
+
+  {
+    title: "بوابة العملاء",
+    items: [
+      [
+        "مستخدمو بوابة العملاء",
+        "/admin/portal-users",
+        FaUserGroup,
+      ],
     ],
   },
 
@@ -124,41 +191,51 @@ export default function Sidebar({
       </div>
 
       <nav className="flex h-[calc(100vh-7rem)] flex-col overflow-y-auto px-4 py-6">
-        {groups.map((group, index) => (
-          <div
-            key={group.title}
-            className={index ? "mt-8" : ""}
-          >
-            <p className="px-3 text-xs font-black tracking-wider text-blue-300">
-              {group.title}
-            </p>
+        {groups.map(
+          (group, index) => (
+            <div
+              key={group.title}
+              className={
+                index ? "mt-8" : ""
+              }
+            >
+              <p className="px-3 text-xs font-black tracking-wider text-blue-300">
+                {group.title}
+              </p>
 
-            <div className="mt-4 space-y-2">
-              {group.items.map(
-                ([label, path, Icon, end]) => (
-                  <NavLink
-                    key={path}
-                    to={path}
-                    end={Boolean(end)}
-                    onClick={onClose}
-                    className={({ isActive }) =>
-                      [
-                        "flex items-center gap-3 rounded-2xl px-4 py-4 font-bold transition",
-                        isActive
-                          ? "bg-[#ff7417] text-white shadow-lg"
-                          : "text-blue-100 hover:bg-white/10",
-                      ].join(" ")
-                    }
-                  >
-                    <Icon className="text-xl" />
-
-                    {label}
-                  </NavLink>
-                )
-              )}
+              <div className="mt-4 space-y-2">
+                {group.items.map(
+                  ([
+                    label,
+                    path,
+                    Icon,
+                    end,
+                  ]) => (
+                    <NavLink
+                      key={path}
+                      to={path}
+                      end={Boolean(end)}
+                      onClick={onClose}
+                      className={({
+                        isActive,
+                      }) =>
+                        [
+                          "flex items-center gap-3 rounded-2xl px-4 py-4 font-bold transition",
+                          isActive
+                            ? "bg-[#ff7417] text-white shadow-lg"
+                            : "text-blue-100 hover:bg-white/10",
+                        ].join(" ")
+                      }
+                    >
+                      <Icon className="text-xl" />
+                      {label}
+                    </NavLink>
+                  )
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        )}
 
         <div className="mt-auto pt-8">
           <Link

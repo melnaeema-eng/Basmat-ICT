@@ -1,0 +1,34 @@
+APP.JSX — أضف:
+
+import { CustomerAuthProvider } from "./contexts/CustomerAuthContext";
+import ProtectedCustomerRoute from "./components/customer/ProtectedCustomerRoute";
+import CustomerPortalLayout from "./layouts/CustomerPortalLayout";
+
+import PortalLogin from "./pages/Portal/PortalLogin";
+import PortalDashboard from "./pages/Portal/PortalDashboard";
+import PortalQuotations from "./pages/Portal/PortalQuotations";
+import PortalQuotationDetail from "./pages/Portal/PortalQuotationDetail";
+import PortalProjects from "./pages/Portal/PortalProjects";
+import PortalInvoices from "./pages/Portal/PortalInvoices";
+import AdminPortalUsers from "./pages/Admin/AdminPortalUsers";
+
+لف Routes داخل CustomerAuthProvider داخل AdminAuthProvider.
+
+أضف:
+<Route path="/portal/login" element={<PortalLogin />} />
+
+<Route element={<ProtectedCustomerRoute />}>
+  <Route path="/portal" element={<CustomerPortalLayout />}>
+    <Route index element={<PortalDashboard />} />
+    <Route path="quotations" element={<PortalQuotations />} />
+    <Route path="quotations/:id" element={<PortalQuotationDetail />} />
+    <Route path="projects" element={<PortalProjects />} />
+    <Route path="invoices" element={<PortalInvoices />} />
+  </Route>
+</Route>
+
+داخل /admin:
+<Route path="portal-users" element={<AdminPortalUsers />} />
+
+Sidebar:
+مستخدمو بوابة العملاء -> /admin/portal-users

@@ -1,37 +1,34 @@
-# Basmat ICT — Sprint 3 Final Integration
+# Sprint 7.1 Final Integration
 
-هذه الحزمة تستبدل صفحتي:
+تستبدل هذه الحزمة فقط:
+- src/App.jsx
+- src/layouts/CustomerPortalLayout.jsx
 
-- `src/pages/Admin/AdminRFQs.jsx`
-- `src/pages/Admin/AdminConsultations.jsx`
+وتضيف:
+- /portal/register
+- /portal/requests
+- حماية /quote
+- قسم "طلباتي" في بوابة العميل
 
-بالنسختين الكاملتين بعد دمج `RequestWorkflowPanel`.
-
-## التركيب
-
+## التثبيت
 ```powershell
 cd C:\projects\Basmat-ICT
 
 Expand-Archive `
-  "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-3-Final.zip" `
+  "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-7.1-Final.zip" `
   -DestinationPath . `
   -Force
-```
 
-ثم:
-
-```powershell
 npm run dev
 ```
 
 ## الاختبار
-
-1. افتح `/admin/rfqs`
-2. تأكد من ظهور قسم **إدارة الطلب** داخل كل RFQ.
-3. اختر المسؤول والأولوية والحالة وأدخل ملاحظة داخلية.
-4. اضغط **حفظ التحديث**.
-5. أعد تحميل الصفحة وتأكد من بقاء البيانات.
-6. كرر نفس الاختبار في `/admin/consultations`.
-
-> هذه الحزمة تفترض أنك نفذت بالفعل `supabase/sprint3_crm_workflow.sql`
-> وأن ملف `src/components/admin/RequestWorkflowPanel.jsx` موجود من Sprint 3.
+1. افتح `/quote` بدون دخول.
+2. يجب أن ينتقل إلى `/portal/login`.
+3. افتح `/portal/register`.
+4. أنشئ حساب عميل.
+5. سجل الدخول.
+6. افتح `/quote`.
+7. أرسل طلبًا.
+8. اضغط "متابعة طلبي".
+9. يجب أن يظهر الطلب في `/portal/requests`.

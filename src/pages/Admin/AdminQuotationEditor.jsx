@@ -40,6 +40,7 @@ export default function AdminQuotationEditor() {
   const [form, setForm] = useState({
     quotation_no: createQuotationNumber(),
     rfq_id: rfqId || "",
+    customer_id: "",
     customer_name: "",
     company_name: "",
     customer_email: "",
@@ -59,10 +60,42 @@ export default function AdminQuotationEditor() {
   ]);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
+  const [customers, setCustomers] = useState([]);
   const [message, setMessage] = useState({
     type: "",
     text: "",
   });
+
+  useEffect(() => {
+    loadCustomers();
+  }, []);
+
+  async function loadCustomers() {
+    const { data, error } = await supabase
+      .from("ict_customers")
+      .select("id,name,company_name,email,phone")
+      .order("name");
+
+    if (error) {
+      setMessage({ type: "error", text: error.message });
+      return;
+    }
+
+    setCustomers(data || []);
+  }
+
+  function selectCustomer(customerId) {
+    const customer = customers.find((row) => row.id === customerId);
+
+    setForm((current) => ({
+      ...current,
+      customer_id: customerId,
+      customer_name: customer?.name || "",
+      company_name: customer?.company_name || "",
+      customer_email: customer?.email || "",
+      customer_phone: customer?.phone || "",
+    }));
+  }
 
   useEffect(() => {
     if (id) {
@@ -122,6 +155,7 @@ export default function AdminQuotationEditor() {
     setForm({
       quotation_no: data.quotation_no,
       rfq_id: data.rfq_id || "",
+      customer_id: data.customer_id || "",
       customer_name: data.customer_name || "",
       company_name: data.company_name || "",
       customer_email: data.customer_email || "",
@@ -205,6 +239,10 @@ export default function AdminQuotationEditor() {
     setMessage({ type: "", text: "" });
 
     try {
+      if (!form.customer_id) {
+        throw new Error("يجب اختيار العميل من CRM قبل حفظ عرض السعر.");
+      }
+
       if (!form.customer_name.trim()) {
         throw new Error("اسم العميل مطلوب.");
       }
@@ -227,6 +265,7 @@ export default function AdminQuotationEditor() {
       const payload = {
         ...form,
         rfq_id: form.rfq_id || null,
+        customer_id: form.customer_id,
         customer_name:
           form.customer_name.trim(),
         company_name:
@@ -313,6 +352,10 @@ export default function AdminQuotationEditor() {
     setMessage({ type: "", text: "" });
 
     try {
+      if (!form.customer_id) {
+        throw new Error("يجب اختيار العميل من CRM قبل إرسال عرض السعر.");
+      }
+
       const savedId =
         id || (await saveQuotation());
 
@@ -505,6 +548,25 @@ export default function AdminQuotationEditor() {
           </div>
 
           <div className="mt-7 grid gap-5 md:grid-cols-2">
+            <label className="no-print md:col-span-2">
+              <span className="mb-2 block font-bold text-slate-700">
+                العميل من CRM *
+              </span>
+              <select
+                value={form.customer_id}
+                onChange={(event) => selectCustomer(event.target.value)}
+                className="form-input"
+              >
+                <option value="">اختر العميل قبل حفظ أو إرسال العرض</option>
+                {customers.map((customer) => (
+                  <option key={customer.id} value={customer.id}>
+                    {customer.company_name || customer.name}
+                    {customer.name && customer.company_name ? ` — ${customer.name}` : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+
             <Input
               label="اسم العميل"
               value={form.customer_name}
