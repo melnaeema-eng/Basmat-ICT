@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa6";
 
 import { supabase } from "../../lib/supabase";
+import RequestWorkflowPanel from "../../components/admin/RequestWorkflowPanel";
 
 const statusOptions = [
   { value: "new", label: "جديد" },
@@ -71,6 +72,10 @@ export default function AdminRFQs() {
             attachments,
             nda_required,
             status,
+            assigned_to,
+            priority,
+            internal_notes,
+            workflow_updated_at,
             created_at
           `
         )
@@ -218,6 +223,7 @@ export default function AdminRFQs() {
                 onStatusChange={(status) =>
                   updateStatus(request.id, status)
                 }
+                onUpdated={loadRequests}
               />
             ))
           )}
@@ -320,6 +326,7 @@ function RequestCard({
   request,
   updating,
   onStatusChange,
+  onUpdated,
 }) {
   const attachments = Array.isArray(
     request.attachments
@@ -471,6 +478,12 @@ function RequestCard({
 
       <AttachmentsList
         attachments={attachments}
+      />
+
+      <RequestWorkflowPanel
+        requestType="rfq"
+        request={request}
+        onUpdated={onUpdated}
       />
     </article>
   );

@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa6";
 
 import { supabase } from "../../lib/supabase";
+import RequestWorkflowPanel from "../../components/admin/RequestWorkflowPanel";
 
 const statusOptions = [
   { value: "new", label: "جديد" },
@@ -61,6 +62,10 @@ export default function AdminConsultations() {
             nda_required,
             is_free_first_consultation,
             status,
+            assigned_to,
+            priority,
+            internal_notes,
+            workflow_updated_at,
             created_at
           `
         )
@@ -235,6 +240,7 @@ export default function AdminConsultations() {
                 onStatusChange={(status) =>
                   updateStatus(request.id, status)
                 }
+                onUpdated={loadRequests}
               />
             ))
           )}
@@ -248,6 +254,7 @@ function ConsultationCard({
   request,
   updating,
   onStatusChange,
+  onUpdated,
 }) {
   const attachments = Array.isArray(
     request.attachments
@@ -378,6 +385,12 @@ function ConsultationCard({
 
       <AttachmentsList
         attachments={attachments}
+      />
+
+      <RequestWorkflowPanel
+        requestType="consultation"
+        request={request}
+        onUpdated={onUpdated}
       />
     </article>
   );
