@@ -4,11 +4,16 @@ import {
   useState,
 } from "react";
 import {
+  FaBuildingColumns,
   FaEnvelope,
   FaFloppyDisk,
+  FaGlobe,
+  FaLocationDot,
+  FaPhone,
   FaPlus,
   FaPrint,
   FaTrash,
+  FaWhatsapp,
 } from "react-icons/fa6";
 import {
   useNavigate,
@@ -500,6 +505,237 @@ export default function AdminQuotationEditor() {
 
           body {
             background: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .quotation-paper {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .quotation-footer {
+            background: #071d49 !important;
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .quotation-footer * {
+            color: #ffffff !important;
+          }
+
+          /* Compact company details, notes and terms for Print / PDF */
+          .quotation-company {
+            padding: 7px 9px !important;
+          }
+
+          .quotation-company p,
+          .quotation-company span {
+            font-size: 8px !important;
+            line-height: 1.25 !important;
+            margin-top: 1px !important;
+            margin-bottom: 0 !important;
+          }
+
+          .quotation-company > div {
+            margin-top: 3px !important;
+          }
+
+          .quotation-notes-terms {
+            margin-top: 5mm !important;
+            gap: 5px !important;
+          }
+
+          .quotation-notes-terms > div {
+            padding: 6px 8px !important;
+            border-radius: 5px !important;
+          }
+
+          .quotation-notes-terms p {
+            font-size: 8px !important;
+            line-height: 1.3 !important;
+            margin-top: 1px !important;
+            margin-bottom: 0 !important;
+          }
+
+          /* Give maximum PDF space to quotation items */
+          .quotation-header {
+            padding-bottom: 5px !important;
+            gap: 8px !important;
+          }
+
+          .quotation-header img {
+            width: 38px !important;
+            height: 38px !important;
+          }
+
+          .quotation-header h2 {
+            font-size: 12px !important;
+            line-height: 1.1 !important;
+          }
+
+          .quotation-header p,
+          .quotation-header input {
+            font-size: 8px !important;
+            line-height: 1.15 !important;
+            margin-top: 1px !important;
+          }
+
+          .quotation-customer-block {
+            margin-top: 4px !important;
+            gap: 4px !important;
+          }
+
+          .quotation-customer-block label {
+            margin: 0 !important;
+          }
+
+          .quotation-customer-block input,
+          .quotation-customer-block select {
+            padding: 4px 6px !important;
+            min-height: 0 !important;
+            font-size: 8px !important;
+            line-height: 1.1 !important;
+          }
+
+          .quotation-customer-block span {
+            margin-bottom: 1px !important;
+            font-size: 7px !important;
+            line-height: 1 !important;
+          }
+
+          .quotation-items {
+            margin-top: 5px !important;
+            min-height: 0 !important;
+          }
+
+          .quotation-items table {
+            font-size: 8px !important;
+          }
+
+          .quotation-items th {
+            padding: 5px !important;
+          }
+
+          .quotation-items td {
+            padding: 4px !important;
+          }
+
+          .quotation-items input {
+            padding: 3px 4px !important;
+            font-size: 8px !important;
+            line-height: 1.1 !important;
+          }
+
+          .quotation-summary-block {
+            margin-top: 5px !important;
+            gap: 5px !important;
+          }
+
+          .quotation-summary-block textarea {
+            min-height: 36px !important;
+            height: 36px !important;
+            padding: 4px 6px !important;
+            font-size: 8px !important;
+            line-height: 1.2 !important;
+          }
+
+          .quotation-summary-block label span {
+            margin-bottom: 1px !important;
+            font-size: 7px !important;
+          }
+
+          .quotation-summary-block > div {
+            padding: 6px !important;
+          }
+
+          /* Compact totals and keep simple quotations on one PDF page */
+          .quotation-totals {
+            padding: 5px 8px !important;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
+          .quotation-totals p,
+          .quotation-totals span,
+          .quotation-totals strong {
+            font-size: 8px !important;
+            line-height: 1.15 !important;
+          }
+
+          .quotation-totals p {
+            margin-top: 2px !important;
+            padding-top: 2px !important;
+          }
+
+          .quotation-items table {
+            break-inside: auto !important;
+          }
+
+          .quotation-items tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
+          .quotation-items thead {
+            display: table-header-group !important;
+          }
+
+          .quotation-items tfoot {
+            display: table-footer-group !important;
+          }
+
+          /* Compact quotation footer specifically for Print / PDF */
+          .quotation-footer {
+            margin-top: 6mm !important;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
+          .quotation-footer > div:first-child {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+          }
+
+          .quotation-footer section {
+            padding: 5px 9px !important;
+            min-height: 0 !important;
+          }
+
+          .quotation-footer section > div,
+          .quotation-footer section p {
+            margin-top: 2px !important;
+            margin-bottom: 0 !important;
+            line-height: 1.15 !important;
+          }
+
+          .quotation-footer img {
+            width: 28px !important;
+            height: 28px !important;
+            padding: 1px !important;
+          }
+
+          .quotation-footer p,
+          .quotation-footer span,
+          .quotation-footer strong {
+            font-size: 7.5px !important;
+            line-height: 1.2 !important;
+          }
+
+          .quotation-footer svg {
+            width: 8px !important;
+            height: 8px !important;
+          }
+
+          .quotation-footer > div:last-child {
+            padding: 4px 8px !important;
+            font-size: 7px !important;
+            line-height: 1 !important;
+          }
+
+          @page {
+            margin: 10mm;
           }
 
           .quotation-paper {
@@ -576,16 +812,16 @@ export default function AdminQuotationEditor() {
         )}
 
         <div className="quotation-paper mt-8 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm md:p-10">
-          <div className="flex flex-wrap items-start justify-between gap-6 border-b border-slate-200 pb-7">
+          <div className="quotation-header flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-4">
             <div className="flex items-center gap-4">
               <img
                 src="/logo.png"
                 alt="بصمة النوابغ"
-                className="h-20 w-20 rounded-full object-contain"
+                className="h-14 w-14 rounded-full object-contain"
               />
 
               <div>
-                <h2 className="text-2xl font-black text-[#071d49]">
+                <h2 className="text-xl font-black text-[#071d49]">
                   بصمة النوابغ
                 </h2>
                 <p className="mt-1 text-sm text-slate-600">
@@ -625,7 +861,12 @@ export default function AdminQuotationEditor() {
             </div>
           </div>
 
-          <div className="mt-7 grid gap-5 md:grid-cols-2">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 py-3 text-xs font-black text-[#071d49]">
+            <span dir="ltr">CR: 530976143</span>
+            <span dir="ltr">VAT: 314712238300003</span>
+          </div>
+
+          <div className="quotation-customer-block mt-5 grid gap-3 md:grid-cols-2">
             <label className="no-print md:col-span-2">
               <span className="mb-2 block font-bold text-slate-700">
                 العميل من CRM *
@@ -705,7 +946,7 @@ export default function AdminQuotationEditor() {
             </div>
           </div>
 
-          <div className="mt-8 overflow-x-auto">
+          <div className="quotation-items mt-4 overflow-x-auto">
             <table className="w-full border-collapse text-right">
               <thead>
                 <tr className="bg-[#071d49] text-white">
@@ -831,7 +1072,7 @@ export default function AdminQuotationEditor() {
             </button>
           </div>
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          <div className="quotation-summary-block mt-5 grid gap-4 lg:grid-cols-2">
             <div>
               <label>
                 <span className="mb-2 block font-bold text-slate-700">
@@ -868,7 +1109,7 @@ export default function AdminQuotationEditor() {
               </label>
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-6">
+            <div className="quotation-totals rounded-xl bg-slate-50 p-4">
               <SummaryRow
                 label="المجموع قبل الضريبة"
                 value={`${formatMoney(
@@ -968,17 +1209,71 @@ export default function AdminQuotationEditor() {
             </div>
           </div>
 
-          <div className="mt-10 border-t border-slate-200 pt-6 text-center">
-  <img
-    src="/logo.png"
-    alt="بصمة النوابغ"
-    className="mx-auto h-16 w-16 object-contain"
-  />
+          <footer
+            className="quotation-footer -mx-7 -mb-7 mt-12 overflow-hidden md:-mx-10 md:-mb-10"
+            style={{ backgroundColor: "#071d49", color: "#ffffff" }}
+          >
+            <div className="grid lg:grid-cols-4">
+              <section className="border-b border-white/15 px-4 py-3 lg:border-b-0 lg:border-l">
+                <div className="flex items-center gap-4">
+                  <img
+                    src="/logo.png"
+                    alt="بصمة النوابغ"
+                    className="h-10 w-10 rounded-full bg-white object-contain p-1"
+                  />
+                  <div>
+                    <p className="text-sm font-black text-white">بصمة النوابغ</p>
+                    <p className="mt-0.5 text-[10px] font-bold text-white">لتقنية المعلومات والاتصالات</p>
+                    <p className="text-[9px] font-black text-white">BASMAT ALNAWABIGH ICT</p>
+                  </div>
+                </div>
+                <p className="mt-2 flex items-start gap-2 text-[10px] text-white">
+                  <FaLocationDot className="mt-1 shrink-0" />
+                  <span>الرياض، المملكة العربية السعودية</span>
+                </p>
+              </section>
 
-  <p className="mt-3 text-sm font-bold text-slate-500">
-    بصمة النوابغ لتقنية المعلومات والاتصالات
-  </p>
-</div>
+              <section className="border-b border-white/15 px-4 py-3 lg:border-b-0 lg:border-l">
+                <p className="text-xs font-black text-white">التواصل</p>
+                <div className="mt-2 space-y-1.5 text-[10px] leading-4 text-white">
+                  <p className="flex items-center gap-3"><FaPhone /><span dir="ltr">+966 55 007 3576</span></p>
+                  <p className="flex items-center gap-3"><FaPhone /><span dir="ltr">+966 53 480 7359</span></p>
+                  <p className="flex items-center gap-3"><FaEnvelope /><span dir="ltr" className="break-all">info@basmat-alnawabig.com.sa</span></p>
+                </div>
+              </section>
+
+              <section className="border-b border-white/15 px-4 py-3 lg:border-b-0 lg:border-l">
+                <p className="text-xs font-black text-white">الموقع ووسائل التواصل</p>
+                <div className="mt-2 space-y-1.5 text-[10px] leading-4 text-white">
+                  <p className="flex items-center gap-3"><FaGlobe /><span dir="ltr" className="break-all">ict.basmat-alnawabig.com.sa</span></p>
+                  <p className="flex items-center gap-3"><FaWhatsapp /><span dir="ltr">+966 55 007 3576</span></p>
+                  <p className="flex items-center gap-3"><FaWhatsapp /><span dir="ltr">+966 53 480 7359</span></p>
+                </div>
+              </section>
+
+              <section className="px-4 py-3">
+                <p className="text-xs font-black text-white">البيانات البنكية</p>
+                <div className="mt-2 space-y-1.5 text-[10px] leading-4 text-white">
+                  <p className="flex items-center gap-3"><FaBuildingColumns /><span>مصرف الراجحي</span></p>
+                  <p>اسم الحساب: <strong>بصمة النوابغ</strong></p>
+                  <div>
+                    <p className="text-xs font-black">IBAN</p>
+                    <p dir="ltr" className="mt-1 rounded-md border border-white/25 bg-white/10 px-2 py-1.5 text-center text-[9px] font-black">
+                      SA49 8000 0282 6080 1979 1093
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div className="border-t border-white/20 px-4 py-2 text-center text-[9px] font-bold text-white">
+              <span>CR: 530976143</span>
+              <span className="mx-3">•</span>
+              <span>VAT: 314712238300003</span>
+              <span className="mx-3">•</span>
+              <span dir="ltr">ict.basmat-alnawabig.com.sa</span>
+            </div>
+          </footer>
         </div>
       </div>
     </div>
