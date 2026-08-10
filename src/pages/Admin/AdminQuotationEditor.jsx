@@ -650,6 +650,152 @@ export default function AdminQuotationEditor() {
             padding: 6px !important;
           }
 
+          /* ===== PRINT: REPEAT BLUE TABLE HEADER ON EVERY PDF PAGE ===== */
+          .quotation-items {
+            overflow: visible !important;
+          }
+
+          .quotation-items table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .quotation-table-head {
+            display: table-header-group !important;
+          }
+
+          .quotation-table-head tr,
+          .quotation-table-head th {
+            background-color: #071d49 !important;
+            background: #071d49 !important;
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .quotation-table-head th {
+            font-size: 8px !important;
+            font-weight: 900 !important;
+            padding: 5px 4px !important;
+            border: 1px solid #ffffff !important;
+          }
+
+          .quotation-items tbody {
+            display: table-row-group !important;
+          }
+
+          .quotation-items tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
+          /* ===== PRINT: TAX RATE AS NORMAL TEXT, NOT LARGE INPUT ===== */
+          .print-tax-rate {
+            display: inline !important;
+            font-size: 8px !important;
+            line-height: 1 !important;
+            font-weight: 900 !important;
+            color: #1e293b !important;
+          }
+
+          .quotation-tax-rate {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            min-width: 30px !important;
+          }
+
+          /* ===== PRINT: BLUE FOOTER ON EVERY PDF PAGE ===== */
+          .quotation-footer {
+            display: block !important;
+            position: fixed !important;
+            left: 8mm !important;
+            right: 8mm !important;
+            bottom: 5mm !important;
+            width: auto !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            background-color: #071d49 !important;
+            background: #071d49 !important;
+            color: #ffffff !important;
+            z-index: 9999 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .quotation-footer,
+          .quotation-footer section,
+          .quotation-footer div,
+          .quotation-footer p,
+          .quotation-footer span,
+          .quotation-footer strong,
+          .quotation-footer svg {
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .quotation-footer > div:first-child {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            background-color: #071d49 !important;
+            background: #071d49 !important;
+          }
+
+          .quotation-footer section {
+            background-color: #071d49 !important;
+            background: #071d49 !important;
+            padding: 3px 6px !important;
+            min-height: 0 !important;
+          }
+
+          .quotation-footer section > div,
+          .quotation-footer section p {
+            margin-top: 1px !important;
+            margin-bottom: 0 !important;
+            line-height: 1.05 !important;
+          }
+
+          .quotation-footer img {
+            width: 22px !important;
+            height: 22px !important;
+            padding: 1px !important;
+          }
+
+          .quotation-footer p,
+          .quotation-footer span,
+          .quotation-footer strong {
+            font-size: 6.5px !important;
+            line-height: 1.05 !important;
+          }
+
+          .quotation-footer svg {
+            width: 6px !important;
+            height: 6px !important;
+          }
+
+          .quotation-footer > div:last-child {
+            background-color: #071d49 !important;
+            background: #071d49 !important;
+            padding: 2px 5px !important;
+            font-size: 6px !important;
+            line-height: 1 !important;
+          }
+
+          /* Tax percentage must match the surrounding values */
+
+          /* Keep summary blocks together when possible */
+          .quotation-summary-block,
+          .quotation-totals,
+          .quotation-notes-terms {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
           /* Compact totals and keep simple quotations on one PDF page */
           .quotation-totals {
             padding: 5px 8px !important;
@@ -688,9 +834,20 @@ export default function AdminQuotationEditor() {
 
           /* Compact quotation footer specifically for Print / PDF */
           .quotation-footer {
-            margin-top: 6mm !important;
+            position: fixed !important;
+            left: 10mm !important;
+            right: 10mm !important;
+            bottom: 5mm !important;
+            margin: 0 !important;
+            z-index: 50 !important;
             break-inside: avoid !important;
             page-break-inside: avoid !important;
+            background: #071d49 !important;
+            color: #ffffff !important;
+          }
+
+          .quotation-paper {
+            padding-bottom: 24mm !important;
           }
 
           .quotation-footer > div:first-child {
@@ -729,13 +886,40 @@ export default function AdminQuotationEditor() {
           }
 
           .quotation-footer > div:last-child {
-            padding: 4px 8px !important;
-            font-size: 7px !important;
+            padding: 2px 6px !important;
+            font-size: 6.5px !important;
             line-height: 1 !important;
           }
 
+          .quotation-footer section {
+            padding: 3px 7px !important;
+          }
+
+          .quotation-footer img {
+            width: 24px !important;
+            height: 24px !important;
+          }
+
+          .quotation-footer p,
+          .quotation-footer span,
+          .quotation-footer strong {
+            font-size: 6.8px !important;
+            line-height: 1.08 !important;
+          }
+
+          .quotation-footer svg {
+            width: 7px !important;
+            height: 7px !important;
+          }
+
           @page {
-            margin: 10mm;
+            size: A4;
+            margin: 7mm 8mm 24mm 8mm;
+          }
+
+          .quotation-paper {
+            overflow: visible !important;
+            padding-bottom: 0 !important;
           }
 
           .quotation-paper {
@@ -811,7 +995,7 @@ export default function AdminQuotationEditor() {
           </div>
         )}
 
-        <div className="quotation-paper mt-8 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm md:p-10">
+        <div className="quotation-paper mt-8 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
           <div className="quotation-header flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-4">
             <div className="flex items-center gap-4">
               <img
@@ -948,7 +1132,7 @@ export default function AdminQuotationEditor() {
 
           <div className="quotation-items mt-4 overflow-x-auto">
             <table className="w-full border-collapse text-right">
-              <thead>
+              <thead className="quotation-table-head">
                 <tr className="bg-[#071d49] text-white">
                   <th className="p-3">#</th>
                   <th className="p-3">
@@ -1122,19 +1306,28 @@ export default function AdminQuotationEditor() {
                   الضريبة
                 </span>
 
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    value={form.tax_rate}
-                    onChange={(event) =>
-                      updateField(
-                        "tax_rate",
-                        event.target.value
-                      )
-                    }
-                    className="w-20 rounded-lg border border-slate-200 p-2 text-left"
-                  />
-                  <span>%</span>
+                <div className="quotation-tax-rate">
+                  <div className="no-print flex items-center gap-1">
+                    <input
+                      type="number"
+                      value={form.tax_rate}
+                      onChange={(event) =>
+                        updateField(
+                          "tax_rate",
+                          event.target.value
+                        )
+                      }
+                      className="w-14 rounded-lg border border-slate-200 p-1.5 text-left text-sm"
+                    />
+                    <span className="text-sm">%</span>
+                  </div>
+
+                  <span
+                    dir="ltr"
+                    className="print-tax-rate hidden font-black text-slate-800"
+                  >
+                    {form.tax_rate}%
+                  </span>
                 </div>
               </div>
 
@@ -1211,7 +1404,12 @@ export default function AdminQuotationEditor() {
 
           <footer
             className="quotation-footer -mx-7 -mb-7 mt-12 overflow-hidden md:-mx-10 md:-mb-10"
-            style={{ backgroundColor: "#071d49", color: "#ffffff" }}
+            style={{
+              backgroundColor: "#071d49",
+              color: "#ffffff",
+              WebkitPrintColorAdjust: "exact",
+              printColorAdjust: "exact",
+            }}
           >
             <div className="grid lg:grid-cols-4">
               <section className="border-b border-white/15 px-4 py-3 lg:border-b-0 lg:border-l">
