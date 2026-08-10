@@ -1,36 +1,42 @@
-BASMAT ICT — Sprint 8 Consultation to Quotation Patch
+BASMAT ICT — Sprint 8 Accepted Quotation to Project Patch
 
 يشمل:
-- زر "إنشاء عرض سعر من الاستشارة".
-- فتح:
-  /admin/quotations/new?consultation=<ID>
-- تعبئة:
+- يعرض في إدارة المشاريع فقط عروض الأسعار Accepted التي لم تتحول إلى مشروع.
+- زر "تحويل إلى مشروع".
+- يمنع تحويل نفس العرض مرتين.
+- يسحب تلقائيًا:
   customer_id
-  اسم العميل
-  الشركة
-  البريد
-  الجوال
-  نوع/موضوع الاستشارة
-  التفاصيل
-- حفظ consultation_id داخل ict_quotations.
-- عند إرسال العرض تتحول حالة الاستشارة إلى quoted.
-- منع إنشاء أكثر من عرض واحد لنفس الاستشارة عبر unique index.
+  quotation_id
+  rfq_id
+  consultation_id
+  قيمة العرض
+  موضوع العرض
+  الملاحظات / scope
+- يبدأ المشروع بالحالة planning والتقدم 0%.
+- يظهر المشروع تلقائيًا في بوابة العميل حسب customer_id.
+- يظل نموذج المشروع اليدوي للحالات المباشرة فقط.
 
 التثبيت:
-1) فك ZIP داخل:
-C:\projects\Basmat-ICT
+
+1) فك الملف داخل المشروع:
+cd C:\projects\Basmat-ICT
+
+Expand-Archive `
+  "$env:USERPROFILE\Downloads\Basmat-Sprint8-Accepted-Quotation-to-Project.zip" `
+  -DestinationPath . `
+  -Force
 
 2) شغّل في Supabase SQL Editor:
-supabase/consultation_to_quotation.sql
+supabase/accepted_quotation_to_project.sql
 
-3) ثم:
+3) شغّل:
 npm run dev
 
 الاختبار:
-الإدارة > طلبات الاستشارات
-→ إنشاء عرض سعر من الاستشارة
-→ يجب أن يفتح محرر العرض مع بيانات العميل والاستشارة
-→ احفظ وأرسل
-→ يجب أن تظهر حالة الاستشارة quoted
-→ يظهر العرض للعميل
-→ العميل يقبل/يرفض كالمعتاد.
+- العميل يقبل عرض سعر.
+- الإدارة > إدارة المشاريع.
+- يظهر العرض في "عروض مقبولة بانتظار التحويل".
+- اضغط "تحويل إلى مشروع".
+- يفتح التنفيذ والتجاري للمشروع.
+- ارجع إدارة المشاريع: العرض لا يظهر مرة أخرى في الانتظار.
+- ادخل بحساب العميل > المشاريع: يظهر المشروع.
