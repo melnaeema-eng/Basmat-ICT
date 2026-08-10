@@ -36,10 +36,12 @@ export default function AdminQuotationEditor() {
   const navigate = useNavigate();
 
   const rfqId = searchParams.get("rfq");
+  const consultationId = searchParams.get("consultation");
 
   const [form, setForm] = useState({
     quotation_no: createQuotationNumber(),
     rfq_id: rfqId || "",
+    consultation_id: consultationId || "",
     customer_id: "",
     customer_name: "",
     company_name: "",
@@ -102,14 +104,16 @@ export default function AdminQuotationEditor() {
       loadQuotation(id);
     } else if (rfqId) {
       loadRFQ(rfqId);
+    } else if (consultationId) {
+      loadConsultation(consultationId);
     }
-  }, [id, rfqId]);
+  }, [id, rfqId, consultationId]);
 
   async function loadRFQ(requestId) {
     const { data, error } = await supabase
       .from("ict_rfq_requests")
       .select(
-        "id, request_no, full_name, company, email, phone, project_type, project_description"
+        "id, request_no, customer_id, full_name, company, email, phone, project_type, project_description"
       )
       .eq("id", requestId)
       .single();
@@ -125,6 +129,7 @@ export default function AdminQuotationEditor() {
     setForm((current) => ({
       ...current,
       rfq_id: data.id,
+      customer_id: data.customer_id || "",
       customer_name: data.full_name || "",
       company_name: data.company || "",
       customer_email: data.email || "",
@@ -134,6 +139,37 @@ export default function AdminQuotationEditor() {
       }`,
       notes:
         data.project_description || "",
+    }));
+  }
+
+  async function loadConsultation(requestId) {
+    const { data, error } = await supabase
+      .from("ict_consultation_requests")
+      .select(
+        "id, request_no, customer_id, full_name, company, email, phone, consultation_type, subject, details"
+      )
+      .eq("id", requestId)
+      .single();
+
+    if (error) {
+      setMessage({
+        type: "error",
+        text: error.message,
+      });
+      return;
+    }
+
+    setForm((current) => ({
+      ...current,
+      consultation_id: data.id,
+      rfq_id: "",
+      customer_id: data.customer_id || "",
+      customer_name: data.full_name || "",
+      company_name: data.company || "",
+      customer_email: data.email || "",
+      customer_phone: data.phone || "",
+      subject: `عرض سعر - ${data.subject || data.consultation_type || data.request_no}`,
+      notes: data.details || "",
     }));
   }
 
@@ -155,6 +191,7 @@ export default function AdminQuotationEditor() {
     setForm({
       quotation_no: data.quotation_no,
       rfq_id: data.rfq_id || "",
+      consultation_id: data.consultation_id || "",
       customer_id: data.customer_id || "",
       customer_name: data.customer_name || "",
       company_name: data.company_name || "",
@@ -265,6 +302,7 @@ export default function AdminQuotationEditor() {
       const payload = {
         ...form,
         rfq_id: form.rfq_id || null,
+        consultation_id: form.consultation_id || null,
         customer_id: form.customer_id,
         customer_name:
           form.customer_name.trim(),
@@ -380,6 +418,46 @@ export default function AdminQuotationEditor() {
         );
 
       if (error) throw error;
+
+      const { error: quotationStatusError } = await supabase
+        .from("ict_quotations")
+        .update({
+          status: "sent",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", savedId);
+
+      if (quotationStatusError) {
+        throw quotationStatusError;
+      }
+
+      if (form.rfq_id) {
+        const { error: rfqStatusError } = await supabase
+          .from("ict_rfq_requests")
+          .update({
+            status: "quoted",
+            workflow_updated_at: new Date().toISOString(),
+          })
+          .eq("id", form.rfq_id);
+
+        if (rfqStatusError) {
+          throw rfqStatusError;
+        }
+      }
+
+      if (form.consultation_id) {
+        const { error: consultationStatusError } = await supabase
+          .from("ict_consultation_requests")
+          .update({
+            status: "quoted",
+            workflow_updated_at: new Date().toISOString(),
+          })
+          .eq("id", form.consultation_id);
+
+        if (consultationStatusError) {
+          throw consultationStatusError;
+        }
+      }
 
       setForm((current) => ({
         ...current,

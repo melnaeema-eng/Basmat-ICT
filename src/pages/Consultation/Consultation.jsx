@@ -1,6 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import SectionWaves from "../../components/SectionWaves/SectionWaves";
+import { useCustomerAuth } from "../../contexts/CustomerAuthContext";
 import {
   FaFile,
   FaFileArrowUp,
@@ -64,6 +66,7 @@ const consultationTypes = [
 
 export default function Consultation() {
    const fileInputRef = useRef(null);
+   const { profile } = useCustomerAuth();
 
 const [selectedFiles, setSelectedFiles] = useState([]);
 const [dragging, setDragging] = useState(false);
@@ -72,6 +75,18 @@ const [uploadProgress, setUploadProgress] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successData, setSuccessData] = useState(null);
+
+  useEffect(() => {
+    if (!profile) return;
+
+    setForm((current) => ({
+      ...current,
+      full_name: current.full_name || profile.full_name || profile.customer?.name || "",
+      company: current.company || profile.customer?.company_name || "",
+      phone: current.phone || profile.customer?.phone || "",
+      email: current.email || profile.email || profile.customer?.email || "",
+    }));
+  }, [profile]);
   
 
   function updateField(name, value) {
@@ -221,6 +236,11 @@ async function uploadFiles(requestNumber) {
     setErrorMessage("");
     setSuccessData(null);
 
+    if (!profile?.customer_id) {
+      setErrorMessage("يجب تسجيل الدخول بحساب العميل قبل إرسال الاستشارة.");
+      return;
+    }
+
     if (
       !form.full_name.trim() ||
       !form.phone.trim() ||
@@ -251,9 +271,10 @@ if (selectedFiles.length > 0 && !form.document_type) {
 
       setUploadProgress("جارٍ حفظ طلب الاستشارة...");
 
-      const { error } = await supabase
+      const { data: requestData, error } = await supabase
         .from("ict_consultation_requests")
         .insert({
+          customer_id: profile.customer_id,
             document_type: form.document_type || null,
 attachments,
 nda_required: form.nda_required,
@@ -267,10 +288,30 @@ nda_required: form.nda_required,
           details: form.details.trim(),
           is_free_first_consultation: true,
           status: "new",
-        });
+        })
+        .select("id")
+        .single();
 
       if (error) {
         throw error;
+      }
+
+      if (form.nda_required && requestData?.id) {
+        const { data: ndaId, error: ndaError } = await supabase.rpc(
+          "create_customer_nda",
+          { p_source_type: "consultation", p_source_id: requestData.id }
+        );
+
+        if (ndaError) throw ndaError;
+
+        const { error: mailError } = await supabase.functions.invoke(
+          "send-nda-email",
+          { body: { nda_id: ndaId } }
+        );
+
+        if (mailError) {
+          console.warn("تم حفظ NDA لكن تعذر إرسال البريد:", mailError);
+        }
       }
 
       setForm(initialForm);

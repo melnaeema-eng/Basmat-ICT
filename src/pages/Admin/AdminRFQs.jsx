@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FaBuilding,
   FaDownload,
   FaEnvelope,
   FaFile,
+  FaFileInvoiceDollar,
   FaMagnifyingGlass,
   FaPhone,
   FaRotate,
@@ -479,6 +481,16 @@ function RequestCard({
       <AttachmentsList
         attachments={attachments}
       />
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link
+          to={`/admin/quotations/new?rfq=${request.id}`}
+          className="inline-flex items-center gap-2 rounded-xl bg-[#ff7417] px-5 py-3 font-black text-white transition hover:bg-orange-600"
+        >
+          <FaFileInvoiceDollar />
+          إنشاء عرض سعر من الطلب
+        </Link>
+      </div>
 
       <RequestWorkflowPanel
         requestType="rfq"

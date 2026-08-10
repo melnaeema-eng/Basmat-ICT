@@ -1,6 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCustomerAuth } from "../../contexts/CustomerAuthContext";
 import {
   FaFile,
   FaFileArrowUp,
@@ -9,6 +8,7 @@ import {
 
 import { supabase } from "../../lib/supabase";
 import SectionWaves from "../../components/SectionWaves/SectionWaves";
+import { useCustomerAuth } from "../../contexts/CustomerAuthContext";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
@@ -117,6 +117,19 @@ export default function Quote() {
   const [uploadProgress, setUploadProgress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successData, setSuccessData] = useState(null);
+
+  useEffect(() => {
+    if (!profile) return;
+
+    setForm((current) => ({
+      ...current,
+      full_name: current.full_name || profile.full_name || profile.customer?.name || "",
+      company: current.company || profile.customer?.company_name || "",
+      phone: current.phone || profile.customer?.phone || "",
+      email: current.email || profile.email || profile.customer?.email || "",
+    }));
+  }, [profile]);
+
 
   function updateField(name, value) {
     setForm((current) => {
@@ -289,7 +302,7 @@ export default function Quote() {
     setUploadProgress("");
 
     if (!profile?.customer_id) {
-      setErrorMessage("يجب تسجيل الدخول بحساب العميل قبل إرسال طلب عرض السعر.");
+      setErrorMessage("يجب تسجيل الدخول بحساب العميل قبل إرسال الطلب.");
       return;
     }
 
@@ -344,11 +357,11 @@ export default function Quote() {
 
       setUploadProgress("جارٍ حفظ طلب عرض السعر...");
 
-      const { error } = await supabase
+      const { data: requestData, error } = await supabase
         .from("ict_rfq_requests")
         .insert({
           request_no: requestNumber,
-          customer_id: profile?.customer_id,
+          customer_id: profile.customer_id,
           customer_type: form.customer_type,
           full_name: form.full_name.trim(),
           company: form.company.trim() || null,
@@ -364,10 +377,30 @@ export default function Quote() {
           attachments,
           nda_required: form.nda_required,
           status: "new",
-        });
+        })
+        .select("id")
+        .single();
 
       if (error) {
         throw error;
+      }
+
+      if (form.nda_required && requestData?.id) {
+        const { data: ndaId, error: ndaError } = await supabase.rpc(
+          "create_customer_nda",
+          { p_source_type: "rfq", p_source_id: requestData.id }
+        );
+
+        if (ndaError) throw ndaError;
+
+        const { error: mailError } = await supabase.functions.invoke(
+          "send-nda-email",
+          { body: { nda_id: ndaId } }
+        );
+
+        if (mailError) {
+          console.warn("تم حفظ NDA لكن تعذر إرسال البريد:", mailError);
+        }
       }
 
       setForm(initialForm);

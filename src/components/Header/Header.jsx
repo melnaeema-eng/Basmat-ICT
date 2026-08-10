@@ -6,12 +6,16 @@ import {
 } from "react-router-dom";
 
 import {
+  FaArrowRightFromBracket,
   FaBars,
   FaFileInvoiceDollar,
   FaGift,
   FaHeadset,
+  FaUser,
   FaXmark,
 } from "react-icons/fa6";
+
+import { useCustomerAuth } from "../../contexts/CustomerAuthContext";
 
 const navigation = [
   {
@@ -42,12 +46,29 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const {
+    isAuthenticated,
+    signOut,
+  } = useCustomerAuth();
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
 
   function closeMenu() {
     setMenuOpen(false);
+  }
+
+  async function handleSignOut() {
+    try {
+      await signOut();
+    } finally {
+      closeMenu();
+
+      navigate("/", {
+        replace: true,
+      });
+    }
   }
 
   function scrollToSection(sectionId) {
@@ -58,7 +79,8 @@ export default function Header() {
       return;
     }
 
-    const section = document.getElementById(sectionId);
+    const section =
+      document.getElementById(sectionId);
 
     if (section) {
       section.scrollIntoView({
@@ -73,44 +95,48 @@ export default function Header() {
       return;
     }
 
-    const sectionId = location.hash.replace("#", "");
+    const sectionId =
+      location.hash.replace("#", "");
 
     if (!sectionId) {
       return;
     }
 
-    const timeoutId = window.setTimeout(() => {
-      const section = document.getElementById(sectionId);
+    const timeoutId =
+      window.setTimeout(() => {
+        const section =
+          document.getElementById(
+            sectionId
+          );
 
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 120);
+        if (section) {
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 120);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [location.pathname, location.hash]);
+  }, [
+    location.pathname,
+    location.hash,
+  ]);
 
   return (
-    <header
-      dir="rtl"
-      className="sticky top-0 z-50 border-b border-white/10 bg-[#041632]/95 text-white shadow-lg shadow-slate-950/10 backdrop-blur-xl"
-    >
+    <header className="sticky top-0 z-50 bg-[#03152f] text-white shadow-xl">
       <div className="company-container flex min-h-[104px] items-center justify-between gap-5">
         <Link
           to="/"
           onClick={closeMenu}
-          aria-label="العودة إلى الصفحة الرئيسية"
-          className="flex shrink-0 items-center gap-3"
+          className="flex shrink-0 items-center gap-4"
         >
           <img
             src="/logo.png"
-            alt="شعار بصمة النوابغ"
-            className="h-[78px] w-[78px] rounded-full bg-white object-contain shadow-lg"
+            alt="بصمة النوابغ"
+            className="h-16 w-16 rounded-full bg-white object-contain"
           />
 
           <div className="hidden xl:block">
@@ -137,7 +163,9 @@ export default function Header() {
               key={item.sectionId}
               type="button"
               onClick={() =>
-                scrollToSection(item.sectionId)
+                scrollToSection(
+                  item.sectionId
+                )
               }
               className="relative flex min-h-[104px] items-center whitespace-nowrap px-1 font-bold text-blue-100 transition duration-300 hover:text-cyan-300"
             >
@@ -147,6 +175,25 @@ export default function Header() {
         </nav>
 
         <div className="hidden shrink-0 items-center gap-3 lg:flex">
+          <Link
+            to={isAuthenticated ? "/portal" : "/portal/login"}
+            className="inline-flex items-center gap-2 rounded-full border border-cyan-400/60 px-5 py-3 font-black text-cyan-100 transition duration-300 hover:bg-cyan-600 hover:text-white"
+          >
+            <FaUser />
+            بوابة العملاء
+          </Link>
+
+          {isAuthenticated && (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-2 rounded-full border border-red-400/60 px-5 py-3 font-black text-red-100 transition duration-300 hover:bg-red-600 hover:text-white"
+            >
+              <FaArrowRightFromBracket />
+              تسجيل الخروج
+            </button>
+          )}
+
           <Link
             to="/quote"
             className="inline-flex items-center gap-2 rounded-full border border-orange-400/70 px-5 py-3 font-black text-orange-100 transition duration-300 hover:bg-[#ff7417] hover:text-white"
@@ -181,11 +228,15 @@ export default function Header() {
           }
           aria-expanded={menuOpen}
           onClick={() =>
-            setMenuOpen((current) => !current)
+            setMenuOpen(
+              (current) => !current
+            )
           }
           className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 text-xl transition hover:bg-white/10 lg:hidden"
         >
-          {menuOpen ? <FaXmark /> : <FaBars />}
+          {menuOpen
+            ? <FaXmark />
+            : <FaBars />}
         </button>
       </div>
 
@@ -199,7 +250,9 @@ export default function Header() {
               key={item.sectionId}
               type="button"
               onClick={() =>
-                scrollToSection(item.sectionId)
+                scrollToSection(
+                  item.sectionId
+                )
               }
               className="flex w-full items-center border-b border-white/10 px-2 py-4 text-right font-bold text-blue-100 transition hover:text-white"
             >
@@ -208,6 +261,26 @@ export default function Header() {
           ))}
 
           <div className="mt-5 grid gap-3">
+            <Link
+              to={isAuthenticated ? "/portal" : "/portal/login"}
+              onClick={closeMenu}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-5 py-4 font-black text-white"
+            >
+              <FaUser />
+              بوابة العملاء
+            </Link>
+
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-4 font-black text-white"
+              >
+                <FaArrowRightFromBracket />
+                تسجيل الخروج
+              </button>
+            )}
+
             <Link
               to="/quote"
               onClick={closeMenu}

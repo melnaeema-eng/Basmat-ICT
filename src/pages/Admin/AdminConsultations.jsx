@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FaDownload,
   FaEnvelope,
   FaFile,
+  FaFileInvoiceDollar,
   FaMagnifyingGlass,
   FaPhone,
   FaRotate,
@@ -50,6 +52,7 @@ export default function AdminConsultations() {
           `
             id,
             request_no,
+            customer_id,
             full_name,
             company,
             phone,
@@ -386,6 +389,16 @@ function ConsultationCard({
       <AttachmentsList
         attachments={attachments}
       />
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link
+          to={`/admin/quotations/new?consultation=${request.id}`}
+          className="inline-flex items-center gap-2 rounded-xl bg-[#ff7417] px-5 py-3 font-black text-white transition hover:bg-orange-600"
+        >
+          <FaFileInvoiceDollar />
+          إنشاء عرض سعر من الاستشارة
+        </Link>
+      </div>
 
       <RequestWorkflowPanel
         requestType="consultation"

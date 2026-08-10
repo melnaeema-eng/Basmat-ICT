@@ -1,11 +1,18 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useCustomerAuth } from "../../contexts/CustomerAuthContext";
 
-const publicDomains = ["gmail.com","googlemail.com","hotmail.com","outlook.com","live.com","yahoo.com","icloud.com"];
+const publicDomains = [
+  "gmail.com","googlemail.com","hotmail.com","outlook.com",
+  "live.com","yahoo.com","icloud.com","me.com","aol.com"
+];
 
 export default function PortalRegister() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { signUp } = useCustomerAuth();
+  const redirectTo = location.state?.from || "/portal";
+
   const [form, setForm] = useState({
     customer_type: "individual",
     full_name: "",
@@ -28,57 +35,75 @@ export default function PortalRegister() {
     setErrorMessage("");
     setMessage("");
 
-    if (!form.full_name.trim() || !form.phone.trim() || !form.email.trim() || form.password.length < 8) {
-      return setErrorMessage("أكمل البيانات المطلوبة، وكلمة المرور يجب ألا تقل عن 8 أحرف.");
+    if (!form.full_name.trim() || !form.phone.trim() || !form.email.trim()) {
+      return setErrorMessage("أكمل البيانات المطلوبة.");
+    }
+
+    if (form.password.length < 8) {
+      return setErrorMessage("كلمة المرور يجب ألا تقل عن 8 أحرف.");
     }
 
     if (form.customer_type === "company") {
       const domain = form.email.trim().toLowerCase().split("@")[1];
+
       if (!form.company_name.trim() || !form.city.trim()) {
         return setErrorMessage("اسم الشركة والمدينة مطلوبان.");
       }
+
       if (!domain || publicDomains.includes(domain)) {
         return setErrorMessage("طلبات الشركات تتطلب بريدًا تجاريًا رسميًا.");
       }
     }
 
-    setSubmitting(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: form.email.trim().toLowerCase(),
-      password: form.password,
-      options: {
-        data: {
-          portal_customer: true,
+    try {
+      setSubmitting(true);
+
+      const data = await signUp({
+        email: form.email,
+        password: form.password,
+        metadata: {
           customer_type: form.customer_type,
           full_name: form.full_name.trim(),
           company_name: form.company_name.trim(),
           phone: form.phone.trim(),
           city: form.city.trim(),
         },
-      },
-    });
-    setSubmitting(false);
+      });
 
-    if (error) return setErrorMessage(error.message);
-
-    if (data.session) {
-      navigate("/quote", { replace: true });
-    } else {
-      setMessage("تم إنشاء الحساب. افتح رسالة تأكيد البريد الإلكتروني، ثم سجل الدخول لطلب عرض السعر.");
+      if (data.session) {
+        navigate(redirectTo, { replace: true });
+      } else {
+        setMessage(
+          "تم إنشاء الحساب. أكد البريد الإلكتروني ثم سجل الدخول للمتابعة."
+        );
+      }
+    } catch (error) {
+      setErrorMessage(error.message || "تعذر إنشاء الحساب.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
     <div dir="rtl" className="min-h-screen bg-[#03152f] px-4 py-12">
       <form onSubmit={submit} className="mx-auto max-w-2xl rounded-3xl bg-white p-8 shadow-2xl">
-        <h1 className="text-3xl font-black text-[#071d49]">إنشاء حساب عميل</h1>
-        <p className="mt-3 text-slate-600">حساب واحد لطلب عروض الأسعار ومتابعة الطلبات والمشاريع والفواتير.</p>
+        <img src="/logo.png" alt="بصمة النوابغ" className="mx-auto h-20 w-20 object-contain" />
+        <h1 className="mt-5 text-center text-3xl font-black text-[#071d49]">
+          إنشاء حساب عميل
+        </h1>
+        <p className="mt-3 text-center text-slate-600">
+          حساب واحد لطلب عرض السعر والاستشارة ومتابعة المشروع والفواتير.
+        </p>
 
         <div className="mt-7 grid gap-3 sm:grid-cols-2">
           <button type="button" onClick={() => set("customer_type","individual")}
-            className={`rounded-2xl border-2 p-4 font-black ${form.customer_type==="individual"?"border-blue-600 bg-blue-50":"border-slate-200"}`}>فرد</button>
+            className={`rounded-2xl border-2 p-4 font-black ${form.customer_type==="individual"?"border-blue-600 bg-blue-50":"border-slate-200"}`}>
+            فرد
+          </button>
           <button type="button" onClick={() => set("customer_type","company")}
-            className={`rounded-2xl border-2 p-4 font-black ${form.customer_type==="company"?"border-orange-500 bg-orange-50":"border-slate-200"}`}>شركة أو جهة</button>
+            className={`rounded-2xl border-2 p-4 font-black ${form.customer_type==="company"?"border-orange-500 bg-orange-50":"border-slate-200"}`}>
+            شركة أو جهة
+          </button>
         </div>
 
         <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -93,13 +118,19 @@ export default function PortalRegister() {
         {errorMessage && <div className="mt-5 rounded-xl bg-red-50 p-4 text-red-700">{errorMessage}</div>}
         {message && <div className="mt-5 rounded-xl bg-green-50 p-4 text-green-800">{message}</div>}
 
-        <button disabled={submitting} className="mt-7 w-full rounded-2xl bg-[#ff7417] px-6 py-4 font-black text-white disabled:opacity-60">
+        <button disabled={submitting}
+          className="mt-7 w-full rounded-2xl bg-[#ff7417] px-6 py-4 font-black text-white disabled:opacity-60">
           {submitting ? "جارٍ إنشاء الحساب..." : "إنشاء الحساب والمتابعة"}
         </button>
 
-        <p className="mt-5 text-center text-slate-600">
-          لديك حساب؟ <Link to="/portal/login" className="font-black text-blue-700">تسجيل الدخول</Link>
-        </p>
+        <Link to="/portal/login" state={{ from: redirectTo }}
+          className="mt-4 block w-full rounded-2xl border-2 border-[#071d49] px-6 py-4 text-center font-black text-[#071d49]">
+          لدي حساب بالفعل — تسجيل الدخول
+        </Link>
+
+        <Link to="/" className="mt-3 block text-center font-bold text-slate-600">
+          العودة إلى الموقع
+        </Link>
       </form>
     </div>
   );
