@@ -14,29 +14,24 @@ import { useAdminAuth } from "../../contexts/AdminAuthContext";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] =
-    useState("");
-  const [submitting, setSubmitting] =
-    useState(false);
-  const [errorMessage, setErrorMessage] =
-    useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [resetting, setResetting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [infoMessage, setInfoMessage] = useState("");
 
   const {
     loading,
     isAuthenticated,
     signIn,
+    resetPassword,
   } = useAdminAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
 
   if (!loading && isAuthenticated) {
-    return (
-      <Navigate
-        to="/admin"
-        replace
-      />
-    );
+    return <Navigate to="/admin" replace />;
   }
 
   async function handleSubmit(event) {
@@ -44,6 +39,7 @@ export default function AdminLogin() {
 
     setSubmitting(true);
     setErrorMessage("");
+    setInfoMessage("");
 
     try {
       await signIn(
@@ -52,8 +48,7 @@ export default function AdminLogin() {
       );
 
       const destination =
-        location.state?.from ||
-        "/admin";
+        location.state?.from || "/admin";
 
       navigate(destination, {
         replace: true,
@@ -65,9 +60,9 @@ export default function AdminLogin() {
       );
 
       if (
-        error.message?.toLowerCase().includes(
-          "invalid login"
-        )
+        error.message
+          ?.toLowerCase()
+          .includes("invalid login")
       ) {
         setErrorMessage(
           "البريد الإلكتروني أو كلمة المرور غير صحيحة."
@@ -80,6 +75,42 @@ export default function AdminLogin() {
       }
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleResetPassword() {
+    setErrorMessage("");
+    setInfoMessage("");
+
+    if (!email.trim()) {
+      setErrorMessage(
+        "اكتب بريدك الإلكتروني أولًا ثم اضغط نسيت كلمة المرور."
+      );
+      return;
+    }
+
+    try {
+      setResetting(true);
+
+      await resetPassword(
+        email.trim().toLowerCase()
+      );
+
+      setInfoMessage(
+        "تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني."
+      );
+    } catch (error) {
+      console.error(
+        "خطأ استعادة كلمة المرور:",
+        error
+      );
+
+      setErrorMessage(
+        error.message ||
+          "تعذر إرسال رابط استعادة كلمة المرور."
+      );
+    } finally {
+      setResetting(false);
     }
   }
 
@@ -113,6 +144,12 @@ export default function AdminLogin() {
           </div>
         )}
 
+        {infoMessage && (
+          <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800">
+            {infoMessage}
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
           className="mt-8 space-y-5"
@@ -129,9 +166,7 @@ export default function AdminLogin() {
                 type="email"
                 value={email}
                 onChange={(event) =>
-                  setEmail(
-                    event.target.value
-                  )
+                  setEmail(event.target.value)
                 }
                 required
                 autoComplete="email"
@@ -154,9 +189,7 @@ export default function AdminLogin() {
                 type="password"
                 value={password}
                 onChange={(event) =>
-                  setPassword(
-                    event.target.value
-                  )
+                  setPassword(event.target.value)
                 }
                 required
                 autoComplete="current-password"
@@ -175,6 +208,17 @@ export default function AdminLogin() {
             {submitting
               ? "جارٍ تسجيل الدخول..."
               : "دخول الإدارة"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleResetPassword}
+            disabled={resetting}
+            className="w-full font-bold text-blue-700 disabled:opacity-60"
+          >
+            {resetting
+              ? "جارٍ إرسال الرابط..."
+              : "نسيت كلمة المرور؟"}
           </button>
         </form>
       </div>

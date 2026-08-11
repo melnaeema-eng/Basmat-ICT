@@ -1,0 +1,6 @@
+SPRINT 14 — INSTALL
+
+1) Extract over project root
+2) Run: supabase/sprint14_roles_permissions.sql
+3) npm run dev
+4) Test: /admin/access-control

@@ -137,6 +137,27 @@ export function AdminAuthProvider({ children }) {
     setAdminProfile(null);
   }
 
+  async function resetPassword(email) {
+    const redirectTo = `${window.location.origin}/admin/reset-password`;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      email.trim().toLowerCase(),
+      { redirectTo }
+    );
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  async function updatePassword(password) {
+    const { error } = await supabase.auth.updateUser({ password });
+
+    if (error) {
+      throw error;
+    }
+  }
+
   const value = useMemo(
     () => ({
       session,
@@ -148,6 +169,8 @@ export function AdminAuthProvider({ children }) {
         Boolean(adminProfile?.is_active),
       signIn,
       signOut,
+      resetPassword,
+      updatePassword,
     }),
     [session, adminProfile, loading]
   );

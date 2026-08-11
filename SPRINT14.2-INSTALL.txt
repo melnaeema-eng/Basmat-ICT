@@ -1,0 +1,30 @@
+BASMAT ICT - SPRINT 14.2
+
+1) PowerShell inside Basmat-ICT:
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-14.2.zip" -DestinationPath . -Force
+
+2) Supabase SQL Editor:
+
+supabase/sprint14_2_staff_user_management.sql
+
+3) Deploy the Edge Function from PowerShell:
+
+npx supabase functions deploy create-staff-user
+
+If Supabase CLI asks for login/project link, use:
+npx supabase login
+npx supabase link --project-ref YOUR_PROJECT_REF
+npx supabase functions deploy create-staff-user
+
+4) Run:
+
+npm run dev
+
+5) Test:
+/admin/access-control
+/admin/login
+
+Create Manager / Sales / Engineer / Support test users. The public /portal/register remains CUSTOMER ONLY.
+
+Do not push to GitHub until all roles pass the test.

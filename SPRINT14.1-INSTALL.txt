@@ -1,0 +1,21 @@
+BASMAT ICT - SPRINT 14.1
+
+1) From PowerShell inside the Basmat-ICT project folder:
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-14.1.zip" -DestinationPath . -Force
+
+2) In Supabase SQL Editor run:
+
+supabase/sprint14_1_support_role_route_protection.sql
+
+3) Start project:
+
+npm run dev
+
+4) Test:
+
+/admin/access-control
+/admin/access-denied
+
+Test Manager / Sales / Engineer / Support accounts.
+Do NOT push to GitHub until all four roles pass the test.

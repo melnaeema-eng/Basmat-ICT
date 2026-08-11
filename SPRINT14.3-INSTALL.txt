@@ -1,0 +1,9 @@
+SPRINT 14.3 INSTALL
+
+1) Extract ZIP over the Basmat-ICT project.
+2) No SQL required.
+3) No Edge Function deployment required.
+4) In Supabase > Authentication > URL Configuration, allow /admin/reset-password for your local and production URLs.
+5) Run: npm run dev
+6) Test /admin/login > Forgot password?
+7) Open the email > reset link > set a new password.
