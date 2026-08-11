@@ -1,0 +1,17 @@
+SPRINT 13 - INSTALL
+
+1) From PowerShell inside Basmat-ICT:
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-13.zip" -DestinationPath . -Force
+
+2) No Supabase SQL is required.
+
+3) Start:
+npm run dev
+
+4) Test:
+/admin/executive-reports
+
+5) After successful testing:
+git add .
+git commit -m "Complete Sprint 13 - Executive dashboard and reports"
+git push

@@ -40,6 +40,7 @@ const groups = [
       ["عروض الأسعار", "/admin/quotations", FaFileInvoiceDollar],
       ["الإشعارات", "/admin/notifications", FaBell],
       ["التحليلات", "/admin/analytics", FaChartSimple],
+      ["التقارير التنفيذية", "/admin/executive-reports", FaChartPie],
       ["فريق العمل", "/admin/team", FaUserGroup],
     ],
   },

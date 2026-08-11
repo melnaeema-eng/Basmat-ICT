@@ -17,6 +17,7 @@ import CustomerPortalLayout from "./layouts/CustomerPortalLayout";
 import MainLayout from "./layouts/MainLayout";
 
 import AdminAnalytics from "./pages/Admin/AdminAnalytics";
+import AdminExecutiveReports from "./pages/Admin/AdminExecutiveReports";
 import AdminConsultations from "./pages/Admin/AdminConsultations";
 import AdminContacts from "./pages/Admin/AdminContacts";
 import AdminCustomers from "./pages/Admin/AdminCustomers";
@@ -137,6 +138,7 @@ export default function App() {
                 <Route path="quotations/:id" element={<AdminQuotationEditor />} />
                 <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
+                <Route path="executive-reports" element={<AdminExecutiveReports />} />
 
                 <Route path="projects" element={<AdminProjects />} />
                 <Route path="services" element={<AdminServices />} />
