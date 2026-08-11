@@ -1,0 +1,10 @@
+BASMAT ICT — SPRINT 10 INSTALL
+
+1) From PowerShell, go to the existing Basmat-ICT project folder.
+2) Extract this ZIP into the current project folder with -Force.
+3) Run supabase/sprint10_project_documents.sql in Supabase SQL Editor.
+4) Run npm run dev.
+5) Test:
+   /admin/project-documents
+   /portal/documents
+6) After success, commit and push Sprint 10 to GitHub.

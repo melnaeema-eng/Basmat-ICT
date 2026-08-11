@@ -42,3 +42,15 @@ a {
   width: min(1180px, calc(100% - 32px));
   margin-inline: auto;
 }
+/* Sprint 10 form utility */
+.input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(226 232 240);
+  background: white;
+  padding: 0.75rem 1rem;
+  outline: none;
+}
+.input:focus {
+  border-color: rgb(59 130 246);
+}

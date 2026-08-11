@@ -110,6 +110,12 @@ export default function CustomerPortalLayout() {
             icon={<FaFileInvoiceDollar />}
             label="الفواتير"
           />
+
+          <PortalLink
+            to="/portal/documents"
+            icon={<FaFolderOpen />}
+            label="المستندات"
+          />
         </div>
       </nav>
 

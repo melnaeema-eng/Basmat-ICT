@@ -31,6 +31,7 @@ import AdminPipeline from "./pages/Admin/AdminPipeline";
 import AdminPortalUsers from "./pages/Admin/AdminPortalUsers";
 import AdminProjectCommercial from "./pages/Admin/AdminProjectCommercial";
 import AdminProjectManagement from "./pages/Admin/AdminProjectManagement";
+import AdminProjectDocuments from "./pages/Admin/AdminProjectDocuments";
 import AdminProjects from "./pages/Admin/AdminProjects";
 import AdminQuotationEditor from "./pages/Admin/AdminQuotationEditor";
 import AdminQuotations from "./pages/Admin/AdminQuotations";
@@ -48,6 +49,7 @@ import PlaceholderPage from "./pages/Placeholder/PlaceholderPage";
 
 import PortalDashboard from "./pages/Portal/PortalDashboard";
 import PortalInvoices from "./pages/Portal/PortalInvoices";
+import PortalDocuments from "./pages/Portal/PortalDocuments";
 import PortalLogin from "./pages/Portal/PortalLogin";
 import PortalNDA from "./pages/Portal/PortalNDA";
 import PortalProjects from "./pages/Portal/PortalProjects";
@@ -96,6 +98,7 @@ export default function App() {
                 <Route path="quotations/:id" element={<PortalQuotationDetail />} />
                 <Route path="projects" element={<PortalProjects />} />
                 <Route path="invoices" element={<PortalInvoices />} />
+                <Route path="documents" element={<PortalDocuments />} />
               </Route>
             </Route>
 
@@ -120,6 +123,7 @@ export default function App() {
                 <Route path="operations" element={<AdminOperationsDashboard />} />
                 <Route path="project-management" element={<AdminProjectManagement />} />
                 <Route path="project-commercial" element={<AdminProjectCommercial />} />
+                <Route path="project-documents" element={<AdminProjectDocuments />} />
 
                 <Route path="team" element={<AdminTeam />} />
                 <Route path="quotations" element={<AdminQuotations />} />

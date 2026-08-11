@@ -55,6 +55,7 @@ const groups = [
       ["Operations Dashboard", "/admin/operations", FaChartSimple],
       ["إدارة المشاريع", "/admin/project-management", FaLayerGroup],
       ["التنفيذ والتجاري", "/admin/project-commercial", FaListCheck],
+      ["مستندات المشاريع", "/admin/project-documents", FaFolderOpen],
     ],
   },
   {
