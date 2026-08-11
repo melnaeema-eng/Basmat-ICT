@@ -1,0 +1,12 @@
+BASMAT ICT — SPRINT 11
+
+1) Extract ZIP over the Basmat-ICT project root.
+2) Supabase SQL Editor: run supabase/sprint11_support_tickets.sql
+3) PowerShell: npm run dev
+4) Test:
+   /admin/support
+   /portal/support
+5) After success:
+   git add .
+   git commit -m "Complete Sprint 11 - Customer support tickets"
+   git push

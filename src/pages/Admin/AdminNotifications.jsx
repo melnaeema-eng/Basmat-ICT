@@ -1,14 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaBell, FaCheck, FaCircleCheck, FaCircleXmark, FaRotate } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import {
+  FaBell,
+  FaCheck,
+  FaCircleCheck,
+  FaCircleXmark,
+  FaHeadset,
+  FaPaperclip,
+  FaReply,
+  FaRotate,
+} from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
+const supportTypes = new Set([
+  "support_ticket_created",
+  "support_customer_reply",
+  "support_attachment_uploaded",
+]);
+
 export default function AdminNotifications() {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => { loadNotifications(); }, []);
+  useEffect(() => {
+    loadNotifications();
+  }, []);
 
   async function loadNotifications() {
     try {
@@ -37,8 +55,35 @@ export default function AdminNotifications() {
     if (error) return setErrorMessage(error.message);
 
     setNotifications((current) =>
-      current.map((item) => item.id === id ? { ...item, is_read: true } : item)
+      current.map((item) =>
+        item.id === id ? { ...item, is_read: true } : item
+      )
     );
+  }
+
+
+  async function runAction(item) {
+    const { error } = await supabase
+      .from("ict_admin_notifications")
+      .update({
+        is_read: true,
+        read_at: item.read_at || new Date().toISOString(),
+        action_completed: true,
+        action_completed_at: new Date().toISOString(),
+      })
+      .eq("id", item.id);
+
+    if (error) return setErrorMessage(error.message);
+
+    setNotifications((current) =>
+      current.map((row) =>
+        row.id === item.id
+          ? { ...row, is_read: true, action_completed: true }
+          : row
+      )
+    );
+
+    if (item.action_url) navigate(item.action_url);
   }
 
   const unreadCount = useMemo(
@@ -46,13 +91,21 @@ export default function AdminNotifications() {
     [notifications]
   );
 
+  function iconFor(item) {
+    if (item.notification_type === "support_attachment_uploaded") return <FaPaperclip />;
+    if (item.notification_type === "support_customer_reply") return <FaReply />;
+    if (item.notification_type === "support_ticket_created") return <FaHeadset />;
+    if (item.notification_type === "quotation_accepted") return <FaCircleCheck />;
+    return <FaCircleXmark />;
+  }
+
   return (
     <div dir="rtl" className="px-4 py-10 md:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="flex items-center gap-3 text-4xl font-black text-[#071d49]"><FaBell />الإشعارات</h1>
-            <p className="mt-3 text-slate-600">القرارات والإجراءات المهمة في رحلة العميل.</p>
+            <p className="mt-3 text-slate-600">القرارات وحركات العملاء وطلبات الدعم والمرفقات.</p>
           </div>
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-orange-100 px-4 py-2 font-black text-orange-800">غير مقروء: {unreadCount}</span>
@@ -64,13 +117,15 @@ export default function AdminNotifications() {
 
         <div className="mt-8 space-y-4">
           {notifications.map((item) => {
+            const isSupport = supportTypes.has(item.notification_type);
             const accepted = item.notification_type === "quotation_accepted";
+            const accent = isSupport ? "border-blue-200 bg-blue-50" : accepted ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50";
             return (
-              <article key={item.id} className={["rounded-3xl border p-6 shadow-sm", item.is_read ? "border-slate-200 bg-white" : accepted ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"].join(" ")}>
+              <article key={item.id} className={["rounded-3xl border p-6 shadow-sm", item.is_read ? "border-slate-200 bg-white" : accent].join(" ")}>
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    <div className={["flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xl", accepted ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"].join(" ")}>
-                      {accepted ? <FaCircleCheck /> : <FaCircleXmark />}
+                    <div className={["flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-xl", isSupport ? "bg-blue-100 text-blue-700" : accepted ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"].join(" ")}>
+                      {iconFor(item)}
                     </div>
                     <div>
                       <h2 className="text-xl font-black text-[#071d49]">{item.title}</h2>
@@ -79,10 +134,14 @@ export default function AdminNotifications() {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {item.action_url && (
-                      <Link to={item.action_url} onClick={() => markRead(item.id)} className={["rounded-xl px-4 py-3 font-black text-white", accepted ? "bg-green-600" : "bg-[#071d49]"].join(" ")}>
-                        {accepted ? "مراجعة وتحويل إلى مشروع" : "فتح عرض السعر"}
-                      </Link>
+                    {item.action_url && !item.action_completed && (
+                      <button
+                        type="button"
+                        onClick={() => runAction(item)}
+                        className="rounded-xl bg-[#071d49] px-4 py-3 font-black text-white"
+                      >
+                        {isSupport ? "فتح طلب الدعم" : accepted ? "مراجعة وتحويل إلى مشروع" : "فتح التفاصيل"}
+                      </button>
                     )}
                     {!item.is_read && (
                       <button type="button" onClick={() => markRead(item.id)} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 font-black text-slate-700"><FaCheck />تحديد كمقروء</button>

@@ -2,6 +2,7 @@ import {
   FaFileInvoiceDollar,
   FaFolderOpen,
   FaHouse,
+  FaHeadset,
   FaListCheck,
   FaRightFromBracket,
 } from "react-icons/fa6";
@@ -115,6 +116,12 @@ export default function CustomerPortalLayout() {
             to="/portal/documents"
             icon={<FaFolderOpen />}
             label="المستندات"
+          />
+
+          <PortalLink
+            to="/portal/support"
+            icon={<FaHeadset />}
+            label="الدعم"
           />
         </div>
       </nav>

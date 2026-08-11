@@ -9,6 +9,7 @@ import {
   FaGear,
   FaHandshake,
   FaHouse,
+  FaHeadset,
   FaLayerGroup,
   FaListCheck,
   FaScrewdriverWrench,
@@ -56,6 +57,7 @@ const groups = [
       ["إدارة المشاريع", "/admin/project-management", FaLayerGroup],
       ["التنفيذ والتجاري", "/admin/project-commercial", FaListCheck],
       ["مستندات المشاريع", "/admin/project-documents", FaFolderOpen],
+      ["الدعم والتذاكر", "/admin/support", FaHeadset],
     ],
   },
   {

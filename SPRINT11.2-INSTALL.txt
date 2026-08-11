@@ -1,0 +1,14 @@
+1) PowerShell inside Basmat-ICT:
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-11.2.zip" -DestinationPath . -Force
+
+2) Supabase SQL Editor:
+supabase/sprint11_2_support_activity_notifications.sql
+
+3) Run:
+npm run dev
+
+4) Test:
+/admin
+/admin/notifications
+/admin/support
+/portal/support

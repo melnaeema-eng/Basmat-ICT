@@ -1,0 +1,7 @@
+BASMAT ICT - SPRINT 11.1
+
+1) Extract over project root.
+2) Run in Supabase SQL Editor:
+   supabase/sprint11_1_support_attachments.sql
+3) npm run dev
+4) Test customer + admin attachments in support tickets.

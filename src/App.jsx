@@ -31,6 +31,7 @@ import AdminPipeline from "./pages/Admin/AdminPipeline";
 import AdminPortalUsers from "./pages/Admin/AdminPortalUsers";
 import AdminProjectCommercial from "./pages/Admin/AdminProjectCommercial";
 import AdminProjectManagement from "./pages/Admin/AdminProjectManagement";
+import AdminSupportTickets from "./pages/Admin/AdminSupportTickets";
 import AdminProjectDocuments from "./pages/Admin/AdminProjectDocuments";
 import AdminProjects from "./pages/Admin/AdminProjects";
 import AdminQuotationEditor from "./pages/Admin/AdminQuotationEditor";
@@ -56,6 +57,7 @@ import PortalProjects from "./pages/Portal/PortalProjects";
 import PortalQuotationDetail from "./pages/Portal/PortalQuotationDetail";
 import PortalQuotations from "./pages/Portal/PortalQuotations";
 import PortalRequests from "./pages/Portal/PortalRequests";
+import PortalSupport from "./pages/Portal/PortalSupport";
 import PortalResetPassword from "./pages/Portal/PortalResetPassword";
 
 import PortalRegister from "./pages/PortalAuth/PortalRegister";
@@ -99,6 +101,7 @@ export default function App() {
                 <Route path="projects" element={<PortalProjects />} />
                 <Route path="invoices" element={<PortalInvoices />} />
                 <Route path="documents" element={<PortalDocuments />} />
+                <Route path="support" element={<PortalSupport />} />
               </Route>
             </Route>
 
@@ -124,6 +127,7 @@ export default function App() {
                 <Route path="project-management" element={<AdminProjectManagement />} />
                 <Route path="project-commercial" element={<AdminProjectCommercial />} />
                 <Route path="project-documents" element={<AdminProjectDocuments />} />
+                <Route path="support" element={<AdminSupportTickets />} />
 
                 <Route path="team" element={<AdminTeam />} />
                 <Route path="quotations" element={<AdminQuotations />} />
