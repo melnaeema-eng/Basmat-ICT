@@ -1,4 +1,5 @@
 import {
+  FaBell,
   FaFileInvoiceDollar,
   FaFolderOpen,
   FaHouse,
@@ -122,6 +123,12 @@ export default function CustomerPortalLayout() {
             to="/portal/support"
             icon={<FaHeadset />}
             label="الدعم"
+          />
+
+          <PortalLink
+            to="/portal/notifications"
+            icon={<FaBell />}
+            label="الإشعارات"
           />
         </div>
       </nav>

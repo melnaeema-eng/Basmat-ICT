@@ -53,6 +53,7 @@ import PortalInvoices from "./pages/Portal/PortalInvoices";
 import PortalDocuments from "./pages/Portal/PortalDocuments";
 import PortalLogin from "./pages/Portal/PortalLogin";
 import PortalNDA from "./pages/Portal/PortalNDA";
+import PortalNotifications from "./pages/Portal/PortalNotifications";
 import PortalProjects from "./pages/Portal/PortalProjects";
 import PortalQuotationDetail from "./pages/Portal/PortalQuotationDetail";
 import PortalQuotations from "./pages/Portal/PortalQuotations";
@@ -102,6 +103,7 @@ export default function App() {
                 <Route path="invoices" element={<PortalInvoices />} />
                 <Route path="documents" element={<PortalDocuments />} />
                 <Route path="support" element={<PortalSupport />} />
+                <Route path="notifications" element={<PortalNotifications />} />
               </Route>
             </Route>
 

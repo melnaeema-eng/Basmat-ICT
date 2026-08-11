@@ -1,0 +1,15 @@
+BASMAT ICT — SPRINT 12
+
+PowerShell (run inside Basmat-ICT):
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-12.zip" -DestinationPath . -Force
+
+Then run in Supabase SQL Editor:
+supabase/sprint12_unified_notifications.sql
+
+Then:
+npm run dev
+
+Test:
+/admin/notifications
+/portal/notifications
