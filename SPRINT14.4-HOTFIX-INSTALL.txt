@@ -1,0 +1,19 @@
+BASMAT ICT - SPRINT 14.4 HOTFIX
+
+1) From PowerShell inside C:\projects\Basmat-ICT:
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-14.4-HOTFIX.zip" -DestinationPath . -Force
+
+2) Start:
+npm run dev
+
+3) Test:
+http://localhost:5173/admin/login
+http://localhost:5173/admin/access-control
+http://localhost:5173/admin/access-denied
+
+If Vite uses port 5174, use 5174 instead.
+
+NO SQL.
+NO Edge Function deployment.
+This hotfix only reconciles Sprint 14.1 + 14.2 + 14.3 code.

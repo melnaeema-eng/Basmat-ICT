@@ -6,6 +6,8 @@ import {
 } from "react-router-dom";
 
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
+import RequireAdminPermission from "./components/admin/RequireAdminPermission";
+import AdminPermissionRoute from "./components/admin/AdminPermissionRoute";
 import ProtectedCustomerRoute from "./components/customer/ProtectedCustomerRoute";
 import RequireCustomerAccount from "./components/customer/RequireCustomerAccount";
 
@@ -17,6 +19,8 @@ import CustomerPortalLayout from "./layouts/CustomerPortalLayout";
 import MainLayout from "./layouts/MainLayout";
 
 import AdminAnalytics from "./pages/Admin/AdminAnalytics";
+import AdminAccessControl from "./pages/Admin/AdminAccessControl";
+import AdminAccessDenied from "./pages/Admin/AdminAccessDenied";
 import AdminExecutiveReports from "./pages/Admin/AdminExecutiveReports";
 import AdminConsultations from "./pages/Admin/AdminConsultations";
 import AdminContacts from "./pages/Admin/AdminContacts";
@@ -115,37 +119,39 @@ export default function App() {
 
             <Route element={<ProtectedAdminRoute />}>
               <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminDashboard />} />
-                <Route path="contacts" element={<AdminContacts />} />
-                <Route path="rfqs" element={<AdminRFQs />} />
-                <Route path="consultations" element={<AdminConsultations />} />
-                <Route path="documents" element={<AdminDocuments />} />
+                <Route index element={<AdminPermissionRoute permission="dashboard"><AdminDashboard /></AdminPermissionRoute>} />
+                <Route path="contacts" element={<AdminPermissionRoute permission="requests"><AdminContacts /></AdminPermissionRoute>} />
+                <Route path="rfqs" element={<AdminPermissionRoute permission="requests"><AdminRFQs /></AdminPermissionRoute>} />
+                <Route path="consultations" element={<AdminPermissionRoute permission="requests"><AdminConsultations /></AdminPermissionRoute>} />
+                <Route path="documents" element={<AdminPermissionRoute permission="requests"><AdminDocuments /></AdminPermissionRoute>} />
 
-                <Route path="crm" element={<AdminSalesDashboard />} />
-                <Route path="customers" element={<AdminCustomers />} />
-                <Route path="pipeline" element={<AdminPipeline />} />
-                <Route path="followups" element={<AdminFollowUps />} />
-                <Route path="portal-users" element={<AdminPortalUsers />} />
+                <Route path="crm" element={<AdminPermissionRoute permission="crm"><AdminSalesDashboard /></AdminPermissionRoute>} />
+                <Route path="customers" element={<AdminPermissionRoute permission="crm"><AdminCustomers /></AdminPermissionRoute>} />
+                <Route path="pipeline" element={<AdminPermissionRoute permission="crm"><AdminPipeline /></AdminPermissionRoute>} />
+                <Route path="followups" element={<AdminPermissionRoute permission="crm"><AdminFollowUps /></AdminPermissionRoute>} />
+                <Route path="portal-users" element={<AdminPermissionRoute permission="requests"><AdminPortalUsers /></AdminPermissionRoute>} />
 
-                <Route path="workflow" element={<AdminWorkflowCenter />} />
-                <Route path="operations" element={<AdminOperationsDashboard />} />
-                <Route path="project-management" element={<AdminProjectManagement />} />
-                <Route path="project-commercial" element={<AdminProjectCommercial />} />
-                <Route path="project-documents" element={<AdminProjectDocuments />} />
-                <Route path="support" element={<AdminSupportTickets />} />
+                <Route path="workflow" element={<AdminPermissionRoute permission="requests"><AdminWorkflowCenter /></AdminPermissionRoute>} />
+                <Route path="operations" element={<AdminPermissionRoute permission="operations"><AdminOperationsDashboard /></AdminPermissionRoute>} />
+                <Route path="project-management" element={<AdminPermissionRoute permission="operations"><AdminProjectManagement /></AdminPermissionRoute>} />
+                <Route path="project-commercial" element={<AdminPermissionRoute permission="operations"><AdminProjectCommercial /></AdminPermissionRoute>} />
+                <Route path="project-documents" element={<AdminPermissionRoute permission="documents"><AdminProjectDocuments /></AdminPermissionRoute>} />
+                <Route path="support" element={<AdminPermissionRoute permission="support"><AdminSupportTickets /></AdminPermissionRoute>} />
 
-                <Route path="team" element={<AdminTeam />} />
-                <Route path="quotations" element={<AdminQuotations />} />
-                <Route path="quotations/new" element={<AdminQuotationEditor />} />
-                <Route path="quotations/:id" element={<AdminQuotationEditor />} />
-                <Route path="notifications" element={<AdminNotifications />} />
-                <Route path="analytics" element={<AdminAnalytics />} />
-                <Route path="executive-reports" element={<AdminExecutiveReports />} />
+                <Route path="team" element={<AdminPermissionRoute permission="team"><AdminTeam /></AdminPermissionRoute>} />
+                <Route path="quotations" element={<AdminPermissionRoute permission="quotations"><AdminQuotations /></AdminPermissionRoute>} />
+                <Route path="quotations/new" element={<AdminPermissionRoute permission="quotations"><AdminQuotationEditor /></AdminPermissionRoute>} />
+                <Route path="quotations/:id" element={<AdminPermissionRoute permission="quotations"><AdminQuotationEditor /></AdminPermissionRoute>} />
+                <Route path="notifications" element={<AdminPermissionRoute permission="notifications"><AdminNotifications /></AdminPermissionRoute>} />
+                <Route path="analytics" element={<AdminPermissionRoute permission="reports"><AdminAnalytics /></AdminPermissionRoute>} />
+                <Route path="executive-reports" element={<AdminPermissionRoute permission="reports"><AdminExecutiveReports /></AdminPermissionRoute>} />
 
-                <Route path="projects" element={<AdminProjects />} />
-                <Route path="services" element={<AdminServices />} />
-                <Route path="partners" element={<AdminPartners />} />
-                <Route path="settings" element={<AdminSettings />} />
+                <Route path="projects" element={<AdminPermissionRoute permission="content"><AdminProjects /></AdminPermissionRoute>} />
+                <Route path="services" element={<AdminPermissionRoute permission="content"><AdminServices /></AdminPermissionRoute>} />
+                <Route path="partners" element={<AdminPermissionRoute permission="content"><AdminPartners /></AdminPermissionRoute>} />
+                <Route path="settings" element={<AdminPermissionRoute permission="content"><AdminSettings /></AdminPermissionRoute>} />
+                <Route path="access-control" element={<RequireAdminPermission permission="access_control"><AdminAccessControl /></RequireAdminPermission>} />
+                <Route path="access-denied" element={<AdminAccessDenied />} />
               </Route>
             </Route>
 

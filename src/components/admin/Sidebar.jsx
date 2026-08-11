@@ -18,12 +18,7 @@ import {
   FaUsers,
   FaUserTie,
 } from "react-icons/fa6";
-
-import {
-  Link,
-  NavLink,
-} from "react-router-dom";
-
+import { Link, NavLink } from "react-router-dom";
 import { useAdminAuth } from "../../contexts/AdminAuthContext";
 
 const groups = [
@@ -37,7 +32,6 @@ const groups = [
       ["المستندات", "/admin/documents", FaFolderOpen],
     ],
   },
-
   {
     title: "CRM والمبيعات",
     items: [
@@ -52,7 +46,6 @@ const groups = [
       ["فريق العمل", "/admin/team", FaUserGroup],
     ],
   },
-
   {
     title: "رحلة العميل",
     items: [
@@ -60,7 +53,6 @@ const groups = [
       ["مستخدمو بوابة العملاء", "/admin/portal-users", FaUserGroup],
     ],
   },
-
   {
     title: "المشاريع والتجاري",
     items: [
@@ -71,14 +63,12 @@ const groups = [
       ["الدعم والتذاكر", "/admin/support", FaHeadset],
     ],
   },
-
   {
     title: "إدارة النظام",
     items: [
       ["الصلاحيات والأدوار", "/admin/access-control", FaShieldHalved],
     ],
   },
-
   {
     title: "إدارة محتوى الموقع",
     items: [
@@ -91,145 +81,36 @@ const groups = [
 ];
 
 const permissionForPath = (path) => {
-  if (path === "/admin") {
-    return "dashboard";
-  }
-
-  if (
-    [
-      "/admin/contacts",
-      "/admin/rfqs",
-      "/admin/consultations",
-      "/admin/documents",
-      "/admin/workflow",
-      "/admin/portal-users",
-    ].includes(path)
-  ) {
-    return "requests";
-  }
-
-  if (
-    [
-      "/admin/crm",
-      "/admin/customers",
-      "/admin/pipeline",
-      "/admin/followups",
-    ].includes(path)
-  ) {
-    return "crm";
-  }
-
-  if (path.startsWith("/admin/quotations")) {
-    return "quotations";
-  }
-
-  if (
-    [
-      "/admin/operations",
-      "/admin/project-management",
-      "/admin/project-commercial",
-    ].includes(path)
-  ) {
-    return "operations";
-  }
-
-  if (path === "/admin/project-documents") {
-    return "documents";
-  }
-
-  if (path === "/admin/support") {
-    return "support";
-  }
-
-  if (path === "/admin/notifications") {
-    return "notifications";
-  }
-
-  if (
-    [
-      "/admin/analytics",
-      "/admin/executive-reports",
-    ].includes(path)
-  ) {
-    return "reports";
-  }
-
-  if (path === "/admin/team") {
-    return "team";
-  }
-
-  if (path === "/admin/access-control") {
-    return "access_control";
-  }
-
-  if (
-    [
-      "/admin/projects",
-      "/admin/services",
-      "/admin/partners",
-      "/admin/settings",
-    ].includes(path)
-  ) {
-    return "content";
-  }
-
+  if (path === "/admin") return "dashboard";
+  if (["/admin/contacts","/admin/rfqs","/admin/consultations","/admin/documents","/admin/workflow","/admin/portal-users"].includes(path)) return "requests";
+  if (["/admin/crm","/admin/customers","/admin/pipeline","/admin/followups"].includes(path)) return "crm";
+  if (path.startsWith("/admin/quotations")) return "quotations";
+  if (["/admin/operations","/admin/project-management","/admin/project-commercial"].includes(path)) return "operations";
+  if (path === "/admin/project-documents") return "documents";
+  if (path === "/admin/support") return "support";
+  if (path === "/admin/notifications") return "notifications";
+  if (["/admin/analytics","/admin/executive-reports"].includes(path)) return "reports";
+  if (path === "/admin/team") return "team";
+  if (path === "/admin/access-control") return "access_control";
+  if (["/admin/projects","/admin/services","/admin/partners","/admin/settings"].includes(path)) return "content";
   return "dashboard";
 };
 
-export default function Sidebar({
-  menuOpen,
-  onClose,
-}) {
-  const auth = useAdminAuth();
-
-  /*
-   * Sprint 14 compatibility:
-   * إذا كانت hasPermission موجودة نستخدمها.
-   * إذا لم تكن موجودة لا نكسر الصفحة.
-   * حماية الـRoutes تبقى مستقلة.
-   */
-  const hasPermission =
-    typeof auth?.hasPermission === "function"
-      ? auth.hasPermission
-      : () => true;
-
-  const visibleGroups = groups
-    .map((group) => ({
-      ...group,
-
-      items: group.items.filter(
-        ([, path]) =>
-          hasPermission(
-            permissionForPath(path)
-          )
-      ),
-    }))
-    .filter(
-      (group) =>
-        group.items.length > 0
-    );
-
+export default function Sidebar({ menuOpen, onClose }) {
+  const { hasPermission } = useAdminAuth();
+  const visibleGroups = groups.map(group => ({...group, items: group.items.filter(([,path]) => hasPermission(permissionForPath(path)))})).filter(group => group.items.length);
   return (
     <aside
       className={[
         "fixed inset-y-0 right-0 z-40 w-72 bg-[#041632] text-white shadow-2xl transition-transform duration-300 lg:translate-x-0",
-        menuOpen
-          ? "translate-x-0"
-          : "translate-x-full",
+        menuOpen ? "translate-x-0" : "translate-x-full",
       ].join(" ")}
     >
       <div className="flex min-h-28 items-center gap-4 border-b border-white/10 px-6">
-        <img
-          src="/logo.png"
-          alt="بصمة النوابغ"
-          className="h-16 w-16 rounded-full bg-white object-contain"
-        />
-
+        <img src="/logo.png" alt="بصمة النوابغ"
+          className="h-16 w-16 rounded-full bg-white object-contain" />
         <div>
-          <h1 className="text-xl font-black">
-            بصمة النوابغ
-          </h1>
-
+          <h1 className="text-xl font-black">بصمة النوابغ</h1>
           <p className="mt-1 text-xs font-bold tracking-wider text-blue-200">
             ADMIN PORTAL
           </p>
@@ -237,60 +118,40 @@ export default function Sidebar({
       </div>
 
       <nav className="flex h-[calc(100vh-7rem)] flex-col overflow-y-auto px-4 py-6">
-        {visibleGroups.map(
-          (group, index) => (
-            <div
-              key={group.title}
-              className={
-                index ? "mt-8" : ""
-              }
-            >
-              <p className="px-3 text-xs font-black tracking-wider text-blue-300">
-                {group.title}
-              </p>
+        {visibleGroups.map((group, index) => (
+          <div key={group.title} className={index ? "mt-8" : ""}>
+            <p className="px-3 text-xs font-black tracking-wider text-blue-300">
+              {group.title}
+            </p>
 
-              <div className="mt-4 space-y-2">
-                {group.items.map(
-                  ([
-                    label,
-                    path,
-                    Icon,
-                    end,
-                  ]) => (
-                    <NavLink
-                      key={path}
-                      to={path}
-                      end={Boolean(end)}
-                      onClick={onClose}
-                      className={({
-                        isActive,
-                      }) =>
-                        [
-                          "flex items-center gap-3 rounded-2xl px-4 py-4 font-bold transition",
-                          isActive
-                            ? "bg-[#ff7417] text-white shadow-lg"
-                            : "text-blue-100 hover:bg-white/10",
-                        ].join(" ")
-                      }
-                    >
-                      <Icon className="text-xl" />
-
-                      {label}
-                    </NavLink>
-                  )
-                )}
-              </div>
+            <div className="mt-4 space-y-2">
+              {group.items.map(([label, path, Icon, end]) => (
+                <NavLink
+                  key={path}
+                  to={path}
+                  end={Boolean(end)}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    [
+                      "flex items-center gap-3 rounded-2xl px-4 py-4 font-bold transition",
+                      isActive
+                        ? "bg-[#ff7417] text-white shadow-lg"
+                        : "text-blue-100 hover:bg-white/10",
+                    ].join(" ")
+                  }
+                >
+                  <Icon className="text-xl" />
+                  {label}
+                </NavLink>
+              ))}
             </div>
-          )
-        )}
+          </div>
+        ))}
 
         <div className="mt-auto pt-8">
-          <Link
-            to="/"
-            className="flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-4 font-bold"
-          >
+          <Link to="/"
+            className="flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-4 font-bold">
             <FaHouse />
-
             العودة إلى الموقع
           </Link>
         </div>
