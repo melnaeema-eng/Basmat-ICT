@@ -1,0 +1,30 @@
+BASMAT ICT — SPRINT 17A SAFE
+
+هذا الباتش مبني مباشرة من Basmat-ICT-Sprint-16-STABLE.zip.
+لا يلمس Auth / 2FA / Reset Password / Access Control.
+
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-17A-SAFE.zip" -DestinationPath . -Force
+
+npm run dev
+
+لا SQL.
+لا Edge Function.
+لا GitHub الآن.
+
+اختبر فقط:
+1) /portal/projects
+2) /portal/support
+3) /portal/invoices
+4) /portal/history
+
+المتوقع:
+- completed/closed/cancelled projects تختفي من المشاريع النشطة.
+- resolved/closed tickets تختفي من الدعم النشط.
+- paid/cancelled invoices تختفي من الفواتير النشطة.
+- العناصر السابقة تظهر في /portal/history.
+
+بعد نجاح هذه المرحلة نكمل بقية Sprint 17.

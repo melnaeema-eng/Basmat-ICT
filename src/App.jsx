@@ -67,6 +67,7 @@ import PortalQuotations from "./pages/Portal/PortalQuotations";
 import PortalRequests from "./pages/Portal/PortalRequests";
 import PortalSupport from "./pages/Portal/PortalSupport";
 import PortalResetPassword from "./pages/Portal/PortalResetPassword";
+import PortalHistory from "./pages/Portal/PortalHistory";
 
 import PortalRegister from "./pages/PortalAuth/PortalRegister";
 import Quote from "./pages/Quote/Quote";
@@ -111,6 +112,7 @@ export default function App() {
                 <Route path="documents" element={<PortalDocuments />} />
                 <Route path="support" element={<PortalSupport />} />
                 <Route path="notifications" element={<PortalNotifications />} />
+                <Route path="history" element={<PortalHistory />} />
               </Route>
             </Route>
 

@@ -1,0 +1,20 @@
+BASMAT ICT — SPRINT 17 SAFE
+Built directly from the uploaded Sprint 16 STABLE.
+
+1) Keep your Sprint 16 STABLE ZIP untouched.
+2) PowerShell:
+cd C:\projects\Basmat-ICT
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-17-SAFE.zip" -DestinationPath . -Force
+npm install
+npm run dev
+
+NO SQL. NO Edge Function.
+
+Test before GitHub:
+- customer login works
+- /portal/invoices opens
+- /portal/support opens
+- /portal/projects opens
+- /portal/quotations opens
+- /portal/history opens
+- closed/completed items are in History, not active pages

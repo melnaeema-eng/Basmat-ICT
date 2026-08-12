@@ -6,6 +6,7 @@ import {
   FaHeadset,
   FaListCheck,
   FaRightFromBracket,
+  FaClockRotateLeft,
 } from "react-icons/fa6";
 import {
   NavLink,
@@ -129,6 +130,12 @@ export default function CustomerPortalLayout() {
             to="/portal/notifications"
             icon={<FaBell />}
             label="الإشعارات"
+          />
+
+          <PortalLink
+            to="/portal/history"
+            icon={<FaClockRotateLeft />}
+            label="السجل"
           />
         </div>
       </nav>

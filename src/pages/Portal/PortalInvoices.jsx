@@ -55,7 +55,14 @@ export default function PortalInvoices() {
       return;
     }
 
-    setRows(invoiceResult.data || []);
+    setRows(
+      (invoiceResult.data || []).filter(
+        (row) =>
+          !["paid", "cancelled", "canceled"].includes(
+            String(row.status || "").toLowerCase()
+          )
+      )
+    );
     setPayments(paymentResult.data || []);
   }
 

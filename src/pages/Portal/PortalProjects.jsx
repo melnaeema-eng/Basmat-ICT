@@ -119,7 +119,14 @@ export default function PortalProjects() {
       return;
     }
 
-    setRows(projectResult.data || []);
+    setRows(
+      (projectResult.data || []).filter(
+        (row) =>
+          !["completed", "closed", "cancelled", "canceled", "finished"].includes(
+            String(row.status || "").toLowerCase()
+          )
+      )
+    );
     setInvoices(invoiceResult.data || []);
     setPayments(paymentResult.data || []);
   }

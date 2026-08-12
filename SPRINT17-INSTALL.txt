@@ -1,0 +1,36 @@
+BASMAT ICT — SPRINT 17
+Customer Portal History & Clean Active Views
+
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-17-Portal-History.zip" -DestinationPath . -Force
+
+npm run dev
+
+NO SQL.
+NO Edge Function.
+
+TEST:
+1) Login as customer.
+2) /portal/support:
+   resolved/closed tickets must not appear in the active list.
+3) /portal/invoices:
+   paid/cancelled invoices must not appear in the active list.
+4) Open:
+   /portal/history
+5) The History page should show tabs for:
+   - completed/closed projects
+   - resolved/closed support tickets
+   - accepted/rejected/expired/cancelled quotations
+   - paid/cancelled invoices
+   - completed/closed/cancelled/rejected requests
+6) Existing active transactions stay in their normal pages.
+
+Do NOT push GitHub until customer portal testing succeeds.
+
+After success:
+git add .
+git commit -m "Complete Sprint 17 - Customer portal history and closed item filtering"
+git push origin main

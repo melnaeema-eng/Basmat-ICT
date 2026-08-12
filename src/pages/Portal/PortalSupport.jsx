@@ -33,7 +33,12 @@ export default function PortalSupport() {
     const error = ticketResult.error || projectResult.error;
     if (error) setErrorMessage(error.message);
     else {
-      const nextTickets = ticketResult.data || [];
+      const nextTickets = (ticketResult.data || []).filter(
+        (ticket) =>
+          !["resolved", "closed"].includes(
+            String(ticket.status || "").toLowerCase()
+          )
+      );
       setTickets(nextTickets); setProjects(projectResult.data || []);
       setSelectedId((current) => current || nextTickets[0]?.id || "");
     }
@@ -128,7 +133,7 @@ export default function PortalSupport() {
     </form>
 
     <div className="mt-8 grid gap-6 lg:grid-cols-[360px_1fr]">
-      <div className="space-y-3">{tickets.map((ticket) => <button key={ticket.id} onClick={() => setSelectedId(ticket.id)} className={["w-full rounded-2xl border p-4 text-right transition", selectedId === ticket.id ? "border-[#ff7417] bg-orange-50" : "border-slate-200 bg-white"].join(" ")}><div className="flex justify-between gap-2"><strong dir="ltr" className="text-blue-700">{ticket.ticket_no}</strong><span className="text-xs font-black text-slate-500">{statusLabels[ticket.status]}</span></div><p className="mt-2 font-black text-[#071d49]">{ticket.subject}</p><p className="mt-2 text-xs text-slate-500">الأولوية: {priorityLabels[ticket.priority]} {ticket.project_id ? `— ${projectMap[ticket.project_id]?.project_no || ""}` : ""}</p></button>)}{!loading && !tickets.length && <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-500">لا توجد طلبات دعم حتى الآن.</div>}</div>
+      <div className="space-y-3">{tickets.map((ticket) => <button key={ticket.id} onClick={() => setSelectedId(ticket.id)} className={["w-full rounded-2xl border p-4 text-right transition", selectedId === ticket.id ? "border-[#ff7417] bg-orange-50" : "border-slate-200 bg-white"].join(" ")}><div className="flex justify-between gap-2"><strong dir="ltr" className="text-blue-700">{ticket.ticket_no}</strong><span className="text-xs font-black text-slate-500">{statusLabels[ticket.status]}</span></div><p className="mt-2 font-black text-[#071d49]">{ticket.subject}</p><p className="mt-2 text-xs text-slate-500">الأولوية: {priorityLabels[ticket.priority]} {ticket.project_id ? `— ${projectMap[ticket.project_id]?.project_no || ""}` : ""}</p></button>)}{!loading && !tickets.length && <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-500">لا توجد تذاكر دعم مفتوحة حاليًا.</div>}</div>
 
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">{!selected ? <div className="py-12 text-center text-slate-500">اختر طلب دعم لعرض المحادثة.</div> : <>
         <div className="border-b border-slate-200 pb-5"><div className="flex flex-wrap justify-between gap-3"><div><p dir="ltr" className="text-right font-black text-blue-700">{selected.ticket_no}</p><h2 className="mt-2 text-2xl font-black text-[#071d49]">{selected.subject}</h2></div><span className="h-fit rounded-full bg-blue-100 px-4 py-2 text-sm font-black text-blue-800">{statusLabels[selected.status]}</span></div></div>
