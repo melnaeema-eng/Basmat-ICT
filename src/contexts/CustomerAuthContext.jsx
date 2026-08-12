@@ -162,8 +162,7 @@ export function CustomerAuthProvider({ children }) {
       throw new Error("اكتب البريد الإلكتروني أولًا.");
     }
 
-    const redirectUrl =
-    "https://ict.basmat-alnawabig.com.sa/portal/reset-password";
+    const redirectUrl = `${window.location.origin}/portal/reset-password`;
 
     const { error } = await supabase.auth.resetPasswordForEmail(
       normalizedEmail,

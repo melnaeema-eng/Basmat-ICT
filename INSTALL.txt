@@ -1,23 +1,23 @@
-CUSTOMER RESET PASSWORD HOTFIX
+RESTORE CUSTOMER RESET TO SPRINT 16 STABLE
 
-Changes ONLY:
+This restores ONLY:
 src/contexts/CustomerAuthContext.jsx
 
-Production reset redirect:
-https://ict.basmat-alnawabig.com.sa/portal/reset-password
-
 PowerShell:
-
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Customer-Reset-HOTFIX.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-RESET-RESTORE-S16.zip" -DestinationPath . -Force
 
 npm run dev
 
-NO SQL.
-NO Edge Function.
-DO NOT push GitHub until a NEW customer reset email is tested.
+Then deploy to production:
+git add .
+git commit -m "Restore customer password reset flow from Sprint 16 stable"
+git push origin main
 
-IMPORTANT:
-After deploying to production, request a completely NEW reset email.
-Old Supabase recovery links must not be reused.
+After Cloudflare deploy finishes:
+Request a completely NEW customer password reset email from the production website.
+
+No SQL.
+No Edge Function.
+No changes to Sprint 17 pages.
