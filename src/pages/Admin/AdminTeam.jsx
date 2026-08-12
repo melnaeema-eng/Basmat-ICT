@@ -4,6 +4,9 @@ import {
   FaPlus,
   FaRotate,
   FaTrash,
+  FaBoxArchive,
+  FaCircleCheck,
+  FaBan,
 } from "react-icons/fa6";
 
 import { supabase } from "../../lib/supabase";
@@ -15,6 +18,7 @@ const emptyForm = {
   email: "",
   department: "",
   is_active: true,
+  is_archived: false,
 };
 
 export default function AdminTeam() {
@@ -69,6 +73,8 @@ export default function AdminTeam() {
         department:
           form.department.trim() || null,
         is_active: form.is_active,
+        is_archived: Boolean(form.is_archived),
+        archived_at: form.is_archived ? new Date().toISOString() : null,
       };
 
       const query = form.id
@@ -93,22 +99,53 @@ export default function AdminTeam() {
     }
   }
 
-  async function removeMember(member) {
-    if (
-      !window.confirm(
-        `هل تريد حذف ${member.full_name}؟`
-      )
-    ) {
-      return;
-    }
+  async function setMemberLifecycle(member, action) {
+    setMessage("");
+
+    const changes =
+      action === "archive"
+        ? { is_archived: true, archived_at: new Date().toISOString(), is_active: false }
+        : action === "restore"
+        ? { is_archived: false, archived_at: null, is_active: true }
+        : action === "disable"
+        ? { is_active: false }
+        : { is_active: true };
 
     const { error } = await supabase
       .from("ict_team_members")
-      .delete()
+      .update(changes)
       .eq("id", member.id);
 
     if (error) {
       setMessage(error.message);
+      return;
+    }
+
+    await loadTeam();
+  }
+
+  async function removeMember(member) {
+    if (!window.confirm(
+      `حذف نهائي للموظف ${member.full_name}؟\nلن يسمح النظام بالحذف إذا كانت لديه معاملات مسندة.`
+    )) return;
+
+    const { data, error } = await supabase.rpc(
+      "ict_safe_delete_team_member",
+      { p_member_id: member.id }
+    );
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    if (!data?.deleted) {
+      const blockers = Array.isArray(data?.blockers)
+        ? data.blockers.join("، ")
+        : "";
+      setMessage(
+        `${data?.message || "تعذر الحذف."}${blockers ? ` الموانع: ${blockers}` : ""}`
+      );
       return;
     }
 
@@ -261,6 +298,14 @@ export default function AdminTeam() {
                 {member.department || "—"}
               </p>
 
+              <p className="mt-2 text-sm font-black text-slate-600">
+                {member.is_archived
+                  ? "مؤرشف"
+                  : member.is_active
+                  ? "نشط"
+                  : "معطل مؤقتًا"}
+              </p>
+
               <div className="mt-5 flex gap-3">
                 <button
                   type="button"
@@ -277,6 +322,8 @@ export default function AdminTeam() {
                         member.department || "",
                       is_active:
                         member.is_active,
+                      is_archived:
+                        Boolean(member.is_archived),
                     })
                   }
                   className="rounded-xl bg-blue-100 p-3 text-blue-800"
@@ -284,11 +331,52 @@ export default function AdminTeam() {
                   <FaPen />
                 </button>
 
+                {!member.is_archived && member.is_active && (
+                  <button
+                    type="button"
+                    title="تعطيل مؤقت"
+                    onClick={() => setMemberLifecycle(member, "disable")}
+                    className="rounded-xl bg-amber-100 p-3 text-amber-800"
+                  >
+                    <FaBan />
+                  </button>
+                )}
+
+                {!member.is_archived && !member.is_active && (
+                  <button
+                    type="button"
+                    title="إعادة تفعيل"
+                    onClick={() => setMemberLifecycle(member, "activate")}
+                    className="rounded-xl bg-green-100 p-3 text-green-800"
+                  >
+                    <FaCircleCheck />
+                  </button>
+                )}
+
+                {!member.is_archived ? (
+                  <button
+                    type="button"
+                    title="أرشفة"
+                    onClick={() => setMemberLifecycle(member, "archive")}
+                    className="rounded-xl bg-slate-200 p-3 text-slate-700"
+                  >
+                    <FaBoxArchive />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    title="إعادة من الأرشيف"
+                    onClick={() => setMemberLifecycle(member, "restore")}
+                    className="rounded-xl bg-green-100 p-3 text-green-800"
+                  >
+                    <FaCircleCheck />
+                  </button>
+                )}
+
                 <button
                   type="button"
-                  onClick={() =>
-                    removeMember(member)
-                  }
+                  title="حذف نهائي آمن"
+                  onClick={() => removeMember(member)}
                   className="rounded-xl bg-red-100 p-3 text-red-700"
                 >
                   <FaTrash />

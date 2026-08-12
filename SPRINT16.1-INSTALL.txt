@@ -1,0 +1,26 @@
+BASMAT ICT — SPRINT 16.1
+Existing Customer -> Staff
+
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-16.1-Existing-User-Staff.zip" -DestinationPath . -Force
+
+npx supabase functions deploy create-staff-user
+
+npm run dev
+
+TEST:
+1. Admin -> الصلاحيات والأدوار.
+2. إضافة موظف.
+3. استخدم نفس البريد الموجود مسبقًا كعميل.
+4. اختر الدور Manager / Sales / Engineer / Support.
+5. اضغط إضافة.
+6. يجب ألا ينشئ Auth User جديدًا.
+7. نفس user_id يبقى في ict_customer_portal_users ويضاف إلى ict_admin_users.
+8. المستخدم يستخدم نفس كلمة المرور الحالية؛ لا توجد كلمة مرور مؤقتة عند تحويل مستخدم موجود.
+9. حساب العميل يبقى موجودًا ولا يتم حذفه.
+
+لا SQL لهذا الباتش.
+لا ترفع GitHub قبل نجاح الاختبار.

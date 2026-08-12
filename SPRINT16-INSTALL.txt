@@ -1,0 +1,34 @@
+BASMAT ICT — SPRINT 16
+
+1) PowerShell
+cd C:\projects\Basmat-ICT
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-16.zip" -DestinationPath . -Force
+
+2) Supabase Dashboard -> SQL Editor
+افتح الملف:
+supabase\sprint16_lifecycle.sql
+وشغّل الكود كاملًا مرة واحدة.
+
+3) تشغيل:
+npm run dev
+
+4) اختبار العملاء:
+Admin -> العملاء
+- تعطيل مؤقت
+- إعادة تفعيل
+- أرشفة
+- إعادة من الأرشيف
+- حذف نهائي: يجب أن يُرفض إذا توجد معاملات مرتبطة.
+
+5) اختبار فريق العمل:
+Admin -> فريق العمل
+- تعطيل / إعادة تفعيل / أرشفة / استعادة
+- الحذف النهائي يُرفض إذا توجد معاملات مسندة.
+
+6) بوابة العميل:
+- المشاريع بالحالات completed/closed/cancelled/finished لا تظهر.
+- الطلبات بهذه الحالات لا تظهر.
+
+مهم:
+هذا الباتش لا يغيّر 2FA ولا Reset Password.
+لا ترفع GitHub قبل الاختبار.

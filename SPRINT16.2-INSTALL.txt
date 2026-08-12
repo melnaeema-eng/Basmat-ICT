@@ -1,0 +1,37 @@
+BASMAT ICT — SPRINT 16.2
+
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-16.2-Staff-Management.zip" -DestinationPath . -Force
+
+Supabase SQL Editor:
+شغّل:
+supabase\sprint16_2_staff_management.sql
+
+ثم انشر Edge Function:
+
+npx supabase functions deploy create-staff-user
+
+ثم:
+
+npm run dev
+
+الاختبار:
+1) /admin/access-control
+2) اكتب بريد عميل موجود.
+3) خلال لحظة يجب أن يظهر الاسم تلقائيًا.
+4) اختر الدور ثم "منح صلاحية الموظف".
+5) عدّل الاسم أو الدور من جدول حسابات الإدارة.
+6) اختبر: تعطيل، إعادة تفعيل، أرشفة، استعادة.
+7) اختبر حذف صلاحية الموظف.
+   إذا كان عميلًا يجب أن يبقى حساب العميل كما هو.
+
+مهم:
+- حذف الموظف هنا = حذف صلاحية Admin/Staff فقط من ict_admin_users.
+- لا يتم حذف Supabase Auth User.
+- لا يتم حذف ملف العميل.
+- لا تعديل على 2FA أو Reset Password.
+
+لا ترفع GitHub قبل نجاح الاختبارات.

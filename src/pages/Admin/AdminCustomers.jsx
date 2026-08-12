@@ -7,6 +7,9 @@ import {
   FaRotate,
   FaTrash,
   FaUser,
+  FaBoxArchive,
+  FaCircleCheck,
+  FaBan,
 } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
@@ -23,6 +26,7 @@ const emptyForm = {
   source: "",
   status: "active",
   notes: "",
+  is_archived: false,
 };
 
 export default function AdminCustomers() {
@@ -71,6 +75,7 @@ export default function AdminCustomers() {
       source: customer.source || "",
       status: customer.status || "active",
       notes: customer.notes || "",
+      is_archived: Boolean(customer.is_archived),
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -98,6 +103,8 @@ export default function AdminCustomers() {
         source: form.source.trim() || null,
         status: form.status,
         notes: form.notes.trim() || null,
+        is_archived: Boolean(form.is_archived),
+        archived_at: form.is_archived ? new Date().toISOString() : null,
         updated_at: new Date().toISOString(),
       };
 
@@ -136,14 +143,21 @@ export default function AdminCustomers() {
     }
   }
 
-  async function deleteCustomer(customer) {
-    if (!window.confirm(`هل تريد حذف "${customer.name}"؟`)) {
-      return;
-    }
+  async function setCustomerLifecycle(customer, action) {
+    setMessage({ type: "", text: "" });
+
+    const changes =
+      action === "archive"
+        ? { is_archived: true, archived_at: new Date().toISOString() }
+        : action === "restore"
+        ? { is_archived: false, archived_at: null, status: "active" }
+        : action === "disable"
+        ? { status: "inactive" }
+        : { status: "active" };
 
     const { error } = await supabase
       .from("ict_customers")
-      .delete()
+      .update({ ...changes, updated_at: new Date().toISOString() })
       .eq("id", customer.id);
 
     if (error) {
@@ -151,6 +165,44 @@ export default function AdminCustomers() {
       return;
     }
 
+    setMessage({
+      type: "success",
+      text:
+        action === "archive" ? "تمت أرشفة العميل."
+        : action === "restore" ? "تمت إعادة العميل وتفعيله."
+        : action === "disable" ? "تم تعطيل العميل مؤقتًا."
+        : "تمت إعادة تفعيل العميل.",
+    });
+    await loadCustomers();
+  }
+
+  async function deleteCustomer(customer) {
+    if (!window.confirm(
+      `حذف نهائي للعميل "${customer.name}"؟\nلن يسمح النظام بالحذف إذا كانت هناك معاملات مرتبطة.`
+    )) return;
+
+    const { data, error } = await supabase.rpc(
+      "ict_safe_delete_customer",
+      { p_customer_id: customer.id }
+    );
+
+    if (error) {
+      setMessage({ type: "error", text: error.message });
+      return;
+    }
+
+    if (!data?.deleted) {
+      const blockers = Array.isArray(data?.blockers)
+        ? data.blockers.join("، ")
+        : "";
+      setMessage({
+        type: "error",
+        text: `${data?.message || "تعذر الحذف."}${blockers ? ` الموانع: ${blockers}` : ""}`,
+      });
+      return;
+    }
+
+    setMessage({ type: "success", text: "تم حذف العميل نهائيًا." });
     await loadCustomers();
   }
 
@@ -352,7 +404,11 @@ export default function AdminCustomers() {
                 <p dir="ltr">{customer.phone || "—"}</p>
                 <p>{customer.city || "—"}</p>
                 <p className="font-bold text-blue-700">
-                  {customer.status}
+                  {customer.is_archived
+                    ? "مؤرشف"
+                    : customer.status === "inactive"
+                    ? "معطل"
+                    : customer.status}
                 </p>
               </div>
 
@@ -372,8 +428,51 @@ export default function AdminCustomers() {
                   <FaPen />
                 </button>
 
+                {!customer.is_archived && customer.status !== "inactive" && (
+                  <button
+                    type="button"
+                    title="تعطيل مؤقت"
+                    onClick={() => setCustomerLifecycle(customer, "disable")}
+                    className="rounded-xl bg-amber-100 p-3 text-amber-800"
+                  >
+                    <FaBan />
+                  </button>
+                )}
+
+                {!customer.is_archived && customer.status === "inactive" && (
+                  <button
+                    type="button"
+                    title="إعادة تفعيل"
+                    onClick={() => setCustomerLifecycle(customer, "activate")}
+                    className="rounded-xl bg-green-100 p-3 text-green-800"
+                  >
+                    <FaCircleCheck />
+                  </button>
+                )}
+
+                {!customer.is_archived ? (
+                  <button
+                    type="button"
+                    title="أرشفة"
+                    onClick={() => setCustomerLifecycle(customer, "archive")}
+                    className="rounded-xl bg-slate-200 p-3 text-slate-700"
+                  >
+                    <FaBoxArchive />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    title="إعادة من الأرشيف"
+                    onClick={() => setCustomerLifecycle(customer, "restore")}
+                    className="rounded-xl bg-green-100 p-3 text-green-800"
+                  >
+                    <FaCircleCheck />
+                  </button>
+                )}
+
                 <button
                   type="button"
+                  title="حذف نهائي آمن"
                   onClick={() => deleteCustomer(customer)}
                   className="rounded-xl bg-red-100 p-3 text-red-700"
                 >

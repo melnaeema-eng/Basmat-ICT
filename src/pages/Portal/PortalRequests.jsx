@@ -56,7 +56,14 @@ export default function PortalRequests() {
       })),
     ].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
 
-    setRows(combined);
+    setRows(
+        combined.filter(
+          (item) =>
+            !["completed", "closed", "cancelled", "finished"].includes(
+              String(item.status || "").toLowerCase()
+            )
+        )
+      );
   }
 
   function ndaFor(row) {
