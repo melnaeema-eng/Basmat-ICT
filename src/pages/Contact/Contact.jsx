@@ -327,7 +327,19 @@ function ContactCard({ icon, title, value, href }) {
           {title}
         </p>
 
-        <p className="mt-1 break-words text-lg font-black text-[#071d49]">
+        <p
+          dir={
+            title === "الهاتف" || title === "واتساب"
+              ? "ltr"
+              : undefined
+          }
+          className={[
+            "mt-1 break-words text-lg font-black text-[#071d49]",
+            title === "الهاتف" || title === "واتساب"
+              ? "text-right [unicode-bidi:isolate]"
+              : "",
+          ].join(" ")}
+        >
           {value}
         </p>
       </div>

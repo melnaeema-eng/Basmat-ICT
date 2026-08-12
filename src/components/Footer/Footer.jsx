@@ -94,9 +94,15 @@ export default function Footer() {
 
           <div className="mt-6 space-y-4 text-slate-300">
 
-            <p className="flex gap-3">
+            <p className="flex items-center gap-3">
               <FaPhone />
-              +966 xx xxx xxxx
+              <a
+                href="tel:+966550073576"
+                dir="ltr"
+                className="[unicode-bidi:isolate] hover:text-white"
+              >
+                +966 55 007 3576
+              </a>
             </p>
 
             <p className="flex gap-3">

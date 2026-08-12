@@ -1,0 +1,20 @@
+Basmat ICT — Contact Phone Fix
+
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Contact-Phone-Fix.zip" -DestinationPath . -Force
+
+npm run dev
+
+اختبار:
+1) افتح صفحة تواصل معنا.
+2) الهاتف وواتساب يجب أن يظهرا: +966 55 007 3576
+3) انزل إلى Footer في أسفل الموقع.
+4) يجب أن يظهر الرقم الحقيقي بدل XX XXX XXXX.
+
+بعد نجاح الاختبار:
+git add .
+git commit -m "Fix phone direction and footer contact number"
+git push origin main
