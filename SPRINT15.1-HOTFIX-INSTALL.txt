@@ -1,0 +1,27 @@
+BASMAT ICT — SPRINT 15.1 MFA HOTFIX
+
+PowerShell:
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-15.1-MFA-HOTFIX.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST:
+1. Sign out.
+2. Sign in with the same staff account that already has 2FA enabled.
+3. The system must NOT show "Enable 2FA".
+4. It must show the 6-digit Authenticator verification field.
+5. Enter the current 6-digit code.
+6. Successful verification should return you to /admin.
+
+IMPORTANT:
+- Do NOT cancel/unenroll the existing 2FA before this test.
+- No SQL.
+- No Edge Function.
+- Password reset code is not changed by this hotfix.
+
+After successful test only:
+git add .
+git commit -m "Complete Sprint 15 - Fix existing MFA factor detection"
+git push origin main

@@ -1,0 +1,33 @@
+BASMAT ICT — SPRINT 15.2 FINAL MFA FIX
+
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-15.2-FINAL-MFA-FIX.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST EXISTING 2FA:
+1. Keep the current 2FA factor. Do NOT cancel it.
+2. Sign out.
+3. Sign in with email + password.
+4. The app must redirect to /admin/mfa.
+5. It must show the 6-digit verification field directly.
+6. It must NOT show "Enable 2FA".
+7. Enter the current Authenticator code.
+8. Successful verification must open /admin.
+
+TEST OPTIONAL MFA:
+Use a different staff test account with no 2FA.
+It should be allowed to enter Admin and /admin/mfa should offer optional enrollment.
+
+NO SQL.
+NO EDGE FUNCTION.
+PASSWORD RESET FLOW WAS NOT CHANGED.
+
+After successful tests only:
+
+git add .
+git commit -m "Complete Sprint 15 - Security 2FA and production password recovery"
+git push origin main

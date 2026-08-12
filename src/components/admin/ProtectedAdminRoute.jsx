@@ -7,23 +7,22 @@ import {
 import { useAdminAuth } from "../../contexts/AdminAuthContext";
 
 export default function ProtectedAdminRoute() {
-  const location = useLocation();
-
   const {
     loading,
     isAuthenticated,
+    mfaState,
   } = useAdminAuth();
+
+  const location = useLocation();
 
   if (loading) {
     return (
       <div
         dir="rtl"
-        className="flex min-h-screen items-center justify-center bg-slate-100 px-4"
+        className="flex min-h-screen items-center justify-center bg-slate-50"
       >
-        <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-          <p className="text-xl font-black text-[#071d49]">
-            جارٍ التحقق من صلاحية الدخول...
-          </p>
+        <div className="rounded-2xl bg-white px-8 py-6 font-bold text-slate-700 shadow">
+          جارٍ التحقق من جلسة الإدارة...
         </div>
       </div>
     );
@@ -34,11 +33,19 @@ export default function ProtectedAdminRoute() {
       <Navigate
         to="/admin/login"
         replace
-        state={{
-          from:
-            location.pathname +
-            location.search,
-        }}
+        state={{ from: location.pathname }}
+      />
+    );
+  }
+
+  // Sprint 15: 2FA remains optional.
+  // But once a user has enrolled TOTP, verification is required for that session.
+  if (mfaState?.enrolled && mfaState?.needsVerification) {
+    return (
+      <Navigate
+        to="/admin/mfa"
+        replace
+        state={{ from: location.pathname }}
       />
     );
   }

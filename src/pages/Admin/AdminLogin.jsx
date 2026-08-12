@@ -42,13 +42,21 @@ export default function AdminLogin() {
     setInfoMessage("");
 
     try {
-      await signIn(
+      const result = await signIn(
         email.trim().toLowerCase(),
         password
       );
 
       const destination =
         location.state?.from || "/admin";
+
+      if (result?.mfa?.needsVerification) {
+        navigate("/admin/mfa", {
+          replace: true,
+          state: { from: destination },
+        });
+        return;
+      }
 
       navigate(destination, {
         replace: true,

@@ -10,10 +10,19 @@ import { supabase } from "../lib/supabase";
 
 const AdminAuthContext = createContext(null);
 
+const ADMIN_RESET_URL =
+  "https://ict.basmat-alnawabig.com.sa/admin/reset-password";
+
 export function AdminAuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [adminProfile, setAdminProfile] = useState(null);
   const [permissions, setPermissions] = useState([]);
+  const [mfaState, setMfaState] = useState({
+    enrolled: false,
+    needsVerification: false,
+    currentLevel: null,
+    nextLevel: null,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,9 +40,11 @@ export function AdminAuthProvider({ children }) {
 
         if (currentSession?.user) {
           await loadAdminProfile(currentSession.user.id);
+          await refreshMfaState();
         } else {
           setAdminProfile(null);
           setPermissions([]);
+          resetMfaState();
         }
       } catch (error) {
         console.error("خطأ في تهيئة جلسة الإدارة:", error);
@@ -52,9 +63,11 @@ export function AdminAuthProvider({ children }) {
 
         if (nextSession?.user) {
           await loadAdminProfile(nextSession.user.id);
+          await refreshMfaState();
         } else {
           setAdminProfile(null);
           setPermissions([]);
+          resetMfaState();
         }
 
         setLoading(false);
@@ -66,6 +79,49 @@ export function AdminAuthProvider({ children }) {
       subscription.unsubscribe();
     };
   }, []);
+
+  function resetMfaState() {
+    setMfaState({
+      enrolled: false,
+      needsVerification: false,
+      currentLevel: null,
+      nextLevel: null,
+    });
+  }
+
+  async function refreshMfaState() {
+    try {
+      const { data: aalData, error: aalError } =
+        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+      if (aalError) throw aalError;
+
+      const enrolled =
+        aalData?.nextLevel === "aal2";
+
+      const next = {
+        enrolled,
+        needsVerification:
+          aalData?.currentLevel === "aal1" &&
+          aalData?.nextLevel === "aal2",
+        currentLevel: aalData?.currentLevel || null,
+        nextLevel: aalData?.nextLevel || null,
+      };
+
+      setMfaState(next);
+      return next;
+    } catch (error) {
+      console.error("تعذر التحقق من حالة 2FA:", error);
+      resetMfaState();
+
+      return {
+        enrolled: false,
+        needsVerification: false,
+        currentLevel: null,
+        nextLevel: null,
+      };
+    }
+  }
 
   async function loadAdminProfile(userId) {
     const { data, error } = await supabase
@@ -127,6 +183,7 @@ export function AdminAuthProvider({ children }) {
       setSession(null);
       setAdminProfile(null);
       setPermissions([]);
+      resetMfaState();
 
       throw new Error(
         "هذا الحساب غير مخول للدخول إلى لوحة الإدارة."
@@ -134,7 +191,9 @@ export function AdminAuthProvider({ children }) {
     }
 
     setSession(data.session);
-    return profile;
+    const mfa = await refreshMfaState();
+
+    return { profile, mfa };
   }
 
   async function signOut() {
@@ -142,6 +201,7 @@ export function AdminAuthProvider({ children }) {
     setSession(null);
     setAdminProfile(null);
     setPermissions([]);
+    resetMfaState();
   }
 
   async function resetPassword(email) {
@@ -151,17 +211,13 @@ export function AdminAuthProvider({ children }) {
       throw new Error("اكتب البريد الإلكتروني أولًا.");
     }
 
-    const redirectTo =
-      `${window.location.origin}/admin/reset-password`;
-
     const { error } =
       await supabase.auth.resetPasswordForEmail(
         normalizedEmail,
-        { redirectTo }
+        { redirectTo: ADMIN_RESET_URL }
       );
 
     if (error) throw error;
-
     return true;
   }
 
@@ -176,7 +232,6 @@ export function AdminAuthProvider({ children }) {
       await supabase.auth.updateUser({ password });
 
     if (error) throw error;
-
     return true;
   }
 
@@ -187,11 +242,7 @@ export function AdminAuthProvider({ children }) {
 
   const hasPermission = (permission) => {
     if (!permission) return true;
-
-    if (adminProfile?.role === "admin") {
-      return true;
-    }
-
+    if (adminProfile?.role === "admin") return true;
     return permissions.includes(permission);
   };
 
@@ -202,17 +253,19 @@ export function AdminAuthProvider({ children }) {
       adminProfile,
       loading,
       permissions,
+      mfaState,
       isAuthenticated:
         Boolean(session?.user) &&
         Boolean(adminProfile?.is_active),
       hasPermission,
+      refreshMfaState,
       signIn,
       signOut,
       resetPassword,
       updatePassword,
       reloadProfile,
     }),
-    [session, adminProfile, loading, permissions]
+    [session, adminProfile, loading, permissions, mfaState]
   );
 
   return (

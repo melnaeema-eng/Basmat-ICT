@@ -29,6 +29,7 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminDocuments from "./pages/Admin/AdminDocuments";
 import AdminFollowUps from "./pages/Admin/AdminFollowUps";
 import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminMFA from "./pages/Admin/AdminMFA";
 import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import AdminOperationsDashboard from "./pages/Admin/AdminOperationsDashboard";
@@ -115,6 +116,7 @@ export default function App() {
 
             {/* Admin */}
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/mfa" element={<AdminMFA />} />
             <Route path="/admin/reset-password" element={<AdminResetPassword />} />
 
             <Route element={<ProtectedAdminRoute />}>

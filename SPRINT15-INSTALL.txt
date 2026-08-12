@@ -1,0 +1,46 @@
+BASMAT ICT — SPRINT 15 INSTALL
+
+1) PowerShell:
+cd C:\projects\Basmat-ICT
+
+2) Extract:
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-15.zip" -DestinationPath . -Force
+
+3) Run:
+npm run dev
+
+4) Test:
+http://localhost:5173/admin/login
+http://localhost:5173/admin/mfa
+
+If Vite uses 5174, replace 5173 with 5174.
+
+5) In Supabase Dashboard:
+Authentication > URL Configuration
+
+Site URL:
+https://ict.basmat-alnawabig.com.sa
+
+Redirect URLs:
+https://ict.basmat-alnawabig.com.sa/admin/reset-password
+http://localhost:5173/admin/reset-password
+http://localhost:5174/admin/reset-password
+
+NO SQL.
+NO Edge Function deployment.
+
+TEST:
+- Login with an admin/staff test user.
+- Open /admin/mfa.
+- Click Enable 2FA.
+- Scan QR with Authenticator.
+- Enter 6-digit code.
+- Sign out.
+- Sign in again.
+- System should require /admin/mfa verification.
+- Test Forgot Password: new email link must point to ict.basmat-alnawabig.com.sa.
+
+After successful test:
+git add .
+git commit -m "Complete Sprint 15 - Security 2FA and production password recovery"
+git push origin main

@@ -67,6 +67,7 @@ const groups = [
     title: "إدارة النظام",
     items: [
       ["الصلاحيات والأدوار", "/admin/access-control", FaShieldHalved],
+      ["الأمان و2FA", "/admin/mfa", FaShieldHalved],
     ],
   },
   {
@@ -92,6 +93,7 @@ const permissionForPath = (path) => {
   if (["/admin/analytics","/admin/executive-reports"].includes(path)) return "reports";
   if (path === "/admin/team") return "team";
   if (path === "/admin/access-control") return "access_control";
+  if (path === "/admin/mfa") return null;
   if (["/admin/projects","/admin/services","/admin/partners","/admin/settings"].includes(path)) return "content";
   return "dashboard";
 };
