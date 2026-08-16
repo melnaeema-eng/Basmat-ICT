@@ -27,6 +27,7 @@ import AdminProjectCostControl from "./pages/Admin/AdminProjectCostControl";
 import AdminExecutiveControl from "./pages/Admin/AdminExecutiveControl";
 import AdminFinancialPlanning from "./pages/Admin/AdminFinancialPlanning";
 import AdminTreasury from "./pages/Admin/AdminTreasury";
+import AdminFinancialControl from "./pages/Admin/AdminFinancialControl";
 import AdminFinance from "./pages/Admin/AdminFinance";
 import AdminAccounting from "./pages/Admin/AdminAccounting";
 import AdminInventoryAssets from "./pages/Admin/AdminInventoryAssets";
@@ -155,6 +156,7 @@ export default function App() {
                 <Route path="executive-control" element={<AdminPermissionRoute permission="executive_control"><AdminExecutiveControl /></AdminPermissionRoute>} />
                 <Route path="financial-planning" element={<AdminPermissionRoute permission="financial_planning"><AdminFinancialPlanning /></AdminPermissionRoute>} />
                 <Route path="treasury" element={<AdminPermissionRoute permission="treasury"><AdminTreasury /></AdminPermissionRoute>} />
+                <Route path="financial-control" element={<AdminPermissionRoute permission="financial_control"><AdminFinancialControl /></AdminPermissionRoute>} />
                 <Route path="project-documents" element={<AdminPermissionRoute permission="documents"><AdminProjectDocuments /></AdminPermissionRoute>} />
                 <Route path="support" element={<AdminPermissionRoute permission="support"><AdminSupportTickets /></AdminPermissionRoute>} />
 

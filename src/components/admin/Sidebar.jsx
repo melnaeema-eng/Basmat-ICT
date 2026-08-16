@@ -82,6 +82,7 @@ const groups = [
       ["المحاسبة والقيود", "/admin/accounting", FaBookOpen],
       ["التخطيط المالي والميزانيات", "/admin/financial-planning", FaChartLine],
       ["الخزينة والذمم", "/admin/treasury", FaBuildingColumns],
+      ["الرقابة المالية والإقفال", "/admin/financial-control", FaChartLine],
       ["المشتريات والموردون", "/admin/procurement", FaCartShopping],
       ["المخزون والأصول", "/admin/inventory-assets", FaBoxesStacked],
     ],
@@ -129,6 +130,7 @@ const permissionForPath = (path) => {
   if (path === "/admin/accounting") return "accounting";
   if (path === "/admin/financial-planning") return "financial_planning";
   if (path === "/admin/treasury") return "treasury";
+  if (path === "/admin/financial-control") return "financial_control";
   if (path === "/admin/procurement") return "procurement";
   if (path === "/admin/inventory-assets") return "inventory";
   if (path === "/admin/attendance-leave") return null;

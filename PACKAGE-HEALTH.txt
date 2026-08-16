@@ -1,10 +1,16 @@
-S27 TREASURY ROUTE HOTFIX HEALTH
+SPRINT 28 V2 PACKAGE HEALTH
 
-[PASS] Treasury import exists
-[PASS] Treasury route exists
-[PASS] Treasury route permission
-[PASS] Treasury page exists
-[PASS] Treasury sidebar item exists
-[PASS] Financial planning sidebar item exists
-[PASS] Orange active state exists
-[PASS] Treasury permission listed
+[PASS] One SQL only
+[PASS] Precheck present
+[PASS] Migration present
+[PASS] Health present
+[PASS] Safe SQL validation present
+[PASS] Final result present
+[PASS] No auth-protected VAT RPC execution in SQL Editor
+[PASS] VAT function still created
+[PASS] Bank reconciliation function still created
+[PASS] Period close function still created
+[PASS] Financial control permission still present
+[PASS] Frontend route preserved
+[PASS] Sidebar preserved
+[PASS] Orange active preserved

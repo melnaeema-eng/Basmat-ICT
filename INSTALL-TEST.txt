@@ -1,27 +1,55 @@
-BASMAT ICT — S27 TREASURY ROUTE COMPLETE HOTFIX
-=================================================
+BASMAT ERP — SPRINT 28 BIG
+BANK RECONCILIATION + VAT + PERIOD CLOSE
+=========================================
 
-FIXES:
-- /admin/treasury "Page not found"
-- Restores AdminTreasury import + route
-- Restores Treasury page file
-- Keeps Financial Planning + Treasury visible in Sidebar
-- Keeps active module SOLID ORANGE
-- Keeps Treasury permission in Access Control
+BUILT ON CONFIRMED SPRINT 27.
 
-NO SUPABASE.
-NO DATABASE CHANGES.
+SUPABASE:
+RUN ONE FILE ONLY:
+supabase\SPRINT28_ALL_IN_ONE.sql
 
-INSTALL:
+THE SAME FILE CONTAINS:
+1. PRECHECK
+2. MIGRATION
+3. HEALTH
+4. SAFE SQL EDITOR VALIDATION
+5. FINAL RESULT
+
+REQUIRED FINAL:
+SPRINT 28 ALL-IN-ONE | PASS ✅
+
+NOTE:
+Auth-protected RPCs are NOT executed from SQL Editor.
+They are tested from the logged-in application only.
+
+IF PRECHECK FAILS:
+STOP. DO NOT INSTALL FRONTEND. SEND ONLY THE ERROR.
+
+FRONTEND:
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-S27-Treasury-Route-Complete.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-28-Bank-Reconciliation-VAT-Period-Close-ERP.zip" -DestinationPath . -Force
 
 npm run dev
 
 TEST:
-1. Open http://localhost:5173/admin/treasury
-2. Treasury page must open.
-3. Treasury sidebar item must be orange while open.
-4. Open /admin/financial-planning
-5. Financial Planning sidebar item must be orange while open.
+1. /admin/financial-control opens.
+2. Sidebar shows الرقابة المالية والإقفال.
+3. Open module is ORANGE.
+4. Create bank statement.
+5. VAT calculation works.
+6. Save VAT draft.
+7. Period close readiness works.
+8. /admin/treasury still opens.
+9. /admin/financial-planning still opens.
+10. /admin/accounting still opens.
+11. /admin/finance still opens.
+12. /admin/payroll still opens.
+13. /admin/project-cost-control still opens.
+14. /admin/executive-control still opens.
+15. npm run build.
+
+AFTER ALL PASS:
+git add .
+git commit -m "Sprint 28 Bank Reconciliation VAT Period Close ERP"
+git push origin main

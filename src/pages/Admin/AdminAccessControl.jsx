@@ -55,6 +55,7 @@ const permissions = [
   ["executive_control", "القيادة والحوكمة"],
   ["financial_planning", "التخطيط المالي والميزانيات"],
   ["treasury", "الخزينة والذمم"],
+  ["financial_control", "الرقابة المالية والإقفال"],
 ];
 
 export default function AdminAccessControl() {
