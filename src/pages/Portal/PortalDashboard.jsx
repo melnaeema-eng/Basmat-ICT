@@ -11,15 +11,51 @@ export default function PortalDashboard() {
 
   async function load() {
     const [q, p, i] = await Promise.all([
-      supabase.from("ict_quotations").select("id", { count: "exact", head: true }),
-      supabase.from("ict_delivery_projects").select("id", { count: "exact", head: true }),
-      supabase.from("ict_delivery_invoices").select("id", { count: "exact", head: true }),
+      supabase
+        .from("ict_quotations")
+        .select("id", { count: "exact", head: true }),
+
+      supabase
+        .from("ict_delivery_projects")
+        .select("id,status"),
+
+      supabase
+        .from("ict_invoices")
+        .select("id,status"),
     ]);
+
+    const closedProjects = new Set([
+      "completed",
+      "closed",
+      "cancelled",
+      "canceled",
+      "finished",
+    ]);
+
+    const closedInvoices = new Set([
+      "paid",
+      "cancelled",
+      "canceled",
+    ]);
+
+    const activeProjects = (p.data || []).filter(
+      (row) =>
+        !closedProjects.has(
+          String(row.status || "").toLowerCase()
+        )
+    ).length;
+
+    const activeInvoices = (i.data || []).filter(
+      (row) =>
+        !closedInvoices.has(
+          String(row.status || "").toLowerCase()
+        )
+    ).length;
 
     setCounts({
       quotations: q.count || 0,
-      projects: p.count || 0,
-      invoices: i.count || 0,
+      projects: activeProjects,
+      invoices: activeInvoices,
     });
   }
 
@@ -33,8 +69,8 @@ export default function PortalDashboard() {
 
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           <Metric icon={<FaFileInvoiceDollar />} label="عروض الأسعار" value={counts.quotations} />
-          <Metric icon={<FaFolderOpen />} label="المشاريع" value={counts.projects} />
-          <Metric icon={<FaFileInvoiceDollar />} label="الفواتير" value={counts.invoices} />
+          <Metric icon={<FaFolderOpen />} label="المشاريع النشطة" value={counts.projects} />
+          <Metric icon={<FaFileInvoiceDollar />} label="الفواتير النشطة" value={counts.invoices} />
         </div>
       </div>
     </div>

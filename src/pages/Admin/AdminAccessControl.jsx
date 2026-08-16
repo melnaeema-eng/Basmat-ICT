@@ -23,6 +23,8 @@ const roles = [
   ["sales", "Sales"],
   ["engineer", "Engineer"],
   ["support", "Support"],
+  ["hr", "HR"],
+  ["finance", "Finance"],
 ];
 
 const staffRoles = roles.filter(
@@ -42,6 +44,17 @@ const permissions = [
   ["team", "فريق العمل"],
   ["content", "محتوى الموقع"],
   ["access_control", "الصلاحيات"],
+  ["hr", "الموارد البشرية"],
+  ["payroll", "الرواتب"],
+  ["finance", "المالية"],
+  ["procurement", "المشتريات"],
+  ["accounting", "المحاسبة"],
+  ["inventory", "المخزون"],
+  ["assets", "الأصول والعُهد"],
+  ["project_cost_control", "تكلفة وربحية المشاريع"],
+  ["executive_control", "القيادة والحوكمة"],
+  ["financial_planning", "التخطيط المالي والميزانيات"],
+  ["treasury", "الخزينة والذمم"],
 ];
 
 export default function AdminAccessControl() {

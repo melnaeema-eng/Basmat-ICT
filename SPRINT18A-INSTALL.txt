@@ -1,0 +1,46 @@
+BASMAT ICT — SPRINT 18A HR SAFE
+================================
+
+المرحلة الأولى للموارد البشرية:
+- ملف الموظف.
+- رقم الموظف.
+- القسم والمسمى.
+- نوع التوظيف.
+- تاريخ التعيين.
+- تعطيل / إعادة تفعيل / أرشفة.
+- بحث ودليل موظفين.
+
+لا Payroll في هذه المرحلة.
+لا Finance في هذه المرحلة.
+لا Auth / Reset Password / 2FA changes.
+
+1) Supabase -> SQL Editor
+شغّل:
+supabase\sprint18a_hr.sql
+
+2) PowerShell
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-18A-HR-SAFE.zip" -DestinationPath . -Force
+
+3) App.jsx
+أضف:
+import AdminHR from "./pages/Admin/AdminHR";
+
+داخل Admin routes أضف:
+<Route path="hr" element={<AdminHR />} />
+
+4) Sidebar.jsx
+داخل مجموعة إدارة النظام أو مجموعة جديدة أضف:
+["الموارد البشرية", "/admin/hr", FaUserGroup],
+
+إذا FaUserGroup موجودة عندك لا تضف Import جديد.
+وإذا غير موجودة أضفها من react-icons/fa6.
+
+5) تشغيل:
+npm run dev
+
+6) اختبار:
+http://localhost:5173/admin/hr
+
+لا ترفع GitHub قبل نجاح الاختبار.

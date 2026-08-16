@@ -1,0 +1,10 @@
+S27 TREASURY ROUTE HOTFIX HEALTH
+
+[PASS] Treasury import exists
+[PASS] Treasury route exists
+[PASS] Treasury route permission
+[PASS] Treasury page exists
+[PASS] Treasury sidebar item exists
+[PASS] Financial planning sidebar item exists
+[PASS] Orange active state exists
+[PASS] Treasury permission listed

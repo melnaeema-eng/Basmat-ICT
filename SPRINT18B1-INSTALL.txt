@@ -1,0 +1,28 @@
+BASMAT ICT — SPRINT 18B.1 HOTFIX
+
+Fixes:
+1) Mobile value shorter than 7 digits is ignored and remains editable.
+2) Existing HR employee is detected by email/Auth ID.
+3) Existing employee opens in Edit mode.
+4) Existing employee keeps the SAME employee number.
+5) No duplicate EMP number is created on disable/archive/reactivation.
+
+STEP 1 — Supabase SQL Editor:
+Run:
+supabase\sprint18b1_hotfix.sql
+
+STEP 2 — PowerShell:
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-18B1-HOTFIX.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST:
+- Search an existing employee email -> should show existing EMP number and open Edit mode.
+- Search a customer/user not yet employed -> should allow hiring and create one EMP number.
+- Disable and reactivate -> same EMP number must remain.
+- Phone shorter than 7 digits should not auto-fill.
+
+No App.jsx or Sidebar.jsx changes.
+No Auth/Reset/2FA changes.

@@ -1,144 +1,63 @@
 import {
   FaEnvelope,
-  FaFacebook,
-  FaInstagram,
   FaLinkedin,
   FaLocationDot,
   FaPhone,
-  FaXTwitter,
 } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#071d49] text-white">
-
-      <div className="company-container grid gap-14 py-20 md:grid-cols-2 lg:grid-cols-4">
-
+    <footer className="border-t border-slate-200 bg-[#f8fafc] text-slate-600">
+      <div className="company-container grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_0.8fr_1fr]">
         <div>
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Basmat ICT" className="h-12 w-12 rounded-xl border border-slate-200 bg-white object-contain p-1" />
+            <div>
+              <p className="font-black text-[#0f2747]">بصمة النوابغ</p>
+              <p className="text-[10px] font-black tracking-wider text-slate-400">BASMAT ALNAWABIGH ICT</p>
+            </div>
+          </div>
 
-          <img
-            src="/logo.png"
-            alt="Basmat ICT"
-            className="h-20"
-          />
-
-          <p className="mt-6 leading-8 text-slate-300">
-            بصمة النوابغ للمقاولات والاستشارات هي شركة سعودية
-            متخصصة في حلول تقنية المعلومات والاتصالات والبنية
-            التحتية الرقمية ومراكز البيانات والأمن السيبراني.
+          <p className="mt-5 max-w-sm text-sm leading-7 text-slate-500">
+            حلول الاتصالات وتقنية المعلومات والبنية التحتية الرقمية ومراكز البيانات
+            والشبكات والأنظمة الذكية والاستشارات الهندسية.
           </p>
-
         </div>
 
         <div>
-
-          <h3 className="text-xl font-black">
-            خدماتنا
-          </h3>
-
-          <ul className="mt-6 space-y-3 text-slate-300">
-
+          <h3 className="text-sm font-black text-[#0f2747]">خدمات رئيسية</h3>
+          <ul className="mt-4 space-y-2 text-sm">
             <li>ICT Infrastructure</li>
-
-            <li>Enterprise Networking</li>
-
-            <li>Cyber Security</li>
-
             <li>Data Centers</li>
-
-            <li>Cloud Solutions</li>
-
-            <li>Engineering Consultancy</li>
-
+            <li>Enterprise Networks</li>
+            <li>ELV & Smart Systems</li>
           </ul>
-
         </div>
 
         <div>
-
-          <h3 className="text-xl font-black">
-            روابط سريعة
-          </h3>
-
-          <ul className="mt-6 space-y-3 text-slate-300">
-
-            <li>
-              <a href="#home">الرئيسية</a>
-            </li>
-
-            <li>
-              <a href="#about">من نحن</a>
-            </li>
-
-            <li>
-              <a href="#services">الخدمات</a>
-            </li>
-
-            <li>
-              <a href="#projects">المشاريع</a>
-            </li>
-
-            <li>
-              <a href="#contact">اتصل بنا</a>
-            </li>
-
+          <h3 className="text-sm font-black text-[#0f2747]">روابط</h3>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li><a href="#about" className="hover:text-[#0f2747]">عن الشركة</a></li>
+            <li><a href="#services" className="hover:text-[#0f2747]">الخدمات</a></li>
+            <li><a href="#projects" className="hover:text-[#0f2747]">المشاريع</a></li>
+            <li><a href="#technology" className="hover:text-[#0f2747]">التقنيات</a></li>
           </ul>
-
         </div>
 
         <div>
-
-          <h3 className="text-xl font-black">
-            تواصل معنا
-          </h3>
-
-          <div className="mt-6 space-y-4 text-slate-300">
-
-            <p className="flex items-center gap-3">
-              <FaPhone />
-              <a
-                href="tel:+966550073576"
-                dir="ltr"
-                className="[unicode-bidi:isolate] hover:text-white"
-              >
-                +966 55 007 3576
-              </a>
-            </p>
-
-            <p className="flex gap-3">
-              <FaEnvelope />
-              info@basmat-alnawabig.com.sa
-            </p>
-
-            <p className="flex gap-3">
-              <FaLocationDot />
-              الرياض - المملكة العربية السعودية
-            </p>
-
+          <h3 className="text-sm font-black text-[#0f2747]">التواصل</h3>
+          <div className="mt-4 space-y-3 text-sm">
+            <p className="flex items-center gap-3"><FaPhone className="text-slate-400" /><a href="tel:+966550073576" dir="ltr">+966 55 007 3576</a></p>
+            <p className="flex items-center gap-3"><FaEnvelope className="text-slate-400" />info@basmat-alnawabig.com.sa</p>
+            <p className="flex items-center gap-3"><FaLocationDot className="text-slate-400" />الرياض، المملكة العربية السعودية</p>
+            <a href="#" className="inline-flex items-center gap-2 font-black text-[#345a82]"><FaLinkedin /> LinkedIn</a>
           </div>
-
-          <div className="mt-8 flex gap-4 text-2xl">
-
-            <FaLinkedin className="cursor-pointer hover:text-blue-400 transition" />
-
-            <FaFacebook className="cursor-pointer hover:text-blue-400 transition" />
-
-            <FaInstagram className="cursor-pointer hover:text-blue-400 transition" />
-
-            <FaXTwitter className="cursor-pointer hover:text-blue-400 transition" />
-
-          </div>
-
         </div>
-
       </div>
 
-      <div className="border-t border-white/10 py-6 text-center text-sm text-slate-400">
-
+      <div className="border-t border-slate-200 py-5 text-center text-xs text-slate-400">
         © {new Date().getFullYear()} Basmat ICT. All Rights Reserved.
-
       </div>
-
     </footer>
   );
 }

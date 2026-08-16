@@ -1,0 +1,67 @@
+BASMAT ICT — SPRINT 18 FINAL — HR SUITE
+========================================
+
+WHAT THIS FINAL SPRINT CONSOLIDATES
+- HR employee identity
+- automatic employee number
+- prevent duplicate employee records
+- employee edit/reactivation flow
+- admin-access linking by same auth_user_id
+- roles: admin / manager / sales / engineer / support / hr / finance
+- permissions: HR / Payroll / Finance keys
+- Attendance check-in / check-out
+- Leave request / approval / rejection
+- App routes + Sidebar + Access Control + HR UI
+
+IMPORTANT VERIFIED FACT
+Your current role CHECK constraints allowed only:
+admin, manager, sales, engineer, support.
+This SQL safely extends BOTH existing constraints to also allow:
+hr, finance.
+
+PRE-FLIGHT
+The SQL checks the required existing tables/columns BEFORE changing anything.
+If the schema is not what we reviewed, it stops with PRE-FLIGHT FAILED.
+
+DOES NOT TOUCH
+- AdminAuthContext.jsx
+- CustomerAuthContext.jsx
+- Reset Password
+- MFA / 2FA
+- school_* tables
+- project/invoice/payment duplicate-table cleanup
+
+INSTALL
+1) Supabase -> SQL Editor
+Run:
+supabase\sprint18_final_hr_suite.sql
+
+2) Make sure SQL finishes successfully and review the three POST-CHECK result sets.
+
+3) PowerShell:
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-18-FINAL-HR-SUITE.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST CHECKLIST
+1. Admin login still works.
+2. Admin > الصلاحيات والأدوار opens with HR + Finance roles.
+3. Save permission matrix without role_check error.
+4. Admin > الموارد البشرية opens.
+5. Search existing user by email.
+6. Existing employee opens edit mode and keeps same EMP number.
+7. New eligible user gets one automatic EMP number.
+8. Enable admin access + choose role + save.
+9. Login as that employee.
+10. الحضور والإجازات: check in, check out, leave request.
+11. Admin/HR: approve/reject leave.
+12. Confirm no school_* page/table was touched by this Sprint.
+
+GITHUB
+Do NOT push until all 12 tests pass.
+Then:
+git add .
+git commit -m "Sprint 18 FINAL HR suite"
+git push origin main

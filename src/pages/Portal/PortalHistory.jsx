@@ -2,20 +2,30 @@ import { useEffect, useMemo, useState } from "react";
 import {
   FaClockRotateLeft,
   FaFileInvoiceDollar,
+  FaFileLines,
   FaFolderOpen,
   FaHeadset,
+  FaListCheck,
 } from "react-icons/fa6";
 import { supabase } from "../../lib/supabase";
 
 const CLOSED_PROJECT = new Set(["completed","closed","cancelled","canceled","finished"]);
 const CLOSED_TICKET = new Set(["resolved","closed"]);
 const CLOSED_INVOICE = new Set(["paid","cancelled","canceled"]);
+const CLOSED_QUOTATION = new Set(["accepted","rejected","expired","cancelled","canceled"]);
+const CLOSED_REQUEST = new Set(["completed","closed","cancelled","canceled","finished"]);
 
 export default function PortalHistory() {
   const [tab, setTab] = useState("projects");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const [data, setData] = useState({ projects: [], tickets: [], invoices: [] });
+  const [data, setData] = useState({
+    projects: [],
+    tickets: [],
+    invoices: [],
+    quotations: [],
+    requests: [],
+  });
 
   useEffect(() => { load(); }, []);
 
@@ -23,7 +33,7 @@ export default function PortalHistory() {
     setLoading(true);
     setErrorMessage("");
 
-    const [projects, tickets, invoices] = await Promise.all([
+    const [projects, tickets, invoices, quotations, rfq, consultations] = await Promise.all([
       supabase
         .from("ict_delivery_projects")
         .select("id,project_no,project_name,status,progress,start_date,target_end_date")
@@ -36,12 +46,46 @@ export default function PortalHistory() {
         .from("ict_invoices")
         .select("id,invoice_no,issue_date,due_date,currency,total_amount,amount_paid,balance_due,status")
         .order("created_at", { ascending: false }),
+      supabase
+        .from("ict_quotations")
+        .select("id,quotation_no,subject,total_amount,currency,status,created_at")
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("ict_rfq_requests")
+        .select("id,request_no,project_type,project_description,status,created_at")
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("ict_consultation_requests")
+        .select("id,request_no,consultation_type,subject,details,status,created_at")
+        .order("created_at", { ascending: false }),
     ]);
 
-    const error = projects.error || tickets.error || invoices.error;
+    const error =
+      projects.error ||
+      tickets.error ||
+      invoices.error ||
+      quotations.error ||
+      rfq.error ||
+      consultations.error;
+
     if (error) {
       setErrorMessage(error.message);
     } else {
+      const requests = [
+        ...(rfq.data || []).map((x) => ({
+          ...x,
+          type: "rfq",
+          title: x.project_type || "طلب عرض سعر",
+        })),
+        ...(consultations.data || []).map((x) => ({
+          ...x,
+          type: "consultation",
+          title: x.subject || x.consultation_type || "استشارة",
+        })),
+      ]
+        .filter((x) => CLOSED_REQUEST.has(String(x.status || "").toLowerCase()))
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
       setData({
         projects: (projects.data || []).filter((x) =>
           CLOSED_PROJECT.has(String(x.status || "").toLowerCase())
@@ -52,6 +96,10 @@ export default function PortalHistory() {
         invoices: (invoices.data || []).filter((x) =>
           CLOSED_INVOICE.has(String(x.status || "").toLowerCase())
         ),
+        quotations: (quotations.data || []).filter((x) =>
+          CLOSED_QUOTATION.has(String(x.status || "").toLowerCase())
+        ),
+        requests,
       });
     }
     setLoading(false);
@@ -61,6 +109,8 @@ export default function PortalHistory() {
     ["projects", "المشاريع", FaFolderOpen, data.projects.length],
     ["tickets", "الدعم", FaHeadset, data.tickets.length],
     ["invoices", "الفواتير", FaFileInvoiceDollar, data.invoices.length],
+    ["quotations", "عروض الأسعار", FaFileLines, data.quotations.length],
+    ["requests", "الطلبات", FaListCheck, data.requests.length],
   ], [data]);
 
   return (
@@ -124,33 +174,59 @@ function HistoryRows({ type, rows }) {
 
   return (
     <div className="space-y-4">
-      {rows.map((row) => (
-        <article key={row.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p dir="ltr" className="text-right text-sm font-black text-blue-700">
-                {type === "projects" ? row.project_no : type === "tickets" ? row.ticket_no : row.invoice_no}
-              </p>
-              <h2 className="mt-2 text-xl font-black text-[#071d49]">
-                {type === "projects" ? row.project_name : type === "tickets" ? row.subject : "فاتورة"}
-              </h2>
-            </div>
-            <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-black text-slate-700">
-              {row.status || "—"}
-            </span>
-          </div>
+      {rows.map((row) => {
+        const number =
+          type === "projects" ? row.project_no :
+          type === "tickets" ? row.ticket_no :
+          type === "invoices" ? row.invoice_no :
+          type === "quotations" ? row.quotation_no :
+          row.request_no;
 
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-500">
-            {type === "projects" && <span>الإنجاز: {Number(row.progress || 0)}%</span>}
-            {type === "tickets" && row.priority && <span>الأولوية: {row.priority}</span>}
-            {type === "invoices" && (
-              <span dir="ltr">
-                {Number(row.total_amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })} {row.currency || "SAR"}
+        const title =
+          type === "projects" ? row.project_name :
+          type === "tickets" ? row.subject :
+          type === "invoices" ? "فاتورة" :
+          type === "quotations" ? (row.subject || "عرض سعر") :
+          row.title;
+
+        return (
+          <article key={`${type}-${row.id}`} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p dir="ltr" className="text-right text-sm font-black text-blue-700">
+                  {number || "—"}
+                </p>
+                <h2 className="mt-2 text-xl font-black text-[#071d49]">
+                  {title || "—"}
+                </h2>
+                {type === "requests" && (
+                  <p className="mt-2 text-sm text-slate-500">
+                    {row.type === "rfq" ? "طلب عرض سعر" : "استشارة"}
+                  </p>
+                )}
+              </div>
+              <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-black text-slate-700">
+                {row.status || "—"}
               </span>
-            )}
-          </div>
-        </article>
-      ))}
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-500">
+              {type === "projects" && <span>الإنجاز: {Number(row.progress || 0)}%</span>}
+              {type === "tickets" && row.priority && <span>الأولوية: {row.priority}</span>}
+              {type === "invoices" && (
+                <span dir="ltr">
+                  {Number(row.total_amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })} {row.currency || "SAR"}
+                </span>
+              )}
+              {type === "quotations" && (
+                <span dir="ltr">
+                  {Number(row.total_amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })} {row.currency || "SAR"}
+                </span>
+              )}
+            </div>
+          </article>
+        );
+      })}
     </div>
   );
 }

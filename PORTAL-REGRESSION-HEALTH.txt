@@ -1,0 +1,37 @@
+BASMAT ICT — PORTAL REGRESSION AUDIT
+====================================
+
+Source reviewed:
+Basmat-ICT (2).zip — current full project supplied by user.
+
+Root cause found:
+CustomerPortalLayout already contains a link to /portal/history,
+and PortalHistory.jsx already exists,
+but src/App.jsx did NOT register the history route.
+
+Fix applied:
+- Import PortalHistory in src/App.jsx
+- Add nested route: /portal/history
+- No other route changed.
+- No Portal layout changed.
+- No Admin route changed.
+- No Auth context changed.
+
+ROUTE HEALTH:
+[PASS] /portal
+[PASS] /portal/requests
+[PASS] /portal/quotations
+[PASS] /portal/projects
+[PASS] /portal/invoices
+[PASS] /portal/documents
+[PASS] /portal/support
+[PASS] /portal/notifications
+[PASS] /portal/history
+[PASS] /portal/login
+[PASS] /portal/register
+[PASS] /portal/reset-password
+[PASS] /portal/nda/:id
+[PASS] /portal/quotations/:id
+
+RESULT:
+[PASS] All currently expected Portal navigation routes are registered.

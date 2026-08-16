@@ -22,15 +22,6 @@ import AdminAnalytics from "./pages/Admin/AdminAnalytics";
 import AdminAccessControl from "./pages/Admin/AdminAccessControl";
 import AdminActivityLog from "./pages/Admin/AdminActivityLog";
 import AdminHR from "./pages/Admin/AdminHR";
-import AdminPayroll from "./pages/Admin/AdminPayroll";
-import AdminProjectCostControl from "./pages/Admin/AdminProjectCostControl";
-import AdminExecutiveControl from "./pages/Admin/AdminExecutiveControl";
-import AdminFinancialPlanning from "./pages/Admin/AdminFinancialPlanning";
-import AdminTreasury from "./pages/Admin/AdminTreasury";
-import AdminFinance from "./pages/Admin/AdminFinance";
-import AdminAccounting from "./pages/Admin/AdminAccounting";
-import AdminInventoryAssets from "./pages/Admin/AdminInventoryAssets";
-import AdminProcurement from "./pages/Admin/AdminProcurement";
 import AdminAttendanceLeave from "./pages/Admin/AdminAttendanceLeave";
 import AdminAccessDenied from "./pages/Admin/AdminAccessDenied";
 import AdminExecutiveReports from "./pages/Admin/AdminExecutiveReports";
@@ -38,6 +29,7 @@ import AdminConsultations from "./pages/Admin/AdminConsultations";
 import AdminContacts from "./pages/Admin/AdminContacts";
 import AdminCustomers from "./pages/Admin/AdminCustomers";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminERPFoundation from "./pages/Admin/AdminERPFoundation";
 import AdminDocuments from "./pages/Admin/AdminDocuments";
 import AdminFollowUps from "./pages/Admin/AdminFollowUps";
 import AdminLogin from "./pages/Admin/AdminLogin";
@@ -78,7 +70,6 @@ import PortalQuotationDetail from "./pages/Portal/PortalQuotationDetail";
 import PortalQuotations from "./pages/Portal/PortalQuotations";
 import PortalRequests from "./pages/Portal/PortalRequests";
 import PortalSupport from "./pages/Portal/PortalSupport";
-import PortalHistory from "./pages/Portal/PortalHistory";
 import PortalResetPassword from "./pages/Portal/PortalResetPassword";
 
 import PortalRegister from "./pages/PortalAuth/PortalRegister";
@@ -123,7 +114,6 @@ export default function App() {
                 <Route path="invoices" element={<PortalInvoices />} />
                 <Route path="documents" element={<PortalDocuments />} />
                 <Route path="support" element={<PortalSupport />} />
-                <Route path="history" element={<PortalHistory />} />
                 <Route path="notifications" element={<PortalNotifications />} />
               </Route>
             </Route>
@@ -136,6 +126,7 @@ export default function App() {
             <Route element={<ProtectedAdminRoute />}>
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminPermissionRoute permission="dashboard"><AdminDashboard /></AdminPermissionRoute>} />
+                <Route path="erp" element={<AdminPermissionRoute permission="dashboard"><AdminERPFoundation /></AdminPermissionRoute>} />
                 <Route path="contacts" element={<AdminPermissionRoute permission="requests"><AdminContacts /></AdminPermissionRoute>} />
                 <Route path="rfqs" element={<AdminPermissionRoute permission="requests"><AdminRFQs /></AdminPermissionRoute>} />
                 <Route path="consultations" element={<AdminPermissionRoute permission="requests"><AdminConsultations /></AdminPermissionRoute>} />
@@ -151,10 +142,6 @@ export default function App() {
                 <Route path="operations" element={<AdminPermissionRoute permission="operations"><AdminOperationsDashboard /></AdminPermissionRoute>} />
                 <Route path="project-management" element={<AdminPermissionRoute permission="operations"><AdminProjectManagement /></AdminPermissionRoute>} />
                 <Route path="project-commercial" element={<AdminPermissionRoute permission="operations"><AdminProjectCommercial /></AdminPermissionRoute>} />
-                <Route path="project-cost-control" element={<AdminPermissionRoute permission="project_cost_control"><AdminProjectCostControl /></AdminPermissionRoute>} />
-                <Route path="executive-control" element={<AdminPermissionRoute permission="executive_control"><AdminExecutiveControl /></AdminPermissionRoute>} />
-                <Route path="financial-planning" element={<AdminPermissionRoute permission="financial_planning"><AdminFinancialPlanning /></AdminPermissionRoute>} />
-                <Route path="treasury" element={<AdminPermissionRoute permission="treasury"><AdminTreasury /></AdminPermissionRoute>} />
                 <Route path="project-documents" element={<AdminPermissionRoute permission="documents"><AdminProjectDocuments /></AdminPermissionRoute>} />
                 <Route path="support" element={<AdminPermissionRoute permission="support"><AdminSupportTickets /></AdminPermissionRoute>} />
 
@@ -172,11 +159,6 @@ export default function App() {
                 <Route path="settings" element={<AdminPermissionRoute permission="content"><AdminSettings /></AdminPermissionRoute>} />
                 <Route path="activity-log" element={<RequireAdminPermission permission="access_control"><AdminActivityLog /></RequireAdminPermission>} />
                 <Route path="hr" element={<AdminPermissionRoute permission="hr"><AdminHR /></AdminPermissionRoute>} />
-                <Route path="payroll" element={<AdminPermissionRoute permission="payroll"><AdminPayroll /></AdminPermissionRoute>} />
-                <Route path="finance" element={<AdminPermissionRoute permission="finance"><AdminFinance /></AdminPermissionRoute>} />
-                <Route path="accounting" element={<AdminPermissionRoute permission="accounting"><AdminAccounting /></AdminPermissionRoute>} />
-                <Route path="inventory-assets" element={<AdminPermissionRoute permission="inventory"><AdminInventoryAssets /></AdminPermissionRoute>} />
-                <Route path="procurement" element={<AdminPermissionRoute permission="procurement"><AdminProcurement /></AdminPermissionRoute>} />
                 <Route path="attendance-leave" element={<AdminAttendanceLeave />} />
                 <Route path="access-control" element={<RequireAdminPermission permission="access_control"><AdminAccessControl /></RequireAdminPermission>} />
                 <Route path="access-denied" element={<AdminAccessDenied />} />

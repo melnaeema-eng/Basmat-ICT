@@ -54,3 +54,116 @@ a {
 .input:focus {
   border-color: rgb(59 130 246);
 }
+
+
+/* ==========================================================
+   BASMAT ERP — Enterprise UI System
+   Sprint 19 UI/UX Transformation
+   ========================================================== */
+:root {
+  --erp-ink: #0f2747;
+  --erp-ink-2: #345a82;
+  --erp-bg: #f5f7fa;
+  --erp-line: #e5eaf0;
+  --erp-muted: #667085;
+  --erp-accent: #e96f20;
+  --erp-accent-soft: #fff3e8;
+  --erp-success: #17875d;
+  --erp-danger: #c43b4d;
+}
+
+body { background: var(--erp-bg); color: #26354a; }
+.erp-shell { background: var(--erp-bg); }
+.erp-page { padding: 1.5rem 1rem 3rem; }
+@media (min-width: 768px) { .erp-page { padding: 2rem 2rem 4rem; } }
+
+.erp-card {
+  border: 1px solid var(--erp-line);
+  border-radius: 1rem;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 1px 2px rgba(15,39,71,.025), 0 6px 20px rgba(15,39,71,.035);
+}
+
+.erp-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--erp-line);
+  padding: .5rem 0 1.35rem;
+}
+.erp-eyebrow {
+  color: #8290a3;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+.erp-page-title {
+  margin-top: .35rem;
+  color: var(--erp-ink);
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -.025em;
+}
+.erp-page-subtitle {
+  margin-top: .4rem;
+  color: var(--erp-muted);
+  font-size: .9rem;
+  line-height: 1.8;
+}
+
+.erp-btn-primary,
+.erp-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 2.5rem;
+  border-radius: .7rem;
+  padding: .6rem .9rem;
+  font-size: .82rem;
+  font-weight: 800;
+}
+.erp-btn-primary { background: var(--erp-ink); color: white; }
+.erp-btn-primary:hover { background: #17375f; }
+.erp-btn-secondary {
+  border: 1px solid var(--erp-line);
+  background: white;
+  color: #46576c;
+}
+.erp-btn-secondary:hover { border-color: #cbd5df; background: #fafbfc; color: var(--erp-ink); }
+
+.erp-sidebar .active { color: var(--erp-accent); }
+.erp-scroll { scrollbar-width: thin; scrollbar-color: #d9e0e8 transparent; }
+
+.form-input, .input {
+  border-color: #d9e0e8;
+  border-radius: .7rem;
+  min-height: 2.7rem;
+  font-size: .9rem;
+}
+.form-input:focus, .input:focus {
+  border-color: #7894b2;
+  box-shadow: 0 0 0 3px rgba(52,90,130,.10);
+}
+
+/* Normalize legacy admin surfaces without touching business logic */
+main [class*="rounded-3xl"][class*="bg-white"] {
+  border-radius: 1rem;
+}
+main table {
+  font-size: .875rem;
+}
+main thead {
+  color: #667085;
+  background: #f8fafc;
+}
+main th {
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .01em;
+}
+main tbody tr {
+  border-color: #eef1f4;
+}

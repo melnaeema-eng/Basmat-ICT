@@ -1,0 +1,33 @@
+BASMAT ICT — SPRINT 17B SAFE
+================================
+
+هذه المرحلة صغيرة ومقصودة:
+- تجعل عداد المشاريع في لوحة العميل يحسب المشاريع النشطة فقط.
+- تجعل عداد الفواتير يحسب الفواتير النشطة فقط.
+- توحّد جدول الفواتير مع الجدول المستخدم فعليًا في PortalInvoices: ict_invoices.
+- لا تغيّر صفحة الإشعارات نفسها؛ الإشعارات المقروءة تبقى كسجل، والمؤشر غير المقروء يعمل كما هو.
+
+IMPORTANT:
+لا Auth
+لا 2FA
+لا Reset Password
+لا Access Control
+لا SQL
+لا Edge Functions
+
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-17B-SAFE.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST:
+1) افتح /portal
+2) تأكد أن "المشاريع النشطة" لا تشمل completed/closed/cancelled.
+3) تأكد أن "الفواتير النشطة" لا تشمل paid/cancelled.
+4) افتح /portal/history وتأكد أن المنتهية ما زالت موجودة.
+5) افتح /portal/notifications وتأكد أن الإشعارات ما زالت تعمل ولم تتغير.
+
+لا ترفع GitHub قبل نجاح الاختبار.

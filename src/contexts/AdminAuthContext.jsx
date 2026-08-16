@@ -58,21 +58,32 @@ export function AdminAuthProvider({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      async (_event, nextSession) => {
-        setSession(nextSession);
+  (_event, nextSession) => {
+    setSession(nextSession);
 
-        if (nextSession?.user) {
-          await loadAdminProfile(nextSession.user.id);
-          await refreshMfaState();
-        } else {
-          setAdminProfile(null);
-          setPermissions([]);
-          resetMfaState();
-        }
+    if (!nextSession?.user) {
+      setAdminProfile(null);
+      setPermissions([]);
+      resetMfaState();
+      setLoading(false);
+      return;
+    }
 
+    setTimeout(async () => {
+      try {
+        await loadAdminProfile(nextSession.user.id);
+        await refreshMfaState();
+      } catch (error) {
+        console.error(
+          "خطأ تحديث جلسة الإدارة:",
+          error
+        );
+      } finally {
         setLoading(false);
       }
-    );
+    }, 0);
+  }
+);
 
     return () => {
       mounted = false;

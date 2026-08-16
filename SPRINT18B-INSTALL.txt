@@ -1,0 +1,14 @@
+SPRINT 18B
+1. Run supabase/sprint18b_unified_employee.sql in Supabase SQL Editor.
+2. PowerShell:
+cd C:\projects\Basmat-ICT
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-18B-Unified-Employee-SAFE.zip" -DestinationPath . -Force
+npm run dev
+3. Open Admin > الموارد البشرية.
+4. Enter existing email and click search.
+5. Name auto-fills when available.
+6. Complete department/job title and hire.
+7. Employee number is automatic EMP-xxxx.
+
+App.jsx and Sidebar.jsx are already connected from the working 18A and are not changed in 18B.
+No Auth/Reset/2FA changes.

@@ -1,0 +1,18 @@
+SPRINT 19 VALIDATION
+
+[PASS] Built directly from the uploaded full project: Basmat-ICT (2).zip
+[PASS] Existing App routes preserved
+[PASS] Existing permission mapping preserved
+[PASS] No SQL/database changes
+[PASS] No Auth/Reset Password/2FA changes
+[PASS] No school_* changes
+[PASS] New /admin/erp route and page are present
+[PASS] Sidebar reorganized around ERP domains
+
+LOCAL CONTAINER BUILD:
+Could not complete Vite build in the tool container because the uploaded
+node_modules is missing Rollup's Linux optional native package
+@rollup/rollup-linux-x64-gnu. This is an environment dependency issue,
+not a reported source-code error.
+
+Run npm run build on the Windows project after installation.

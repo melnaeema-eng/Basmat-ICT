@@ -1,0 +1,32 @@
+BASMAT ICT — SPRINT 19 — ERP FOUNDATION
+========================================
+
+This sprint starts the ERP conversion using the uploaded current full project.
+
+CHANGES
+- BASMAT ERP navigation structure.
+- ERP Leadership / Sales / Projects / HR / Finance / System grouping.
+- New /admin/erp architecture page.
+- Existing routes and permission keys retained.
+- No database migration in this sprint.
+
+NOT TOUCHED
+- AdminAuthContext.jsx
+- CustomerAuthContext.jsx
+- Reset Password
+- MFA / 2FA
+- school_* tables
+
+INSTALL
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-19-ERP-FOUNDATION.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST
+1. Admin login.
+2. Sidebar header = BASMAT ERP.
+3. Open خريطة ERP.
+4. CRM / Projects / HR / Support existing links still open.
+5. Permissions still hide unauthorized modules.

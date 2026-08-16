@@ -15,13 +15,15 @@ export default function PortalQuotations() {
       .order("created_at", { ascending: false });
 
     if (error) setErrorMessage(error.message);
-    else setRows(
-      (data || []).filter(
-        (row) => !["accepted", "rejected", "expired", "cancelled", "canceled"].includes(
-          String(row.status || "").toLowerCase()
+    else
+      setRows(
+        (data || []).filter(
+          (row) =>
+            !["accepted", "rejected", "expired", "cancelled", "canceled"].includes(
+              String(row.status || "").toLowerCase()
+            )
         )
-      )
-    );
+      );
   }
 
   return (

@@ -1,8 +1,13 @@
 import {
   FaBell,
   FaCalendarCheck,
+  FaClockRotateLeft,
+  FaCalendarDays,
   FaChartPie,
   FaChartSimple,
+  FaGaugeHigh,
+  FaChartLine,
+  FaBuildingColumns,
   FaEnvelope,
   FaFileInvoiceDollar,
   FaFolderOpen,
@@ -13,8 +18,13 @@ import {
   FaHeadset,
   FaLayerGroup,
   FaListCheck,
+  FaMoneyBillTrendUp,
+  FaBookOpen,
+  FaBoxesStacked,
+  FaCartShopping,
   FaScrewdriverWrench,
   FaUserGroup,
+  FaSackDollar,
   FaUsers,
   FaUserTie,
 } from "react-icons/fa6";
@@ -43,6 +53,7 @@ const groups = [
       ["الإشعارات", "/admin/notifications", FaBell],
       ["التحليلات", "/admin/analytics", FaChartSimple],
       ["التقارير التنفيذية", "/admin/executive-reports", FaChartPie],
+      ["مركز القيادة والحوكمة", "/admin/executive-control", FaGaugeHigh],
       ["فريق العمل", "/admin/team", FaUserGroup],
     ],
   },
@@ -59,8 +70,20 @@ const groups = [
       ["Operations Dashboard", "/admin/operations", FaChartSimple],
       ["إدارة المشاريع", "/admin/project-management", FaLayerGroup],
       ["التنفيذ والتجاري", "/admin/project-commercial", FaListCheck],
+      ["تكلفة وربحية المشاريع", "/admin/project-cost-control", FaChartLine],
       ["مستندات المشاريع", "/admin/project-documents", FaFolderOpen],
       ["الدعم والتذاكر", "/admin/support", FaHeadset],
+    ],
+  },
+  {
+    title: "المالية والمشتريات",
+    items: [
+      ["المالية والتحصيل", "/admin/finance", FaMoneyBillTrendUp],
+      ["المحاسبة والقيود", "/admin/accounting", FaBookOpen],
+      ["التخطيط المالي والميزانيات", "/admin/financial-planning", FaChartLine],
+      ["الخزينة والذمم", "/admin/treasury", FaBuildingColumns],
+      ["المشتريات والموردون", "/admin/procurement", FaCartShopping],
+      ["المخزون والأصول", "/admin/inventory-assets", FaBoxesStacked],
     ],
   },
   {
@@ -68,6 +91,9 @@ const groups = [
     items: [
       ["الصلاحيات والأدوار", "/admin/access-control", FaShieldHalved],
       ["الأمان و2FA", "/admin/mfa", FaShieldHalved],
+      ["سجل النشاط", "/admin/activity-log", FaClockRotateLeft],
+      ["الموارد البشرية", "/admin/hr", FaUserGroup],
+      ["الحضور والإجازات", "/admin/attendance-leave", FaCalendarDays],
     ],
   },
   {
@@ -87,13 +113,25 @@ const permissionForPath = (path) => {
   if (["/admin/crm","/admin/customers","/admin/pipeline","/admin/followups"].includes(path)) return "crm";
   if (path.startsWith("/admin/quotations")) return "quotations";
   if (["/admin/operations","/admin/project-management","/admin/project-commercial"].includes(path)) return "operations";
+  if (path === "/admin/project-cost-control") return "project_cost_control";
   if (path === "/admin/project-documents") return "documents";
   if (path === "/admin/support") return "support";
   if (path === "/admin/notifications") return "notifications";
   if (["/admin/analytics","/admin/executive-reports"].includes(path)) return "reports";
+  if (path === "/admin/executive-control") return "executive_control";
   if (path === "/admin/team") return "team";
   if (path === "/admin/access-control") return "access_control";
   if (path === "/admin/mfa") return null;
+  if (path === "/admin/activity-log") return "access_control";
+  if (path === "/admin/hr") return "hr";
+  if (path === "/admin/payroll") return "payroll";
+  if (path === "/admin/finance") return "finance";
+  if (path === "/admin/accounting") return "accounting";
+  if (path === "/admin/financial-planning") return "financial_planning";
+  if (path === "/admin/treasury") return "treasury";
+  if (path === "/admin/procurement") return "procurement";
+  if (path === "/admin/inventory-assets") return "inventory";
+  if (path === "/admin/attendance-leave") return null;
   if (["/admin/projects","/admin/services","/admin/partners","/admin/settings"].includes(path)) return "content";
   return "dashboard";
 };
@@ -104,25 +142,25 @@ export default function Sidebar({ menuOpen, onClose }) {
   return (
     <aside
       className={[
-        "fixed inset-y-0 right-0 z-40 w-72 bg-[#041632] text-white shadow-2xl transition-transform duration-300 lg:translate-x-0",
+        "erp-sidebar fixed inset-y-0 right-0 z-40 w-72 border-l border-slate-200 bg-white text-slate-700 shadow-[0_12px_40px_rgba(15,23,42,0.08)] transition-transform duration-300 lg:translate-x-0",
         menuOpen ? "translate-x-0" : "translate-x-full",
       ].join(" ")}
     >
-      <div className="flex min-h-28 items-center gap-4 border-b border-white/10 px-6">
+      <div className="flex min-h-24 items-center gap-3 border-b border-slate-100 px-5">
         <img src="/logo.png" alt="بصمة النوابغ"
-          className="h-16 w-16 rounded-full bg-white object-contain" />
+          className="h-12 w-12 rounded-2xl border border-slate-100 bg-white object-contain p-1 shadow-sm" />
         <div>
-          <h1 className="text-xl font-black">بصمة النوابغ</h1>
-          <p className="mt-1 text-xs font-bold tracking-wider text-blue-200">
-            ADMIN PORTAL
+          <h1 className="text-[17px] font-black text-[#0f2747]">بصمة النوابغ</h1>
+          <p className="mt-1 text-[10px] font-black tracking-[0.16em] text-slate-400">
+            BASMAT ERP
           </p>
         </div>
       </div>
 
-      <nav className="flex h-[calc(100vh-7rem)] flex-col overflow-y-auto px-4 py-6">
+      <nav className="erp-scroll flex h-[calc(100vh-6rem)] flex-col overflow-y-auto px-3 py-5">
         {visibleGroups.map((group, index) => (
           <div key={group.title} className={index ? "mt-8" : ""}>
-            <p className="px-3 text-xs font-black tracking-wider text-blue-300">
+            <p className="px-3 text-[11px] font-black tracking-wide text-slate-400">
               {group.title}
             </p>
 
@@ -135,14 +173,14 @@ export default function Sidebar({ menuOpen, onClose }) {
                   onClick={onClose}
                   className={({ isActive }) =>
                     [
-                      "flex items-center gap-3 rounded-2xl px-4 py-4 font-bold transition",
+                      "flex items-center gap-3 rounded-xl px-3.5 py-3 text-[14px] font-bold transition",
                       isActive
-                        ? "bg-[#ff7417] text-white shadow-lg"
-                        : "text-blue-100 hover:bg-white/10",
+                        ? "bg-[#ff7417] text-white shadow-sm ring-1 ring-[#ff7417]"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-[#0f2747]",
                     ].join(" ")
                   }
                 >
-                  <Icon className="text-xl" />
+                  <Icon className="text-[17px]" />
                   {label}
                 </NavLink>
               ))}
@@ -152,7 +190,7 @@ export default function Sidebar({ menuOpen, onClose }) {
 
         <div className="mt-auto pt-8">
           <Link to="/"
-            className="flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-4 font-bold">
+            className="flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-bold text-slate-600 hover:border-slate-300 hover:bg-white">
             <FaHouse />
             العودة إلى الموقع
           </Link>

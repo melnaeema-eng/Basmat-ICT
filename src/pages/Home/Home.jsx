@@ -7,85 +7,80 @@ import Services from "../../components/Services/Services";
 import Hero from "../../components/Hero/Hero";
 
 import {
-  FaBuilding,
-  FaChartLine,
-  FaHeadset,
-  FaShieldHalved,
+  FaArrowTrendUp,
+  FaDiagramProject,
+  FaHelmetSafety,
+  FaScrewdriverWrench,
 } from "react-icons/fa6";
+
+const capabilities = [
+  {
+    icon: FaDiagramProject,
+    title: "تصميم واستشارات",
+    text: "تصميم هندسي، BoQ، مراجعات فنية، نطاقات عمل ومخططات تنفيذية.",
+  },
+  {
+    icon: FaHelmetSafety,
+    title: "تنفيذ وإدارة مشاريع",
+    text: "إدارة التنفيذ والموردين والمخاطر والجودة والتسليم وفق خطة واضحة.",
+  },
+  {
+    icon: FaScrewdriverWrench,
+    title: "تشغيل ودعم",
+    text: "اختبار وتكليف وصيانة ودعم فني بعد التسليم لضمان استمرارية الخدمة.",
+  },
+  {
+    icon: FaArrowTrendUp,
+    title: "تطوير وتوسع",
+    text: "حلول قابلة للتوسع تواكب نمو المؤسسة والتحول الرقمي المستقبلي.",
+  },
+];
 
 export default function Home() {
   return (
     <>
       <Hero />
 
-      {/* About */}
-      <section
-        id="about"
-        className="bg-white py-24"
-      >
-        <div className="company-container grid items-center gap-16 lg:grid-cols-2">
-          <div>
-            <span className="font-bold text-blue-700">
-              ABOUT BASMAT ICT
-            </span>
-
-            <h2 className="mt-4 text-4xl font-black text-slate-900">
-              بصمة النوابغ للمقاولات
-              <br />
-              والاستشارات
-            </h2>
-
-            <p className="mt-6 text-lg leading-9 text-slate-600">
-              شركة سعودية متخصصة في تقديم حلول الاتصالات وتقنية
-              المعلومات، مراكز البيانات، الشبكات، الأمن السيبراني،
-              الأنظمة منخفضة التيار، والاستشارات الهندسية، مع
-              الالتزام بأعلى معايير الجودة والابتكار.
-            </p>
-
-            <div className="mt-10 grid gap-5 sm:grid-cols-2">
-              <Feature
-                icon={<FaBuilding />}
-                title="خبرة هندسية"
-                text="حلول احترافية للمشاريع الحكومية والخاصة."
-              />
-
-              <Feature
-                icon={<FaShieldHalved />}
-                title="جودة عالية"
-                text="تنفيذ وفق أفضل الممارسات العالمية."
-              />
-
-              <Feature
-                icon={<FaChartLine />}
-                title="حلول متطورة"
-                text="تصميم وتنفيذ وتشغيل وصيانة."
-              />
-
-              <Feature
-                icon={<FaHeadset />}
-                title="دعم فني"
-                text="فريق متخصص لخدمة العملاء."
-              />
-            </div>
-          </div>
-
-          <div>
-            <div className="rounded-3xl bg-gradient-to-br from-[#0b2d6d] to-[#123878] p-10 text-white shadow-2xl">
-              <h3 className="text-3xl font-black">
-                لماذا بصمة النوابغ؟
-              </h3>
-
-              <p className="mt-6 leading-8 text-blue-100">
-                نؤمن بأن نجاح أي مشروع يبدأ من التخطيط الصحيح
-                وينتهي بالتنفيذ الاحترافي والمتابعة المستمرة.
+      <section id="about" className="bg-white py-20 md:py-24">
+        <div className="company-container">
+          <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="lg:sticky lg:top-28">
+              <span className="text-xs font-black tracking-[0.18em] text-[#e96f20]">
+                ABOUT BASMAT ICT
+              </span>
+              <h2 className="mt-4 text-3xl font-black leading-[1.4] text-[#0f2747] md:text-4xl">
+                شريك تقني يفهم المشروع
+                <br />
+                من زاوية الأعمال والهندسة.
+              </h2>
+              <p className="mt-6 max-w-xl text-base leading-8 text-slate-600">
+                بصمة النوابغ شركة سعودية تقدم حلول ICT والاتصالات ومراكز البيانات
+                والشبكات وELV والاستشارات الهندسية. نركز على بناء حلول عملية، موثوقة،
+                قابلة للتشغيل والتوسع، وليس مجرد توريد منتجات.
               </p>
 
-              <div className="mt-10 grid grid-cols-2 gap-6">
-                <Stat number="50+" title="مشروع" />
-                <Stat number="20+" title="عميل" />
-                <Stat number="10+" title="سنوات خبرة" />
-                <Stat number="24/7" title="دعم فني" />
+              <div className="mt-8 border-r-2 border-[#e96f20] pr-5">
+                <p className="text-sm font-black text-[#0f2747]">منهجنا</p>
+                <p className="mt-2 text-sm leading-7 text-slate-500">
+                  نفهم المتطلبات ← نصمم الحل ← ننفذ باحتراف ← نختبر ونوثق ← ندعم التشغيل.
+                </p>
               </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {capabilities.map(({ icon: Icon, title, text }, index) => (
+                <article
+                  key={title}
+                  className="rounded-2xl border border-slate-200 bg-[#fbfcfd] p-6 transition hover:border-slate-300 hover:bg-white hover:shadow-[0_14px_35px_rgba(15,39,71,0.06)]"
+                >
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-xl text-[#345a82] shadow-sm ring-1 ring-slate-100">
+                    <Icon />
+                  </div>
+                  <p className="mt-5 text-xs font-black tracking-wider text-slate-300">0{index + 1}</p>
+                  <h3 className="mt-1 text-xl font-black text-[#0f2747]">{title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-500">{text}</p>
+                </article>
+              ))}
             </div>
           </div>
         </div>
@@ -98,37 +93,5 @@ export default function Home() {
       <CTA />
       <Footer />
     </>
-  );
-}
-
-function Feature({ icon, title, text }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 p-5 transition hover:shadow-lg">
-      <div className="text-3xl text-blue-700">
-        {icon}
-      </div>
-
-      <h3 className="mt-4 text-xl font-bold">
-        {title}
-      </h3>
-
-      <p className="mt-2 leading-7 text-slate-600">
-        {text}
-      </p>
-    </div>
-  );
-}
-
-function Stat({ number, title }) {
-  return (
-    <div className="rounded-2xl bg-white/10 p-6 text-center">
-      <h3 className="text-4xl font-black">
-        {number}
-      </h3>
-
-      <p className="mt-2 text-blue-100">
-        {title}
-      </p>
-    </div>
   );
 }

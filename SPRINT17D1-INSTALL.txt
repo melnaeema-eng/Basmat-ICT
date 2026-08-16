@@ -1,0 +1,18 @@
+BASMAT ICT — SPRINT 17D.1 SAFE
+
+Adds "سجل النشاط" to Admin Sidebar under "إدارة النظام".
+Route expected from successful 17D:
+ /admin/activity-log
+
+PowerShell:
+cd C:\projects\Basmat-ICT
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-17D1-SAFE.zip" -DestinationPath . -Force
+npm run dev
+
+Test:
+Admin > إدارة النظام > سجل النشاط
+
+No SQL.
+No Auth changes.
+No Reset Password.
+No 2FA changes.

@@ -1,0 +1,28 @@
+BASMAT ICT — SPRINT 17C SAFE
+
+Changes only:
+1) PortalHistory.jsx
+   - Adds finished quotations to History.
+   - Adds completed/cancelled RFQ & Consultation requests to History.
+2) PortalQuotations.jsx
+   - Hides accepted/rejected/expired/cancelled quotations from the active quotations page.
+
+No SQL.
+No Edge Functions.
+No Auth.
+No 2FA.
+No Reset Password.
+No Access Control.
+
+PowerShell:
+cd C:\projects\Basmat-ICT
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-17C-SAFE.zip" -DestinationPath . -Force
+npm run dev
+
+TEST:
+1) /portal/quotations
+2) /portal/requests
+3) /portal/history
+4) In History, check tabs: عروض الأسعار + الطلبات
+
+Do not push GitHub until these tests pass.

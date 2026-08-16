@@ -1,0 +1,45 @@
+BASMAT ICT — SPRINT 18D SAFE
+Attendance + Leave
+===================
+
+IMPORTANT
+- Built on the confirmed existing table: public.ict_hr_employees
+- Creates ONLY the missing ICT tables:
+  1) ict_hr_attendance
+  2) ict_hr_leave_requests
+- Does NOT touch school_* tables.
+- Does NOT replace or modify AdminAuthContext.jsx.
+- Therefore your manual login/deadlock fix remains untouched.
+
+STEP 1 — Supabase SQL Editor
+Run:
+supabase\sprint18d_attendance_leave.sql
+
+STEP 2 — PowerShell
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-18D-Attendance-Leave-SAFE.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST
+1. Login as an employee linked to ict_hr_employees.auth_user_id.
+2. Open Admin > الحضور والإجازات.
+3. Click تسجيل حضور.
+4. Click تسجيل انصراف.
+5. Submit a leave request.
+6. Login as Admin/HR and approve or reject the leave.
+7. Admin/HR should also see the recent attendance list.
+
+FILES CHANGED
+- src/App.jsx
+- src/components/admin/Sidebar.jsx
+- src/pages/Admin/AdminAttendanceLeave.jsx (new)
+- supabase/sprint18d_attendance_leave.sql (new)
+
+NOT CHANGED
+- AdminAuthContext.jsx
+- CustomerAuthContext.jsx
+- Reset Password
+- 2FA
+- school_* tables

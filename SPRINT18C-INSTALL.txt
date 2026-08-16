@@ -1,0 +1,42 @@
+BASMAT ICT — SPRINT 18C SAFE
+HR -> Admin Access & Module Permissions
+======================================
+
+هذه النسخة متكاملة وتشمل:
+- SQL
+- AdminHR.jsx
+- AdminAccessControl.jsx
+- App.jsx
+- Sidebar.jsx
+- AdminActivityLog.jsx (للحفاظ على 17D)
+
+STEP 1 — Supabase SQL Editor
+Run:
+supabase\sprint18c_admin_permissions.sql
+
+STEP 2 — PowerShell
+cd C:\projects\Basmat-ICT
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-18C-Admin-Permissions-SAFE.zip" -DestinationPath . -Force
+
+npm run dev
+
+TEST
+1) Admin > الموارد البشرية.
+2) افتح موظفًا للتعديل.
+3) فعّل "السماح بدخول صفحة الإدارة".
+4) اختر Role مثل Engineer / Sales / HR / Finance.
+5) Save.
+6) Admin > الصلاحيات والأدوار.
+7) سترى:
+   - Roles: HR, Finance
+   - Permissions: الموارد البشرية، الرواتب، المالية
+8) امنح الدور الموديولات المطلوبة.
+9) سجل دخول الموظف وتأكد أن Sidebar يظهر فقط الموديولات المسموحة.
+
+IMPORTANT
+- نفس auth_user_id يستخدم للعميل والموظف.
+- لا ينشأ Auth user جديد.
+- HR route صار محميًا بصلاحية "hr".
+- Admin يملك صلاحيات HR/Payroll/Finance تلقائيًا.
+- لا يوجد تعديل على Reset Password أو 2FA.

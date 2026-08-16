@@ -1,0 +1,52 @@
+BASMAT ICT — SPRINT 17D SAFE
+================================
+
+الهدف:
+- إنشاء سجل مركزي للحركات المهمة.
+- صفحة Admin لعرض آخر 500 حركة.
+- تجهيز RPC آمن لتسجيل الحركات.
+- هذه المرحلة لا تغيّر Auth/Reset/2FA.
+
+STEP 1 — SQL
+Supabase > SQL Editor
+شغّل:
+supabase\SPRINT-17D-ACTIVITY-LOG.sql
+
+STEP 2 — Install page
+PowerShell:
+
+cd C:\projects\Basmat-ICT
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-17D-SAFE.zip" -DestinationPath . -Force
+
+STEP 3 — App.jsx
+أضف import بجانب Imports صفحات Admin:
+
+import AdminActivityLog from "./pages/Admin/AdminActivityLog";
+
+ثم داخل ProtectedAdminRoute أضف Route:
+
+<Route path="/admin/activity-log" element={<AdminActivityLog />} />
+
+STEP 4 — Test directly
+npm run dev
+
+افتح:
+http://localhost:5173/admin/activity-log
+
+STEP 5 — Create one test log
+بعد تسجيل الدخول، من Browser Console نفّذ (إذا supabase غير متاح في console لا تنفذه؛ استخدم SQL test أدناه):
+
+بديل SQL للاختبار من SQL Editor غير مناسب لأن auth.uid() سيكون null.
+لذلك يكفي أولاً التأكد أن الصفحة تفتح بدون Error.
+
+مهم:
+في 17D.1 سنربط login/logout والعمليات المهمة تلقائياً بعد التأكد أن الجدول والصفحة يعملان.
+هذا يمنع لمس ملفات Auth دفعة واحدة.
+
+NO changes:
+- CustomerAuthContext
+- AdminAuthContext
+- Reset Password
+- MFA / 2FA
+
+لا ترفع GitHub حتى تفتح /admin/activity-log بنجاح.

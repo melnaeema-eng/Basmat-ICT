@@ -83,17 +83,22 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div dir="rtl" className="px-4 py-10 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <section className="rounded-3xl bg-[#041632] p-8 text-white shadow-xl">
-          <span className="font-bold tracking-wider text-cyan-300">ADMIN DASHBOARD</span>
-          <h1 className="mt-3 text-4xl font-black">لوحة إدارة بصمة النوابغ</h1>
-          <p className="mt-4 max-w-3xl leading-8 text-blue-100">متابعة الطلبات وحركة العملاء والدعم والإشعارات من مكان واحد.</p>
+    <div dir="rtl" className="erp-page">
+      <div className="mx-auto max-w-[1500px]">
+        <section className="erp-page-header">
+          <div>
+            <span className="erp-eyebrow">EXECUTIVE OVERVIEW</span>
+            <h1 className="erp-page-title">مرحبًا بك في BASMAT ERP</h1>
+            <p className="erp-page-subtitle">نظرة تشغيلية سريعة على المبيعات والعملاء والدعم وحركة النظام.</p>
+          </div>
+          <button type="button" onClick={loadCounts} disabled={loading} className="erp-btn-primary">
+            {loading ? "جارٍ التحديث..." : "تحديث البيانات"}
+          </button>
         </section>
 
         {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">{errorMessage}</div>}
 
-        <section className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
           <StatCard icon={<FaEnvelope />} title="رسائل التواصل" value={counts.contacts} loading={loading} />
           <StatCard icon={<FaFileInvoiceDollar />} title="طلبات عروض الأسعار" value={counts.quotes} loading={loading} />
           <StatCard icon={<FaGift />} title="طلبات الاستشارات" value={counts.consultations} loading={loading} />
@@ -102,20 +107,20 @@ export default function AdminDashboard() {
           <StatCard icon={<FaBell />} title="إشعارات غير مقروءة" value={counts.unreadNotifications} loading={loading} />
         </section>
 
-        <section className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <QuickLink to="/admin/support" title="الدعم الفني" text="متابعة التذاكر والردود والمرفقات." />
           <QuickLink to="/admin/notifications" title="الإشعارات" text="مراجعة أحدث حركات العملاء." />
           <QuickLink to="/admin/rfqs" title="طلبات عرض السعر" text="متابعة طلبات الأفراد والشركات." />
           <QuickLink to="/admin/consultations" title="طلبات الاستشارات" text="متابعة الاستشارات والمرفقات." />
         </section>
 
-        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="erp-card mt-6 p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h2 className="text-2xl font-black text-[#071d49]">آخر الحركات</h2>
               <p className="mt-2 text-slate-600">أحدث إشعارات العملاء والدعم.</p>
             </div>
-            <Link to="/admin/notifications" className="rounded-xl bg-[#123878] px-5 py-3 font-black text-white">كل الإشعارات</Link>
+            <Link to="/admin/notifications" className="erp-btn-secondary">كل الإشعارات</Link>
           </div>
 
           <div className="mt-5 divide-y divide-slate-100">
@@ -134,18 +139,6 @@ export default function AdminDashboard() {
             {!loading && !recentActivity.length && <div className="py-8 text-center text-slate-500">لا توجد حركات حتى الآن.</div>}
           </div>
         </section>
-
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-black text-[#071d49]">حالة الاتصال بقاعدة البيانات</h2>
-              <p className="mt-2 text-slate-600">الأرقام والحركات أعلاه تُقرأ مباشرة من Supabase.</p>
-            </div>
-            <button type="button" onClick={loadCounts} disabled={loading} className="rounded-xl bg-[#123878] px-6 py-3 font-black text-white disabled:opacity-60">
-              {loading ? "جارٍ التحميل..." : "تحديث البيانات"}
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -153,9 +146,9 @@ export default function AdminDashboard() {
 
 function QuickLink({ to, title, text }) {
   return (
-    <Link to={to} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-      <h3 className="text-xl font-black text-[#071d49]">{title}</h3>
-      <p className="mt-3 leading-7 text-slate-600">{text}</p>
+    <Link to={to} className="erp-card block p-5 transition hover:-translate-y-0.5 hover:border-slate-300">
+      <h3 className="text-[16px] font-black text-[#0f2747]">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
     </Link>
   );
 }

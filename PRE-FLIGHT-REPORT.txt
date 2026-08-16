@@ -1,0 +1,15 @@
+SPRINT 18 FINAL PRE-FLIGHT REPORT
+
+[PASS] App has HR route
+[PASS] App has attendance route
+[PASS] Sidebar has HR
+[PASS] Sidebar has attendance
+[PASS] AccessControl has HR role
+[PASS] AccessControl has Finance role
+[PASS] AccessControl has payroll permission
+[PASS] HR calls find-person RPC
+[PASS] HR calls set-admin-access RPC
+[PASS] Attendance calls clock RPC
+[PASS] SQL fixes admin_users role constraint
+[PASS] SQL fixes permissions role constraint
+[PASS] SQL avoids school tables
