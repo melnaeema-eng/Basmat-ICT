@@ -1,13 +1,13 @@
-BASMAT ERP — SPRINT 30 BIG
-CONTRACT LIFECYCLE + SLA + RECURRING BILLING + RENEWALS
-=======================================================
+BASMAT ERP — SPRINT 31 BIG
+PROCURE-TO-PAY + VENDOR PERFORMANCE + 3-WAY MATCH
+=================================================
 
 BASELINE:
-Sprint 29 Stable
+Sprint 30 Stable
 
 STEP 1 — SUPABASE
 Run ONE file only:
-supabase\SPRINT30_ALL_IN_ONE.sql
+supabase\SPRINT31_ALL_IN_ONE.sql
 
 Contains:
 PRECHECK -> MIGRATION -> HEALTH -> SAFE SQL EDITOR VALIDATION -> FINAL RESULT
@@ -15,35 +15,34 @@ PRECHECK -> MIGRATION -> HEALTH -> SAFE SQL EDITOR VALIDATION -> FINAL RESULT
 No auth-protected RPC is executed from SQL Editor.
 
 REQUIRED FINAL:
-SPRINT 30 ALL-IN-ONE | PASS ✅
+SPRINT 31 ALL-IN-ONE | PASS ✅
 
 If PRECHECK fails:
-STOP. Send exact error only.
+STOP and send exact error only.
 
 STEP 2 — FRONTEND
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-30-Contract-Lifecycle-SLA-Recurring-Billing-ERP.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-31-Procure-to-Pay-Vendor-Performance-ERP.zip" -DestinationPath . -Force
 
 npm run dev
 
 STEP 3 — TEST
-1. /admin/contract-lifecycle opens.
-2. Sidebar shows العقود وSLA والفوترة المتكررة.
+1. /admin/procure-to-pay opens.
+2. Sidebar shows الشراء والاستلام ومطابقة الموردين.
 3. Open module is orange.
-4. Add contract line.
-5. Add SLA policy.
-6. Generate recurring billing schedule.
-7. Run renewal scan.
-8. Billing tab shows schedules.
-9. Renewals tab shows renewal pipeline.
+4. Register GRN.
+5. Set quality Passed.
+6. Run 3-Way Match with PO + Supplier Bill.
+7. Create Supplier Review.
+8. Vendor Performance table updates.
+9. /admin/contract-lifecycle still opens.
 10. /admin/order-to-cash still opens.
 11. /admin/financial-control still opens.
 12. /admin/treasury still opens.
-13. /admin/financial-planning still opens.
-14. npm run build.
+13. npm run build.
 
 STEP 4 — GITHUB AFTER ALL PASS
 git add .
-git commit -m "Sprint 30 Contract Lifecycle SLA Recurring Billing ERP"
+git commit -m "Sprint 31 Procure to Pay Vendor Performance ERP"
 git push origin main

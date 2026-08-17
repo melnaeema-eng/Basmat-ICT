@@ -58,6 +58,7 @@ const permissions = [
   ["financial_control", "الرقابة المالية والإقفال"],
   ["order_to_cash", "أوامر البيع والفوترة والتحصيل"],
   ["contract_lifecycle", "العقود وSLA والفوترة المتكررة"],
+  ["procure_to_pay", "الشراء والاستلام ومطابقة الموردين"],
 ];
 
 export default function AdminAccessControl() {

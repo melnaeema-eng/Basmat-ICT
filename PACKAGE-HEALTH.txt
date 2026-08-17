@@ -1,4 +1,4 @@
-SPRINT 30 PACKAGE HEALTH
+SPRINT 31 PACKAGE HEALTH
 
 [PASS] One SQL only
 [PASS] Precheck
@@ -6,18 +6,17 @@ SPRINT 30 PACKAGE HEALTH
 [PASS] Health
 [PASS] Safe validation
 [PASS] Final
-[PASS] No protected RPC execution in SQL validation
-[PASS] Contract lines
-[PASS] SLA
-[PASS] Billing schedules
-[PASS] Renewals
-[PASS] Snapshot RPC
+[PASS] No protected RPC execution in validation
+[PASS] GRN tables
+[PASS] Supplier reviews
+[PASS] 3-way match
+[PASS] P2P snapshot
 [PASS] Route
 [PASS] Sidebar
 [PASS] Orange active preserved
 [PASS] Permission
 [PASS] Access control
+[PASS] Sprint30 preserved
 [PASS] Sprint29 preserved
-[PASS] Financial control preserved
 [PASS] Treasury preserved
 [PASS] No school tables

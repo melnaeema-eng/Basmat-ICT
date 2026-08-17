@@ -85,6 +85,7 @@ const groups = [
       ["الرقابة المالية والإقفال", "/admin/financial-control", FaChartLine],
       ["أوامر البيع والفوترة والتحصيل", "/admin/order-to-cash", FaChartLine],
       ["العقود وSLA والفوترة المتكررة", "/admin/contract-lifecycle", FaChartLine],
+      ["الشراء والاستلام ومطابقة الموردين", "/admin/procure-to-pay", FaChartLine],
       ["المشتريات والموردون", "/admin/procurement", FaCartShopping],
       ["المخزون والأصول", "/admin/inventory-assets", FaBoxesStacked],
     ],
@@ -135,6 +136,7 @@ const permissionForPath = (path) => {
   if (path === "/admin/financial-control") return "financial_control";
   if (path === "/admin/order-to-cash") return "order_to_cash";
   if (path === "/admin/contract-lifecycle") return "contract_lifecycle";
+  if (path === "/admin/procure-to-pay") return "procure_to_pay";
   if (path === "/admin/procurement") return "procurement";
   if (path === "/admin/inventory-assets") return "inventory";
   if (path === "/admin/attendance-leave") return null;
