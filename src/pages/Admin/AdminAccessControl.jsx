@@ -60,6 +60,7 @@ const permissions = [
   ["contract_lifecycle", "العقود وSLA والفوترة المتكررة"],
   ["procure_to_pay", "الشراء والاستلام ومطابقة الموردين"],
   ["service_management", "إدارة الخدمات وSLA"],
+  ["operations_resources", "العمليات والموارد"],
 ];
 
 export default function AdminAccessControl() {

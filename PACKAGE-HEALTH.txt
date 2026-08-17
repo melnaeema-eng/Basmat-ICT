@@ -1,25 +1,13 @@
-SPRINT 32 PACKAGE HEALTH
+PORTAL USERS + REQUEST REORG PACKAGE HEALTH
 
+[PASS] PortalUsers no UID input
+[PASS] PortalUsers no Supabase wording
+[PASS] Email lookup RPC used
+[PASS] UID internal only
+[PASS] Lookup RPC SQL created
+[PASS] Admin-only lookup
+[PASS] إدارة الطلبات removed
+[PASS] Customer requests under Sales
+[PASS] Workflow/Documents under Operations
+[PASS] No duplicate sidebar routes
 [PASS] One SQL only
-[PASS] Precheck
-[PASS] Migration
-[PASS] Health
-[PASS] Safe validation
-[PASS] Final result
-[PASS] No protected RPC execution in validation
-[PASS] Existing support table extended
-[PASS] No duplicate support ticket table
-[PASS] Contract SLA reused
-[PASS] Service visits
-[PASS] PM plans
-[PASS] SLA apply RPC
-[PASS] Service snapshot
-[PASS] Route
-[PASS] Sidebar
-[PASS] Orange active preserved
-[PASS] Permission route
-[PASS] Access control
-[PASS] Support preserved
-[PASS] Sprint30 contract lifecycle preserved
-[PASS] Sprint31 procure-to-pay preserved
-[PASS] No school tables

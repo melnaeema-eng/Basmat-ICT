@@ -2,6 +2,7 @@ import {
   FaBell,
   FaCalendarCheck,
   FaClockRotateLeft,
+  FaComputer,
   FaCalendarDays,
   FaChartPie,
   FaChartSimple,
@@ -33,72 +34,85 @@ import { useAdminAuth } from "../../contexts/AdminAuthContext";
 
 const groups = [
   {
-    title: "إدارة الطلبات",
+    title: "الرئيسية",
     items: [
       ["لوحة التحكم", "/admin", FaChartPie, true],
-      ["رسائل التواصل", "/admin/contacts", FaEnvelope],
-      ["طلبات عرض السعر", "/admin/rfqs", FaFileInvoiceDollar],
-      ["طلبات الاستشارات", "/admin/consultations", FaUserTie],
-      ["المستندات", "/admin/documents", FaFolderOpen],
     ],
   },
   {
-    title: "CRM والمبيعات",
+    title: "المبيعات والعملاء",
     items: [
       ["CRM Dashboard", "/admin/crm", FaChartSimple],
       ["العملاء", "/admin/customers", FaUsers],
+      ["رسائل التواصل", "/admin/contacts", FaEnvelope],
+      ["طلبات عرض السعر", "/admin/rfqs", FaFileInvoiceDollar],
+      ["طلبات الاستشارات", "/admin/consultations", FaUserTie],
+      ["مستخدمو بوابة العملاء", "/admin/portal-users", FaUserGroup],
       ["Sales Pipeline", "/admin/pipeline", FaHandshake],
       ["المتابعات", "/admin/followups", FaCalendarCheck],
       ["عروض الأسعار", "/admin/quotations", FaFileInvoiceDollar],
-      ["الإشعارات", "/admin/notifications", FaBell],
-      ["التحليلات", "/admin/analytics", FaChartSimple],
-      ["التقارير التنفيذية", "/admin/executive-reports", FaChartPie],
-      ["مركز القيادة والحوكمة", "/admin/executive-control", FaGaugeHigh],
-      ["فريق العمل", "/admin/team", FaUserGroup],
+      ["أوامر البيع والفوترة والتحصيل", "/admin/order-to-cash", FaMoneyBillTrendUp],
+      ["العقود وSLA والفوترة المتكررة", "/admin/contract-lifecycle", FaHandshake],
     ],
   },
   {
-    title: "رحلة العميل",
-    items: [
-      ["مركز سير العمل", "/admin/workflow", FaListCheck],
-      ["مستخدمو بوابة العملاء", "/admin/portal-users", FaUserGroup],
-    ],
-  },
-  {
-    title: "المشاريع والتجاري",
+    title: "المشاريع والعمليات",
     items: [
       ["Operations Dashboard", "/admin/operations", FaChartSimple],
       ["إدارة المشاريع", "/admin/project-management", FaLayerGroup],
+      ["مركز سير العمل", "/admin/workflow", FaListCheck],
+      ["المستندات", "/admin/documents", FaFolderOpen],
       ["التنفيذ والتجاري", "/admin/project-commercial", FaListCheck],
       ["تكلفة وربحية المشاريع", "/admin/project-cost-control", FaChartLine],
       ["مستندات المشاريع", "/admin/project-documents", FaFolderOpen],
       ["الدعم والتذاكر", "/admin/support", FaHeadset],
-      ["إدارة الخدمات وSLA", "/admin/service-management", FaChartLine],
+      ["إدارة الخدمات وSLA", "/admin/service-management", FaScrewdriverWrench],
     ],
   },
   {
-    title: "المالية والمشتريات",
+    title: "المالية",
     items: [
       ["المالية والتحصيل", "/admin/finance", FaMoneyBillTrendUp],
       ["المحاسبة والقيود", "/admin/accounting", FaBookOpen],
       ["التخطيط المالي والميزانيات", "/admin/financial-planning", FaChartLine],
       ["الخزينة والذمم", "/admin/treasury", FaBuildingColumns],
-      ["الرقابة المالية والإقفال", "/admin/financial-control", FaChartLine],
-      ["أوامر البيع والفوترة والتحصيل", "/admin/order-to-cash", FaChartLine],
-      ["العقود وSLA والفوترة المتكررة", "/admin/contract-lifecycle", FaChartLine],
-      ["الشراء والاستلام ومطابقة الموردين", "/admin/procure-to-pay", FaChartLine],
-      ["المشتريات والموردون", "/admin/procurement", FaCartShopping],
-      ["المخزون والأصول", "/admin/inventory-assets", FaBoxesStacked],
+      ["الرقابة المالية والإقفال", "/admin/financial-control", FaShieldHalved],
+      ["الرواتب والتكاليف المالية", "/admin/payroll", FaMoneyBillTrendUp],
     ],
   },
   {
-    title: "إدارة النظام",
+    title: "المشتريات والمخزون",
+    items: [
+      ["المشتريات والموردون", "/admin/procurement", FaCartShopping],
+      ["الشراء والاستلام ومطابقة الموردين", "/admin/procure-to-pay", FaBoxesStacked],
+      ["المخزون والمستودعات", "/admin/inventory", FaBoxesStacked],
+      ["الأصول والعهد", "/admin/assets-custody", FaComputer],
+    ],
+  },
+  {
+    title: "الموارد البشرية",
+    items: [
+      ["الموظفون", "/admin/hr", FaUserGroup],
+      ["الحضور والإجازات", "/admin/attendance-leave", FaCalendarDays],
+      ["الموارد البشرية والرواتب", "/admin/hr-payroll", FaMoneyBillTrendUp],
+      ["فريق العمل", "/admin/team", FaUserGroup],
+    ],
+  },
+  {
+    title: "الإدارة التنفيذية",
+    items: [
+      ["الإشعارات", "/admin/notifications", FaBell],
+      ["التحليلات", "/admin/analytics", FaChartSimple],
+      ["التقارير التنفيذية", "/admin/executive-reports", FaChartPie],
+      ["مركز القيادة والحوكمة", "/admin/executive-control", FaGaugeHigh],
+    ],
+  },
+  {
+    title: "إدارة تقنية المعلومات",
     items: [
       ["الصلاحيات والأدوار", "/admin/access-control", FaShieldHalved],
       ["الأمان و2FA", "/admin/mfa", FaShieldHalved],
       ["سجل النشاط", "/admin/activity-log", FaClockRotateLeft],
-      ["الموارد البشرية", "/admin/hr", FaUserGroup],
-      ["الحضور والإجازات", "/admin/attendance-leave", FaCalendarDays],
     ],
   },
   {
@@ -122,6 +136,11 @@ const permissionForPath = (path) => {
   if (path === "/admin/project-documents") return "documents";
   if (path === "/admin/support") return "support";
   if (path === "/admin/service-management") return "service_management";
+  if (path === "/admin/inventory") return "operations_resources";
+  if (path === "/admin/assets-custody") return "operations_resources";
+  if (path === "/admin/attendance-leave") return "operations_resources";
+  if (path === "/admin/hr-payroll") return "operations_resources";
+  if (path === "/admin/operations-resources") return "operations_resources";
   if (path === "/admin/notifications") return "notifications";
   if (["/admin/analytics","/admin/executive-reports"].includes(path)) return "reports";
   if (path === "/admin/executive-control") return "executive_control";
@@ -140,8 +159,6 @@ const permissionForPath = (path) => {
   if (path === "/admin/contract-lifecycle") return "contract_lifecycle";
   if (path === "/admin/procure-to-pay") return "procure_to_pay";
   if (path === "/admin/procurement") return "procurement";
-  if (path === "/admin/inventory-assets") return "inventory";
-  if (path === "/admin/attendance-leave") return null;
   if (["/admin/projects","/admin/services","/admin/partners","/admin/settings"].includes(path)) return "content";
   return "dashboard";
 };

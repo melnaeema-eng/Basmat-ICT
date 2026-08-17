@@ -1,51 +1,39 @@
-BASMAT ERP — SPRINT 32 BIG
-SERVICE MANAGEMENT + SLA + FIELD SERVICE
-=========================================
-
-BASELINE:
-Sprint 31 Stable
+BASMAT ICT — PORTAL USERS AUTO LOOKUP + REQUEST REORG
+========================================================
 
 STEP 1 — SUPABASE
-Run ONE file only:
-supabase\SPRINT32_ALL_IN_ONE.sql
+Run ONE file:
+supabase\PORTAL_USERS_AUTO_LOOKUP_ALL_IN_ONE.sql
 
-Contains:
-PRECHECK -> MIGRATION -> HEALTH -> SAFE SQL EDITOR VALIDATION -> FINAL RESULT
-
-IMPORTANT:
-- Existing ict_support_tickets is EXTENDED, not duplicated.
-- Existing Contract SLA from Sprint 30 is reused.
-- No auth-protected RPC is executed from SQL Editor.
-
-REQUIRED FINAL:
-SPRINT 32 ALL-IN-ONE | PASS ✅
-
-If PRECHECK fails:
-STOP and send the exact error only.
+Required final:
+PORTAL USERS AUTO LOOKUP HOTFIX | PASS ✅
 
 STEP 2 — FRONTEND
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-32-Service-Management-SLA-Field-Service-ERP.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-S33-PortalUsers-AutoLookup-And-Request-Reorg.zip" -DestinationPath . -Force
 
 npm run dev
 
-STEP 3 — TEST
-1. /admin/service-management opens.
-2. Sidebar shows إدارة الخدمات وSLA.
-3. Open module is orange.
-4. Apply SLA to a ticket linked to a contract.
-5. Refresh SLA status.
-6. Create Field Service Visit.
-7. Complete Field Service Visit.
-8. Create Preventive Maintenance Plan.
-9. /admin/support still opens.
-10. /admin/contract-lifecycle still opens.
-11. /admin/procure-to-pay still opens.
-12. /admin/order-to-cash still opens.
-13. npm run build.
+CHANGES
+- No Supabase wording in Portal Users UI.
+- No visible User UID field.
+- Enter email -> lookup account automatically.
+- Name and email appear read-only.
+- Select customer -> link account.
+- Existing UID is used internally only.
+- "إدارة الطلبات" removed.
+- Contacts/RFQs/Consultations/Portal Users moved under المبيعات والعملاء.
+- Workflow/Documents moved under المشاريع والعمليات.
+- Dashboard remains in a separate الرئيسية section.
+- No existing route is deleted.
 
-STEP 4 — GITHUB AFTER ALL PASS
-git add .
-git commit -m "Sprint 32 Service Management SLA Field Service ERP"
-git push origin main
+TEST
+1. Open /admin/portal-users.
+2. Enter registered email.
+3. Account name appears automatically.
+4. UID is NOT shown.
+5. Choose customer and link.
+6. Sidebar has no "إدارة الطلبات".
+7. No duplicate visible route.
+8. npm run build.
