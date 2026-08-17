@@ -1,23 +1,23 @@
-SPRINT 29 PACKAGE HEALTH
+SPRINT 30 PACKAGE HEALTH
 
 [PASS] One SQL only
 [PASS] Precheck
 [PASS] Migration
 [PASS] Health
 [PASS] Safe validation
-[PASS] Final result
-[PASS] No auth RPC execution in SQL validation
-[PASS] Sales Orders
-[PASS] Billing Milestones
-[PASS] Collection Actions
-[PASS] Order-to-Cash snapshot
+[PASS] Final
+[PASS] No protected RPC execution in SQL validation
+[PASS] Contract lines
+[PASS] SLA
+[PASS] Billing schedules
+[PASS] Renewals
+[PASS] Snapshot RPC
 [PASS] Route
-[PASS] Import
 [PASS] Sidebar
 [PASS] Orange active preserved
-[PASS] Permission route
-[PASS] Access Control
-[PASS] Sprint 28 financial control preserved
+[PASS] Permission
+[PASS] Access control
+[PASS] Sprint29 preserved
+[PASS] Financial control preserved
 [PASS] Treasury preserved
-[PASS] Financial planning preserved
 [PASS] No school tables

@@ -57,6 +57,7 @@ const permissions = [
   ["treasury", "الخزينة والذمم"],
   ["financial_control", "الرقابة المالية والإقفال"],
   ["order_to_cash", "أوامر البيع والفوترة والتحصيل"],
+  ["contract_lifecycle", "العقود وSLA والفوترة المتكررة"],
 ];
 
 export default function AdminAccessControl() {

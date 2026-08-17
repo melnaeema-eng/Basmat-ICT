@@ -1,51 +1,49 @@
-BASMAT ERP — SPRINT 29 BIG
-ORDER-TO-CASH + REVENUE CONTROL
-================================
+BASMAT ERP — SPRINT 30 BIG
+CONTRACT LIFECYCLE + SLA + RECURRING BILLING + RENEWALS
+=======================================================
 
 BASELINE:
-Sprint 28 V2 Stable
+Sprint 29 Stable
 
 STEP 1 — SUPABASE
 Run ONE file only:
-supabase\SPRINT29_ALL_IN_ONE.sql
+supabase\SPRINT30_ALL_IN_ONE.sql
 
-It contains:
+Contains:
 PRECHECK -> MIGRATION -> HEALTH -> SAFE SQL EDITOR VALIDATION -> FINAL RESULT
 
-IMPORTANT:
 No auth-protected RPC is executed from SQL Editor.
 
 REQUIRED FINAL:
-SPRINT 29 ALL-IN-ONE | PASS ✅
+SPRINT 30 ALL-IN-ONE | PASS ✅
 
 If PRECHECK fails:
-STOP and send the exact error. Do not install frontend.
+STOP. Send exact error only.
 
 STEP 2 — FRONTEND
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-29-Order-to-Cash-Revenue-Control-ERP.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-30-Contract-Lifecycle-SLA-Recurring-Billing-ERP.zip" -DestinationPath . -Force
 
 npm run dev
 
 STEP 3 — TEST
-1. /admin/order-to-cash opens.
-2. Sidebar shows أوامر البيع والفوترة والتحصيل.
+1. /admin/contract-lifecycle opens.
+2. Sidebar shows العقود وSLA والفوترة المتكررة.
 3. Open module is orange.
-4. Create Sales Order.
-5. Add Sales Order item.
-6. Approve Sales Order.
-7. Add Billing Milestone.
-8. Collections tab shows outstanding invoices.
-9. Register collection follow-up.
-10. /admin/financial-control opens.
-11. /admin/treasury opens.
-12. /admin/financial-planning opens.
-13. /admin/accounting opens.
-14. /admin/finance opens.
-15. npm run build.
+4. Add contract line.
+5. Add SLA policy.
+6. Generate recurring billing schedule.
+7. Run renewal scan.
+8. Billing tab shows schedules.
+9. Renewals tab shows renewal pipeline.
+10. /admin/order-to-cash still opens.
+11. /admin/financial-control still opens.
+12. /admin/treasury still opens.
+13. /admin/financial-planning still opens.
+14. npm run build.
 
 STEP 4 — GITHUB AFTER ALL PASS
 git add .
-git commit -m "Sprint 29 Order to Cash Revenue Control ERP"
+git commit -m "Sprint 30 Contract Lifecycle SLA Recurring Billing ERP"
 git push origin main
