@@ -1,48 +1,51 @@
-BASMAT ERP — SPRINT 31 BIG
-PROCURE-TO-PAY + VENDOR PERFORMANCE + 3-WAY MATCH
-=================================================
+BASMAT ERP — SPRINT 32 BIG
+SERVICE MANAGEMENT + SLA + FIELD SERVICE
+=========================================
 
 BASELINE:
-Sprint 30 Stable
+Sprint 31 Stable
 
 STEP 1 — SUPABASE
 Run ONE file only:
-supabase\SPRINT31_ALL_IN_ONE.sql
+supabase\SPRINT32_ALL_IN_ONE.sql
 
 Contains:
 PRECHECK -> MIGRATION -> HEALTH -> SAFE SQL EDITOR VALIDATION -> FINAL RESULT
 
-No auth-protected RPC is executed from SQL Editor.
+IMPORTANT:
+- Existing ict_support_tickets is EXTENDED, not duplicated.
+- Existing Contract SLA from Sprint 30 is reused.
+- No auth-protected RPC is executed from SQL Editor.
 
 REQUIRED FINAL:
-SPRINT 31 ALL-IN-ONE | PASS ✅
+SPRINT 32 ALL-IN-ONE | PASS ✅
 
 If PRECHECK fails:
-STOP and send exact error only.
+STOP and send the exact error only.
 
 STEP 2 — FRONTEND
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-31-Procure-to-Pay-Vendor-Performance-ERP.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-32-Service-Management-SLA-Field-Service-ERP.zip" -DestinationPath . -Force
 
 npm run dev
 
 STEP 3 — TEST
-1. /admin/procure-to-pay opens.
-2. Sidebar shows الشراء والاستلام ومطابقة الموردين.
+1. /admin/service-management opens.
+2. Sidebar shows إدارة الخدمات وSLA.
 3. Open module is orange.
-4. Register GRN.
-5. Set quality Passed.
-6. Run 3-Way Match with PO + Supplier Bill.
-7. Create Supplier Review.
-8. Vendor Performance table updates.
-9. /admin/contract-lifecycle still opens.
-10. /admin/order-to-cash still opens.
-11. /admin/financial-control still opens.
-12. /admin/treasury still opens.
+4. Apply SLA to a ticket linked to a contract.
+5. Refresh SLA status.
+6. Create Field Service Visit.
+7. Complete Field Service Visit.
+8. Create Preventive Maintenance Plan.
+9. /admin/support still opens.
+10. /admin/contract-lifecycle still opens.
+11. /admin/procure-to-pay still opens.
+12. /admin/order-to-cash still opens.
 13. npm run build.
 
 STEP 4 — GITHUB AFTER ALL PASS
 git add .
-git commit -m "Sprint 31 Procure to Pay Vendor Performance ERP"
+git commit -m "Sprint 32 Service Management SLA Field Service ERP"
 git push origin main

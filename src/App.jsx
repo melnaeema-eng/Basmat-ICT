@@ -31,6 +31,7 @@ import AdminFinancialControl from "./pages/Admin/AdminFinancialControl";
 import AdminOrderToCash from "./pages/Admin/AdminOrderToCash";
 import AdminContractLifecycle from "./pages/Admin/AdminContractLifecycle";
 import AdminProcureToPay from "./pages/Admin/AdminProcureToPay";
+import AdminServiceManagement from "./pages/Admin/AdminServiceManagement";
 import AdminFinance from "./pages/Admin/AdminFinance";
 import AdminAccounting from "./pages/Admin/AdminAccounting";
 import AdminInventoryAssets from "./pages/Admin/AdminInventoryAssets";
@@ -163,6 +164,7 @@ export default function App() {
                 <Route path="order-to-cash" element={<AdminPermissionRoute permission="order_to_cash"><AdminOrderToCash /></AdminPermissionRoute>} />
                 <Route path="contract-lifecycle" element={<AdminPermissionRoute permission="contract_lifecycle"><AdminContractLifecycle /></AdminPermissionRoute>} />
                 <Route path="procure-to-pay" element={<AdminPermissionRoute permission="procure_to_pay"><AdminProcureToPay /></AdminPermissionRoute>} />
+                <Route path="service-management" element={<AdminPermissionRoute permission="service_management"><AdminServiceManagement /></AdminPermissionRoute>} />
                 <Route path="project-documents" element={<AdminPermissionRoute permission="documents"><AdminProjectDocuments /></AdminPermissionRoute>} />
                 <Route path="support" element={<AdminPermissionRoute permission="support"><AdminSupportTickets /></AdminPermissionRoute>} />
 

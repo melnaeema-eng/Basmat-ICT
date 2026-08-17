@@ -73,6 +73,7 @@ const groups = [
       ["تكلفة وربحية المشاريع", "/admin/project-cost-control", FaChartLine],
       ["مستندات المشاريع", "/admin/project-documents", FaFolderOpen],
       ["الدعم والتذاكر", "/admin/support", FaHeadset],
+      ["إدارة الخدمات وSLA", "/admin/service-management", FaChartLine],
     ],
   },
   {
@@ -120,6 +121,7 @@ const permissionForPath = (path) => {
   if (path === "/admin/project-cost-control") return "project_cost_control";
   if (path === "/admin/project-documents") return "documents";
   if (path === "/admin/support") return "support";
+  if (path === "/admin/service-management") return "service_management";
   if (path === "/admin/notifications") return "notifications";
   if (["/admin/analytics","/admin/executive-reports"].includes(path)) return "reports";
   if (path === "/admin/executive-control") return "executive_control";

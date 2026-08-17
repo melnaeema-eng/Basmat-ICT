@@ -1,22 +1,25 @@
-SPRINT 31 PACKAGE HEALTH
+SPRINT 32 PACKAGE HEALTH
 
 [PASS] One SQL only
 [PASS] Precheck
 [PASS] Migration
 [PASS] Health
 [PASS] Safe validation
-[PASS] Final
+[PASS] Final result
 [PASS] No protected RPC execution in validation
-[PASS] GRN tables
-[PASS] Supplier reviews
-[PASS] 3-way match
-[PASS] P2P snapshot
+[PASS] Existing support table extended
+[PASS] No duplicate support ticket table
+[PASS] Contract SLA reused
+[PASS] Service visits
+[PASS] PM plans
+[PASS] SLA apply RPC
+[PASS] Service snapshot
 [PASS] Route
 [PASS] Sidebar
 [PASS] Orange active preserved
-[PASS] Permission
+[PASS] Permission route
 [PASS] Access control
-[PASS] Sprint30 preserved
-[PASS] Sprint29 preserved
-[PASS] Treasury preserved
+[PASS] Support preserved
+[PASS] Sprint30 contract lifecycle preserved
+[PASS] Sprint31 procure-to-pay preserved
 [PASS] No school tables

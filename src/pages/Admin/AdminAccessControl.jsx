@@ -59,6 +59,7 @@ const permissions = [
   ["order_to_cash", "أوامر البيع والفوترة والتحصيل"],
   ["contract_lifecycle", "العقود وSLA والفوترة المتكررة"],
   ["procure_to_pay", "الشراء والاستلام ومطابقة الموردين"],
+  ["service_management", "إدارة الخدمات وSLA"],
 ];
 
 export default function AdminAccessControl() {
