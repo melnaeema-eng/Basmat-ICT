@@ -1,0 +1,35 @@
+import {useEffect,useState} from "react";
+import {FaChartColumn,FaPlus,FaRotate} from "react-icons/fa6";
+import {supabase} from "../../lib/supabase";
+const money=v=>Number(v||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const today=new Date().toISOString().slice(0,10);
+
+export default function AdminProjectProfitability(){
+ const [projects,setProjects]=useState([]),[portfolio,setPortfolio]=useState([]),[selected,setSelected]=useState(""),[snap,setSnap]=useState(null),[msg,setMsg]=useState("");
+ const [budget,setBudget]=useState({labor_budget:"0",material_budget:"0",subcontract_budget:"0",expense_budget:"0",other_budget:"0"});
+ const [cost,setCost]=useState({cost_date:today,cost_type:"labor",amount:"0",reference_no:"",description:""});
+ useEffect(()=>{load()},[]);
+ async function load(){
+  const [p,port]=await Promise.all([
+   supabase.from("ict_delivery_projects").select("id,project_no,project_name,status,contract_value").order("created_at",{ascending:false}),
+   supabase.rpc("ict_portfolio_profitability")
+  ]);
+  const e=p.error||port.error;if(e)setMsg(e.message);else{setProjects(p.data||[]);setPortfolio(port.data||[])}
+ }
+ async function selectProject(id){setSelected(id);setSnap(null);if(!id)return;const [s,b]=await Promise.all([supabase.rpc("ict_project_profitability_snapshot",{p_project_id:id}),supabase.from("ict_project_cost_budgets").select("*").eq("project_id",id).maybeSingle()]);const e=s.error||b.error;if(e)setMsg(e.message);else{setSnap(s.data);if(b.data)setBudget({labor_budget:String(b.data.labor_budget||0),material_budget:String(b.data.material_budget||0),subcontract_budget:String(b.data.subcontract_budget||0),expense_budget:String(b.data.expense_budget||0),other_budget:String(b.data.other_budget||0)})}}
+ async function saveBudget(e){e.preventDefault();if(!selected)return setMsg("اختر المشروع.");const {data:{user}}=await supabase.auth.getUser();const payload={project_id:selected,...Object.fromEntries(Object.entries(budget).map(([k,v])=>[k,Number(v||0)])),updated_by:user?.id||null,updated_at:new Date().toISOString()};const {error}=await supabase.from("ict_project_cost_budgets").upsert(payload,{onConflict:"project_id"});if(error)setMsg(error.message);else{setMsg("تم حفظ ميزانية التكلفة.");selectProject(selected);load()}}
+ async function addCost(e){e.preventDefault();if(!selected)return setMsg("اختر المشروع.");const {data:{user}}=await supabase.auth.getUser();const {error}=await supabase.from("ict_project_cost_entries").insert({...cost,project_id:selected,amount:Number(cost.amount||0),reference_no:cost.reference_no||null,description:cost.description||null,created_by:user?.id||null});if(error)setMsg(error.message);else{setMsg("تم تسجيل التكلفة.");selectProject(selected);load()}}
+ return <div dir="rtl" className="erp-page"><div className="mx-auto max-w-[1500px]">
+  <section className="erp-page-header"><div><span className="erp-eyebrow">PROJECT PROFITABILITY</span><h1 className="erp-page-title">تحليل ربحية المشاريع</h1><p className="erp-page-subtitle">الإيرادات والتكاليف والميزانية والانحراف والهامش لكل مشروع.</p></div><button onClick={load} className="erp-btn-secondary"><FaRotate/>تحديث</button></section>
+  {msg&&<div className="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 font-bold text-blue-800">{msg}</div>}
+  <section className="erp-card mt-6 p-6"><label><b className="mb-2 block">المشروع</b><select value={selected} onChange={e=>selectProject(e.target.value)} className="form-input"><option value="">اختر المشروع</option>{projects.map(p=><option key={p.id} value={p.id}>{p.project_no} — {p.project_name}</option>)}</select></label></section>
+  {snap&&<div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><K t="Contract Value" v={snap.contract_value}/><K t="Billed" v={snap.billed_value}/><K t="Collected" v={snap.collected_value}/><K t="Actual Cost" v={snap.actual_cost}/><K t="Gross Profit" v={snap.gross_profit}/><K t="Margin" v={snap.margin_percent} pct/><K t="Budget Cost" v={snap.budget_cost}/><K t="Cost Variance" v={snap.cost_variance}/></div>}
+  <div className="mt-6 grid gap-6 xl:grid-cols-2">
+   <form onSubmit={saveBudget} className="erp-card p-6"><h2 className="text-lg font-black"><FaChartColumn className="inline ml-2"/>ميزانية تكلفة المشروع</h2><F l="Labor Budget" v={budget.labor_budget} c={v=>setBudget(x=>({...x,labor_budget:v}))}/><F l="Material Budget" v={budget.material_budget} c={v=>setBudget(x=>({...x,material_budget:v}))}/><F l="Subcontract Budget" v={budget.subcontract_budget} c={v=>setBudget(x=>({...x,subcontract_budget:v}))}/><F l="Expense Budget" v={budget.expense_budget} c={v=>setBudget(x=>({...x,expense_budget:v}))}/><F l="Other Budget" v={budget.other_budget} c={v=>setBudget(x=>({...x,other_budget:v}))}/><button className="erp-btn-primary mt-5">حفظ الميزانية</button></form>
+   <form onSubmit={addCost} className="erp-card p-6"><h2 className="text-lg font-black"><FaPlus className="inline ml-2"/>تكلفة إضافية</h2><F l="التاريخ" type="date" v={cost.cost_date} c={v=>setCost(x=>({...x,cost_date:v}))}/><label className="mt-4 block"><b className="mb-2 block">نوع التكلفة</b><select value={cost.cost_type} onChange={e=>setCost(x=>({...x,cost_type:e.target.value}))} className="form-input"><option value="labor">Labor</option><option value="material">Material</option><option value="subcontract">Subcontract</option><option value="expense">Expense</option><option value="other">Other</option></select></label><F l="القيمة" v={cost.amount} c={v=>setCost(x=>({...x,amount:v}))}/><F l="Reference" type="text" v={cost.reference_no} c={v=>setCost(x=>({...x,reference_no:v}))}/><F l="الوصف" type="text" v={cost.description} c={v=>setCost(x=>({...x,description:v}))}/><button className="erp-btn-primary mt-5">تسجيل التكلفة</button></form>
+  </div>
+  <section className="erp-card mt-6 overflow-x-auto p-6"><h2 className="text-lg font-black">Portfolio Profitability</h2><table className="mt-4 w-full min-w-[950px]"><thead><tr><th className="p-3">المشروع</th><th>Contract</th><th>Billed</th><th>Actual Cost</th><th>Gross Profit</th><th>Margin</th></tr></thead><tbody>{portfolio.map(p=><tr key={p.project_id} className="border-t"><td className="p-3 font-black text-[#345a82]">{p.project_no} — {p.project_name}</td><td>{money(p.contract_value)}</td><td>{money(p.billed_value)}</td><td>{money(p.actual_cost)}</td><td className={Number(p.gross_profit)<0?"font-black text-red-600":"font-black text-green-700"}>{money(p.gross_profit)}</td><td>{Number(p.margin_percent||0).toFixed(2)}%</td></tr>)}</tbody></table></section>
+ </div></div>
+}
+function K({t,v,pct}){return <article className="erp-card p-5"><p className="text-xs font-bold text-slate-400">{t}</p><p dir="ltr" className="mt-2 text-right text-xl font-black text-[#0f2747]">{pct?Number(v||0).toFixed(2)+"%":money(v)}</p>{!pct&&<small className="text-slate-300">SAR</small>}</article>}
+function F({l,v,c,type="number"}){return <label className="mt-4 block"><b className="mb-2 block">{l}</b><input required type={type} value={v} onChange={e=>c(e.target.value)} className="form-input"/></label>}

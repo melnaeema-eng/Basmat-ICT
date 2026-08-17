@@ -1,39 +1,54 @@
-BASMAT ICT — PORTAL USERS AUTO LOOKUP + REQUEST REORG
-========================================================
+BASMAT ERP — SPRINT 34 MEGA
+COMMERCIAL + SALES PLANNING + PROJECT PROFITABILITY
+===================================================
+
+BASELINE
+GitHub main commit b813570 + final S33 hotfixes reconstructed.
+
+IMPORTANT MODULE-MAP RULE
+This package contains MASTER-MODULE-MAP-LOCK.json.
+Package Health fails if an existing S33 visible module disappears or is duplicated.
 
 STEP 1 — SUPABASE
 Run ONE file:
-supabase\PORTAL_USERS_AUTO_LOOKUP_ALL_IN_ONE.sql
+supabase\SPRINT34_MEGA_ALL_IN_ONE.sql
 
 Required final:
-PORTAL USERS AUTO LOOKUP HOTFIX | PASS ✅
+SPRINT 34 MEGA ALL-IN-ONE | PASS ✅
+
+No protected RPC is executed from SQL Editor health.
 
 STEP 2 — FRONTEND
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-S33-PortalUsers-AutoLookup-And-Request-Reorg.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-34-MEGA-Commercial-Projects-Profitability-ERP.zip" -DestinationPath . -Force
 
 npm run dev
 
-CHANGES
-- No Supabase wording in Portal Users UI.
-- No visible User UID field.
-- Enter email -> lookup account automatically.
-- Name and email appear read-only.
-- Select customer -> link account.
-- Existing UID is used internally only.
-- "إدارة الطلبات" removed.
-- Contacts/RFQs/Consultations/Portal Users moved under المبيعات والعملاء.
-- Workflow/Documents moved under المشاريع والعمليات.
-- Dashboard remains in a separate الرئيسية section.
-- No existing route is deleted.
+NEW INDEPENDENT MODULES
+/admin/sales-planning
+  تخطيط وأهداف المبيعات
+  owner: المبيعات والعملاء
+
+/admin/project-profitability
+  تحليل ربحية المشاريع
+  owner: المشاريع والعمليات
 
 TEST
-1. Open /admin/portal-users.
-2. Enter registered email.
-3. Account name appears automatically.
-4. UID is NOT shown.
-5. Choose customer and link.
-6. Sidebar has no "إدارة الطلبات".
-7. No duplicate visible route.
-8. npm run build.
+1. Both new modules open.
+2. Active module is orange.
+3. Create sales target.
+4. Create weighted forecast.
+5. Select a project.
+6. Set project cost budget.
+7. Add project cost entry.
+8. Portfolio profitability loads.
+9. Check /admin/inventory /admin/assets-custody /admin/attendance-leave /admin/hr-payroll.
+10. Check /admin/payroll under المالية.
+11. Check إدارة تقنية المعلومات.
+12. npm run build.
+
+GITHUB AFTER PASS
+git add .
+git commit -m "Sprint 34 MEGA Commercial Projects Profitability ERP"
+git push origin main

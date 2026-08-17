@@ -1,0 +1,201 @@
+{
+  "baseline": "b813570 / reconstructed S33 final",
+  "baseline_routes": [
+    {
+      "module": "لوحة التحكم",
+      "route": "/admin"
+    },
+    {
+      "module": "CRM Dashboard",
+      "route": "/admin/crm"
+    },
+    {
+      "module": "العملاء",
+      "route": "/admin/customers"
+    },
+    {
+      "module": "رسائل التواصل",
+      "route": "/admin/contacts"
+    },
+    {
+      "module": "طلبات عرض السعر",
+      "route": "/admin/rfqs"
+    },
+    {
+      "module": "طلبات الاستشارات",
+      "route": "/admin/consultations"
+    },
+    {
+      "module": "مستخدمو بوابة العملاء",
+      "route": "/admin/portal-users"
+    },
+    {
+      "module": "Sales Pipeline",
+      "route": "/admin/pipeline"
+    },
+    {
+      "module": "المتابعات",
+      "route": "/admin/followups"
+    },
+    {
+      "module": "عروض الأسعار",
+      "route": "/admin/quotations"
+    },
+    {
+      "module": "أوامر البيع والفوترة والتحصيل",
+      "route": "/admin/order-to-cash"
+    },
+    {
+      "module": "العقود وSLA والفوترة المتكررة",
+      "route": "/admin/contract-lifecycle"
+    },
+    {
+      "module": "Operations Dashboard",
+      "route": "/admin/operations"
+    },
+    {
+      "module": "إدارة المشاريع",
+      "route": "/admin/project-management"
+    },
+    {
+      "module": "مركز سير العمل",
+      "route": "/admin/workflow"
+    },
+    {
+      "module": "المستندات",
+      "route": "/admin/documents"
+    },
+    {
+      "module": "التنفيذ والتجاري",
+      "route": "/admin/project-commercial"
+    },
+    {
+      "module": "تكلفة وربحية المشاريع",
+      "route": "/admin/project-cost-control"
+    },
+    {
+      "module": "مستندات المشاريع",
+      "route": "/admin/project-documents"
+    },
+    {
+      "module": "الدعم والتذاكر",
+      "route": "/admin/support"
+    },
+    {
+      "module": "إدارة الخدمات وSLA",
+      "route": "/admin/service-management"
+    },
+    {
+      "module": "المالية والتحصيل",
+      "route": "/admin/finance"
+    },
+    {
+      "module": "المحاسبة والقيود",
+      "route": "/admin/accounting"
+    },
+    {
+      "module": "التخطيط المالي والميزانيات",
+      "route": "/admin/financial-planning"
+    },
+    {
+      "module": "الخزينة والذمم",
+      "route": "/admin/treasury"
+    },
+    {
+      "module": "الرقابة المالية والإقفال",
+      "route": "/admin/financial-control"
+    },
+    {
+      "module": "الرواتب والتكاليف المالية",
+      "route": "/admin/payroll"
+    },
+    {
+      "module": "المشتريات والموردون",
+      "route": "/admin/procurement"
+    },
+    {
+      "module": "الشراء والاستلام ومطابقة الموردين",
+      "route": "/admin/procure-to-pay"
+    },
+    {
+      "module": "المخزون والمستودعات",
+      "route": "/admin/inventory"
+    },
+    {
+      "module": "الأصول والعهد",
+      "route": "/admin/assets-custody"
+    },
+    {
+      "module": "الموظفون",
+      "route": "/admin/hr"
+    },
+    {
+      "module": "الحضور والإجازات",
+      "route": "/admin/attendance-leave"
+    },
+    {
+      "module": "الموارد البشرية والرواتب",
+      "route": "/admin/hr-payroll"
+    },
+    {
+      "module": "فريق العمل",
+      "route": "/admin/team"
+    },
+    {
+      "module": "الإشعارات",
+      "route": "/admin/notifications"
+    },
+    {
+      "module": "التحليلات",
+      "route": "/admin/analytics"
+    },
+    {
+      "module": "التقارير التنفيذية",
+      "route": "/admin/executive-reports"
+    },
+    {
+      "module": "مركز القيادة والحوكمة",
+      "route": "/admin/executive-control"
+    },
+    {
+      "module": "الصلاحيات والأدوار",
+      "route": "/admin/access-control"
+    },
+    {
+      "module": "الأمان و2FA",
+      "route": "/admin/mfa"
+    },
+    {
+      "module": "سجل النشاط",
+      "route": "/admin/activity-log"
+    },
+    {
+      "module": "مشاريع الموقع",
+      "route": "/admin/projects"
+    },
+    {
+      "module": "الخدمات",
+      "route": "/admin/services"
+    },
+    {
+      "module": "الشركاء",
+      "route": "/admin/partners"
+    },
+    {
+      "module": "الإعدادات",
+      "route": "/admin/settings"
+    }
+  ],
+  "s34_added": [
+    {
+      "department": "المبيعات والعملاء",
+      "module": "تخطيط وأهداف المبيعات",
+      "route": "/admin/sales-planning"
+    },
+    {
+      "department": "المشاريع والعمليات",
+      "module": "تحليل ربحية المشاريع",
+      "route": "/admin/project-profitability"
+    }
+  ]
+}

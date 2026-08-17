@@ -53,6 +53,7 @@ const groups = [
       ["عروض الأسعار", "/admin/quotations", FaFileInvoiceDollar],
       ["أوامر البيع والفوترة والتحصيل", "/admin/order-to-cash", FaMoneyBillTrendUp],
       ["العقود وSLA والفوترة المتكررة", "/admin/contract-lifecycle", FaHandshake],
+      ["تخطيط وأهداف المبيعات", "/admin/sales-planning", FaChartLine],
     ],
   },
   {
@@ -64,6 +65,7 @@ const groups = [
       ["المستندات", "/admin/documents", FaFolderOpen],
       ["التنفيذ والتجاري", "/admin/project-commercial", FaListCheck],
       ["تكلفة وربحية المشاريع", "/admin/project-cost-control", FaChartLine],
+      ["تحليل ربحية المشاريع", "/admin/project-profitability", FaChartLine],
       ["مستندات المشاريع", "/admin/project-documents", FaFolderOpen],
       ["الدعم والتذاكر", "/admin/support", FaHeadset],
       ["إدارة الخدمات وSLA", "/admin/service-management", FaScrewdriverWrench],
@@ -133,6 +135,7 @@ const permissionForPath = (path) => {
   if (path.startsWith("/admin/quotations")) return "quotations";
   if (["/admin/operations","/admin/project-management","/admin/project-commercial"].includes(path)) return "operations";
   if (path === "/admin/project-cost-control") return "project_cost_control";
+  if (path === "/admin/project-profitability") return "project_profitability";
   if (path === "/admin/project-documents") return "documents";
   if (path === "/admin/support") return "support";
   if (path === "/admin/service-management") return "service_management";
@@ -156,6 +159,7 @@ const permissionForPath = (path) => {
   if (path === "/admin/treasury") return "treasury";
   if (path === "/admin/financial-control") return "financial_control";
   if (path === "/admin/order-to-cash") return "order_to_cash";
+  if (path === "/admin/sales-planning") return "sales_planning";
   if (path === "/admin/contract-lifecycle") return "contract_lifecycle";
   if (path === "/admin/procure-to-pay") return "procure_to_pay";
   if (path === "/admin/procurement") return "procurement";

@@ -33,6 +33,8 @@ import AdminContractLifecycle from "./pages/Admin/AdminContractLifecycle";
 import AdminProcureToPay from "./pages/Admin/AdminProcureToPay";
 import AdminServiceManagement from "./pages/Admin/AdminServiceManagement";
 import AdminOperationsResources from "./pages/Admin/AdminOperationsResources";
+import AdminSalesPlanning from "./pages/Admin/AdminSalesPlanning";
+import AdminProjectProfitability from "./pages/Admin/AdminProjectProfitability";
 import AdminFinance from "./pages/Admin/AdminFinance";
 import AdminAccounting from "./pages/Admin/AdminAccounting";
 import AdminInventoryAssets from "./pages/Admin/AdminInventoryAssets";
@@ -171,6 +173,8 @@ export default function App() {
                 <Route path="assets-custody" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="assets" /></AdminPermissionRoute>} />
                 <Route path="attendance-leave" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="attendance" /></AdminPermissionRoute>} />
                 <Route path="hr-payroll" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="payroll" /></AdminPermissionRoute>} />
+                <Route path="sales-planning" element={<AdminPermissionRoute permission="sales_planning"><AdminSalesPlanning /></AdminPermissionRoute>} />
+                <Route path="project-profitability" element={<AdminPermissionRoute permission="project_profitability"><AdminProjectProfitability /></AdminPermissionRoute>} />
                 <Route path="project-documents" element={<AdminPermissionRoute permission="documents"><AdminProjectDocuments /></AdminPermissionRoute>} />
                 <Route path="support" element={<AdminPermissionRoute permission="support"><AdminSupportTickets /></AdminPermissionRoute>} />
 
