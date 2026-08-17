@@ -1,22 +1,19 @@
-SPRINT 34 MEGA PACKAGE HEALTH
+SPRINT 35 FINAL MEGA PACKAGE HEALTH
 
 [PASS] One SQL only
-[PASS] Precheck
-[PASS] Migration
-[PASS] Health
-[PASS] Safe validation
-[PASS] Final
-[PASS] Sales targets
-[PASS] Sales forecast
-[PASS] Project budgets
-[PASS] Project costs
-[PASS] Sales route
-[PASS] Profitability route
-[PASS] Sales under Sales department
-[PASS] Profitability under Projects department
-[PASS] No old module lost
-[PASS] No duplicate visible route
-[PASS] Orange active preserved
+[PASS] S35 precheck
+[PASS] Executive snapshot RPC
+[PASS] ERP health RPC
+[PASS] Safe SQL health
+[PASS] Final check
+[PASS] ERP Health route
+[PASS] ERP Health under Executive
+[PASS] No S34/S33 module lost
+[PASS] No duplicate route
+[PASS] Sales Planning preserved
+[PASS] Project Profitability preserved
+[PASS] Finance Payroll preserved
+[PASS] HR Payroll preserved
+[PASS] Inventory preserved
 [PASS] IT department preserved
-[PASS] Finance payroll preserved
-[PASS] HR payroll preserved
+[PASS] Orange active preserved

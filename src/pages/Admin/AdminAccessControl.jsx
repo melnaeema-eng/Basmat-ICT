@@ -25,6 +25,7 @@ const roles = [
   ["support", "Support"],
   ["hr", "HR"],
   ["finance", "Finance"],
+  ["erp_health", "مراقبة جاهزية ERP"],
 ];
 
 const staffRoles = roles.filter(

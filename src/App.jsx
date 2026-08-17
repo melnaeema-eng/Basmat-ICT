@@ -69,6 +69,7 @@ import AdminServices from "./pages/Admin/AdminServices";
 import AdminSettings from "./pages/Admin/AdminSettings";
 import AdminTeam from "./pages/Admin/AdminTeam";
 import AdminWorkflowCenter from "./pages/Admin/AdminWorkflowCenter";
+import AdminERPHealth from "./pages/Admin/AdminERPHealth";
 
 import Consultation from "./pages/Consultation/Consultation";
 import Contact from "./pages/Contact/Contact";
@@ -175,6 +176,7 @@ export default function App() {
                 <Route path="hr-payroll" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="payroll" /></AdminPermissionRoute>} />
                 <Route path="sales-planning" element={<AdminPermissionRoute permission="sales_planning"><AdminSalesPlanning /></AdminPermissionRoute>} />
                 <Route path="project-profitability" element={<AdminPermissionRoute permission="project_profitability"><AdminProjectProfitability /></AdminPermissionRoute>} />
+                <Route path="erp-health" element={<AdminPermissionRoute permission="erp_health"><AdminERPHealth /></AdminPermissionRoute>} />
                 <Route path="project-documents" element={<AdminPermissionRoute permission="documents"><AdminProjectDocuments /></AdminPermissionRoute>} />
                 <Route path="support" element={<AdminPermissionRoute permission="support"><AdminSupportTickets /></AdminPermissionRoute>} />
 

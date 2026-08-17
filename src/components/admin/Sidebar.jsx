@@ -107,6 +107,7 @@ const groups = [
       ["التحليلات", "/admin/analytics", FaChartSimple],
       ["التقارير التنفيذية", "/admin/executive-reports", FaChartPie],
       ["مركز القيادة والحوكمة", "/admin/executive-control", FaGaugeHigh],
+      ["مراقبة جاهزية ERP", "/admin/erp-health", FaShieldHalved],
     ],
   },
   {
@@ -147,6 +148,7 @@ const permissionForPath = (path) => {
   if (path === "/admin/notifications") return "notifications";
   if (["/admin/analytics","/admin/executive-reports"].includes(path)) return "reports";
   if (path === "/admin/executive-control") return "executive_control";
+  if (path === "/admin/erp-health") return "erp_health";
   if (path === "/admin/team") return "team";
   if (path === "/admin/access-control") return "access_control";
   if (path === "/admin/mfa") return null;

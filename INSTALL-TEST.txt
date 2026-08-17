@@ -1,54 +1,40 @@
-BASMAT ERP — SPRINT 34 MEGA
-COMMERCIAL + SALES PLANNING + PROJECT PROFITABILITY
-===================================================
+BASMAT ERP — SPRINT 35 FINAL MEGA
+EXECUTIVE BI + PRODUCTION CLOSURE
+=================================
 
-BASELINE
-GitHub main commit b813570 + final S33 hotfixes reconstructed.
-
-IMPORTANT MODULE-MAP RULE
-This package contains MASTER-MODULE-MAP-LOCK.json.
-Package Health fails if an existing S33 visible module disappears or is duplicated.
+BASELINE: S34 MEGA stable.
 
 STEP 1 — SUPABASE
-Run ONE file:
-supabase\SPRINT34_MEGA_ALL_IN_ONE.sql
+Run only:
+supabase\SPRINT35_FINAL_MEGA_ALL_IN_ONE.sql
 
-Required final:
-SPRINT 34 MEGA ALL-IN-ONE | PASS ✅
-
-No protected RPC is executed from SQL Editor health.
+Required:
+SPRINT 35 FINAL MEGA | PASS ✅
 
 STEP 2 — FRONTEND
 cd C:\projects\Basmat-ICT
-
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-34-MEGA-Commercial-Projects-Profitability-ERP.zip" -DestinationPath . -Force
-
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-35-FINAL-MEGA-Executive-BI-Production-Closure.zip" -DestinationPath . -Force
 npm run dev
 
-NEW INDEPENDENT MODULES
-/admin/sales-planning
-  تخطيط وأهداف المبيعات
-  owner: المبيعات والعملاء
-
-/admin/project-profitability
-  تحليل ربحية المشاريع
-  owner: المشاريع والعمليات
+NEW MODULE
+/admin/erp-health
+Owner: الإدارة التنفيذية
 
 TEST
-1. Both new modules open.
-2. Active module is orange.
-3. Create sales target.
-4. Create weighted forecast.
-5. Select a project.
-6. Set project cost budget.
-7. Add project cost entry.
-8. Portfolio profitability loads.
-9. Check /admin/inventory /admin/assets-custody /admin/attendance-leave /admin/hr-payroll.
-10. Check /admin/payroll under المالية.
-11. Check إدارة تقنية المعلومات.
-12. npm run build.
+- Executive KPI snapshot loads.
+- Production Health checks load.
+- /admin/sales-planning works.
+- /admin/project-profitability works.
+- /admin/inventory works.
+- /admin/assets-custody works.
+- /admin/attendance-leave works.
+- /admin/hr-payroll works.
+- /admin/payroll remains under المالية.
+- إدارة تقنية المعلومات remains.
+- Active module orange.
+- npm run build.
 
-GITHUB AFTER PASS
+AFTER PASS
 git add .
-git commit -m "Sprint 34 MEGA Commercial Projects Profitability ERP"
+git commit -m "Sprint 35 FINAL MEGA Executive BI Production Closure"
 git push origin main
