@@ -1,16 +1,23 @@
-SPRINT 28 V2 PACKAGE HEALTH
+SPRINT 29 PACKAGE HEALTH
 
 [PASS] One SQL only
-[PASS] Precheck present
-[PASS] Migration present
-[PASS] Health present
-[PASS] Safe SQL validation present
-[PASS] Final result present
-[PASS] No auth-protected VAT RPC execution in SQL Editor
-[PASS] VAT function still created
-[PASS] Bank reconciliation function still created
-[PASS] Period close function still created
-[PASS] Financial control permission still present
-[PASS] Frontend route preserved
-[PASS] Sidebar preserved
+[PASS] Precheck
+[PASS] Migration
+[PASS] Health
+[PASS] Safe validation
+[PASS] Final result
+[PASS] No auth RPC execution in SQL validation
+[PASS] Sales Orders
+[PASS] Billing Milestones
+[PASS] Collection Actions
+[PASS] Order-to-Cash snapshot
+[PASS] Route
+[PASS] Import
+[PASS] Sidebar
 [PASS] Orange active preserved
+[PASS] Permission route
+[PASS] Access Control
+[PASS] Sprint 28 financial control preserved
+[PASS] Treasury preserved
+[PASS] Financial planning preserved
+[PASS] No school tables
