@@ -37,6 +37,7 @@ const groups = [
     title: "الرئيسية",
     items: [
       ["لوحة التحكم", "/admin", FaChartPie, true],
+      ["دليل ومساعدة الموظف", "/admin/employee-help", FaBookOpen],
     ],
   },
   {
@@ -107,13 +108,13 @@ const groups = [
       ["التحليلات", "/admin/analytics", FaChartSimple],
       ["التقارير التنفيذية", "/admin/executive-reports", FaChartPie],
       ["مركز القيادة والحوكمة", "/admin/executive-control", FaGaugeHigh],
-      ["مراقبة جاهزية ERP", "/admin/erp-health", FaShieldHalved],
     ],
   },
   {
     title: "إدارة تقنية المعلومات",
     items: [
       ["الصلاحيات والأدوار", "/admin/access-control", FaShieldHalved],
+      ["مراقبة جاهزية ERP", "/admin/erp-health", FaGaugeHigh],
       ["الأمان و2FA", "/admin/mfa", FaShieldHalved],
       ["سجل النشاط", "/admin/activity-log", FaClockRotateLeft],
     ],
@@ -131,6 +132,7 @@ const groups = [
 
 const permissionForPath = (path) => {
   if (path === "/admin") return "dashboard";
+  if (path === "/admin/employee-help") return "employee_help";
   if (["/admin/contacts","/admin/rfqs","/admin/consultations","/admin/documents","/admin/workflow","/admin/portal-users"].includes(path)) return "requests";
   if (["/admin/crm","/admin/customers","/admin/pipeline","/admin/followups"].includes(path)) return "crm";
   if (path.startsWith("/admin/quotations")) return "quotations";

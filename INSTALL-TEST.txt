@@ -1,40 +1,58 @@
-BASMAT ERP — SPRINT 35 FINAL MEGA
-EXECUTIVE BI + PRODUCTION CLOSURE
-=================================
+BASMAT ICT — PRODUCTION COMPLETION HOTFIX
+===========================================
 
-BASELINE: S34 MEGA stable.
+SCOPE
+1) Official IT role.
+2) Fix role CHECK constraint error.
+3) IT owns Access Control + ERP Health + Activity Log + 2FA access.
+4) End-to-End Workflow center.
+5) Employee Help Center.
+6) No removal of S35 modules.
 
-STEP 1 — SUPABASE
-Run only:
-supabase\SPRINT35_FINAL_MEGA_ALL_IN_ONE.sql
+STEP 1 — SUPABASE SQL
+Run:
+supabase/PRODUCTION_COMPLETION_HOTFIX.sql
 
-Required:
-SPRINT 35 FINAL MEGA | PASS ✅
+Expected:
+IT role constraint | PASS ✅
+IT access control | PASS ✅
+IT ERP health | PASS ✅
+Employee help permission | PASS ✅
 
-STEP 2 — FRONTEND
+NOTE ABOUT it@basmat.com
+- If this email already exists in ict_admin_users, SQL changes its role to IT.
+- If it does not exist, after deploying the Edge Function below, create it from "الصلاحيات والأدوار" and choose "تقنية المعلومات".
+
+STEP 2 — DEPLOY EDGE FUNCTION
+From project root:
+supabase functions deploy create-staff-user
+
+STEP 3 — INSTALL FILES
 cd C:\projects\Basmat-ICT
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Sprint-35-FINAL-MEGA-Executive-BI-Production-Closure.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Production-Completion-Hotfix.zip" -DestinationPath . -Force
 npm run dev
 
-NEW MODULE
-/admin/erp-health
-Owner: الإدارة التنفيذية
-
 TEST
-- Executive KPI snapshot loads.
-- Production Health checks load.
-- /admin/sales-planning works.
-- /admin/project-profitability works.
-- /admin/inventory works.
-- /admin/assets-custody works.
-- /admin/attendance-leave works.
-- /admin/hr-payroll works.
-- /admin/payroll remains under المالية.
-- إدارة تقنية المعلومات remains.
-- Active module orange.
-- npm run build.
+/admin/access-control
+- Role "تقنية المعلومات" must appear.
+- Do not use "ERP Health" as a role anymore.
 
-AFTER PASS
-git add .
-git commit -m "Sprint 35 FINAL MEGA Executive BI Production Closure"
-git push origin main
+/admin/erp-health
+- IT user can open it.
+
+/admin/activity-log
+- IT user can open it because it uses access_control.
+
+/admin/workflow
+- Shows 7-stage operational cycle.
+
+/admin/employee-help
+- Opens for all employee roles.
+
+SECURITY
+IT default allowed permissions:
+dashboard, notifications, access_control, erp_health, employee_help.
+All other business permissions default DENY.
+
+FINAL
+npm run build

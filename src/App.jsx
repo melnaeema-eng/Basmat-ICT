@@ -70,6 +70,7 @@ import AdminSettings from "./pages/Admin/AdminSettings";
 import AdminTeam from "./pages/Admin/AdminTeam";
 import AdminWorkflowCenter from "./pages/Admin/AdminWorkflowCenter";
 import AdminERPHealth from "./pages/Admin/AdminERPHealth";
+import AdminEmployeeHelp from "./pages/Admin/AdminEmployeeHelp";
 
 import Consultation from "./pages/Consultation/Consultation";
 import Contact from "./pages/Contact/Contact";
@@ -139,12 +140,12 @@ export default function App() {
 
             {/* Admin */}
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/mfa" element={<AdminMFA />} />
             <Route path="/admin/reset-password" element={<AdminResetPassword />} />
 
             <Route element={<ProtectedAdminRoute />}>
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminPermissionRoute permission="dashboard"><AdminDashboard /></AdminPermissionRoute>} />
+                <Route path="mfa" element={<AdminMFA />} />
                 <Route path="contacts" element={<AdminPermissionRoute permission="requests"><AdminContacts /></AdminPermissionRoute>} />
                 <Route path="rfqs" element={<AdminPermissionRoute permission="requests"><AdminRFQs /></AdminPermissionRoute>} />
                 <Route path="consultations" element={<AdminPermissionRoute permission="requests"><AdminConsultations /></AdminPermissionRoute>} />
@@ -157,6 +158,7 @@ export default function App() {
                 <Route path="portal-users" element={<AdminPermissionRoute permission="requests"><AdminPortalUsers /></AdminPermissionRoute>} />
 
                 <Route path="workflow" element={<AdminPermissionRoute permission="requests"><AdminWorkflowCenter /></AdminPermissionRoute>} />
+                <Route path="employee-help" element={<AdminPermissionRoute permission="employee_help"><AdminEmployeeHelp /></AdminPermissionRoute>} />
                 <Route path="operations" element={<AdminPermissionRoute permission="operations"><AdminOperationsDashboard /></AdminPermissionRoute>} />
                 <Route path="project-management" element={<AdminPermissionRoute permission="operations"><AdminProjectManagement /></AdminPermissionRoute>} />
                 <Route path="project-commercial" element={<AdminPermissionRoute permission="operations"><AdminProjectCommercial /></AdminPermissionRoute>} />
@@ -172,7 +174,7 @@ export default function App() {
                 <Route path="operations-resources" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources /></AdminPermissionRoute>} />
                 <Route path="inventory" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="inventory" /></AdminPermissionRoute>} />
                 <Route path="assets-custody" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="assets" /></AdminPermissionRoute>} />
-                <Route path="attendance-leave" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="attendance" /></AdminPermissionRoute>} />
+                <Route path="attendance-leave" element={<RequireAdminPermission permission="operations_resources"><AdminOperationsResources mode="attendance" /></RequireAdminPermission>} />
                 <Route path="hr-payroll" element={<AdminPermissionRoute permission="operations_resources"><AdminOperationsResources mode="payroll" /></AdminPermissionRoute>} />
                 <Route path="sales-planning" element={<AdminPermissionRoute permission="sales_planning"><AdminSalesPlanning /></AdminPermissionRoute>} />
                 <Route path="project-profitability" element={<AdminPermissionRoute permission="project_profitability"><AdminProjectProfitability /></AdminPermissionRoute>} />
@@ -199,7 +201,6 @@ export default function App() {
                 <Route path="accounting" element={<AdminPermissionRoute permission="accounting"><AdminAccounting /></AdminPermissionRoute>} />
                 <Route path="inventory-assets" element={<AdminPermissionRoute permission="inventory"><AdminInventoryAssets /></AdminPermissionRoute>} />
                 <Route path="procurement" element={<AdminPermissionRoute permission="procurement"><AdminProcurement /></AdminPermissionRoute>} />
-                <Route path="attendance-leave" element={<AdminAttendanceLeave />} />
                 <Route path="access-control" element={<RequireAdminPermission permission="access_control"><AdminAccessControl /></RequireAdminPermission>} />
                 <Route path="access-denied" element={<AdminAccessDenied />} />
               </Route>

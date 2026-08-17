@@ -40,7 +40,11 @@ export default function ProtectedAdminRoute() {
 
   // Sprint 15: 2FA remains optional.
   // But once a user has enrolled TOTP, verification is required for that session.
-  if (mfaState?.enrolled && mfaState?.needsVerification) {
+  if (
+    mfaState?.enrolled &&
+    mfaState?.needsVerification &&
+    location.pathname !== "/admin/mfa"
+  ) {
     return (
       <Navigate
         to="/admin/mfa"

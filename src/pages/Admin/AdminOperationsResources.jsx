@@ -14,21 +14,108 @@ export default function AdminOperationsResources({ mode = "all" }){
  const [leave,setLeave]=useState({employee_id:"",leave_type:"annual",start_date:today,end_date:today,days:"1",reason:""});
  const [comp,setComp]=useState({employee_id:"",basic_salary:"0",housing_allowance:"0",transport_allowance:"0",other_allowances:"0",social_insurance_employee:"0",other_deductions:"0"});
  const [run,setRun]=useState({period_start:today.slice(0,8)+"01",period_end:today});
- useEffect(()=>{load()},[]);
+ useEffect(()=>{
+  let cancelled=false;
+  (async()=>{
+   try{
+    await load();
+   }catch(error){
+    if(!cancelled)setMsg(error?.message||"حدث خطأ أثناء تحميل البيانات.");
+   }
+  })();
+  return()=>{cancelled=true};
+ },[mode]);
  async function load(){
-  const [s,w,i,b,a,e,at,l,r]=await Promise.all([
-   supabase.rpc("ict_operations_resources_snapshot"),
-   supabase.from("ict_warehouses").select("*").order("name"),
-   supabase.from("ict_inventory_items").select("*").order("name"),
-   supabase.from("ict_inventory_balances").select("*"),
-   supabase.from("ict_assets").select("*").order("created_at",{ascending:false}),
-   supabase.from("ict_hr_employees").select("id,employee_code,full_name,status").eq("status","active").order("full_name"),
-   supabase.from("ict_hr_attendance").select("*").eq("attendance_date",today),
-   supabase.from("ict_hr_leave_requests").select("*").order("created_at",{ascending:false}).limit(100),
-   supabase.from("ict_payroll_runs").select("*").order("created_at",{ascending:false})
-  ]);
-  const err=s.error||w.error||i.error||b.error||a.error||e.error||at.error||l.error||r.error;
-  if(err)setMsg(err.message);else{setSnap(s.data||{});setWh(w.data||[]);setItems(i.data||[]);setBalances(b.data||[]);setAssets(a.data||[]);setEmployees(e.data||[]);setAttendance(at.data||[]);setLeaves(l.data||[]);setRuns(r.data||[])}
+
+  if(mode==="inventory"){
+   const [w,i,b]=await Promise.all([
+    supabase.from("ict_warehouses").select("*").order("name"),
+    supabase.from("ict_inventory_items").select("*").order("name"),
+    supabase.from("ict_inventory_balances").select("*")
+   ]);
+   const err=w.error||i.error||b.error;
+   if(err)return setMsg(err.message);
+
+   const warehouses=w.data||[];
+   const inventoryItems=i.data||[];
+   const inventoryBalances=b.data||[];
+   const stockValue=inventoryBalances.reduce((sum,row)=>{
+    const item=inventoryItems.find(x=>x.id===row.item_id);
+    return sum+(Number(row.quantity_on_hand||0)*Number(item?.standard_cost||0));
+   },0);
+   const lowStock=inventoryBalances.filter(row=>{
+    const item=inventoryItems.find(x=>x.id===row.item_id);
+    return Number(row.quantity_on_hand||0)<=Number(item?.reorder_level||0);
+   }).length;
+
+   setWh(warehouses);
+   setItems(inventoryItems);
+   setBalances(inventoryBalances);
+   setSnap({
+    warehouses:warehouses.filter(x=>x.status==="active").length,
+    inventory_items:inventoryItems.length,
+    stock_value:stockValue,
+    low_stock_items:lowStock
+   });
+   return;
+  }
+
+  if(mode==="assets"){
+   const {data,error}=await supabase.from("ict_assets").select("*").order("created_at",{ascending:false});
+   if(error)return setMsg(error.message);
+   const list=data||[];
+   setAssets(list);
+   setSnap({
+    assets:list.filter(x=>x.status!=="disposed").length,
+    assigned_assets:list.filter(x=>x.status==="assigned").length
+   });
+   return;
+  }
+
+  if(mode==="attendance"){
+   const [e,at,l]=await Promise.all([
+    supabase.from("ict_hr_employees").select("id,employee_code,full_name,status").eq("status","active").order("full_name"),
+    supabase.from("ict_hr_attendance").select("*").eq("attendance_date",today),
+    supabase.from("ict_hr_leave_requests").select("*").order("created_at",{ascending:false}).limit(100)
+   ]);
+   const err=e.error||at.error||l.error;
+   if(err)return setMsg(err.message);
+
+   const employeeRows=e.data||[];
+   const attendanceRows=at.data||[];
+   const leaveRows=l.data||[];
+
+   setEmployees(employeeRows);
+   setAttendance(attendanceRows);
+   setLeaves(leaveRows);
+   setSnap({
+    active_employees:employeeRows.length,
+    present_today:attendanceRows.filter(x=>["present","late","remote"].includes(x.status)).length,
+    on_leave_today:leaveRows.filter(x=>x.status==="approved"&&x.start_date<=today&&x.end_date>=today).length
+   });
+   return;
+  }
+
+  if(mode==="payroll"){
+   const [e,r]=await Promise.all([
+    supabase.from("ict_hr_employees").select("id,employee_code,full_name,status").eq("status","active").order("full_name"),
+    supabase.from("ict_payroll_runs").select("*").order("created_at",{ascending:false})
+   ]);
+   const err=e.error||r.error;
+   if(err)return setMsg(err.message);
+
+   const employeeRows=e.data||[];
+   const payrollRows=r.data||[];
+   setEmployees(employeeRows);
+   setRuns(payrollRows);
+   setSnap({
+    active_employees:employeeRows.length,
+    payroll_value:payrollRows
+      .filter(x=>["calculated","approved","posted"].includes(x.status))
+      .reduce((sum,x)=>sum+Number(x.net_total||0),0)
+   });
+   return;
+  }
  }
  async function add(table,payload,ok){const {error}=await supabase.from(table).insert(payload);if(error)setMsg(error.message);else{setMsg(ok);load()}}
  async function postMovement(e){e.preventDefault();const {error}=await supabase.rpc("ict_post_inventory_transaction",{p_warehouse_id:movement.warehouse_id,p_item_id:movement.item_id,p_type:movement.transaction_type,p_quantity:Number(movement.quantity),p_unit_cost:Number(movement.unit_cost||0),p_project_id:null,p_goods_receipt_id:null,p_reference_no:movement.reference_no||null,p_notes:null});if(error)setMsg(error.message);else{setMsg("تم ترحيل حركة المخزون.");load()}}

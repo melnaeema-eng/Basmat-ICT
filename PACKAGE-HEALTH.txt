@@ -1,19 +1,8 @@
-SPRINT 35 FINAL MEGA PACKAGE HEALTH
-
-[PASS] One SQL only
-[PASS] S35 precheck
-[PASS] Executive snapshot RPC
-[PASS] ERP health RPC
-[PASS] Safe SQL health
-[PASS] Final check
-[PASS] ERP Health route
-[PASS] ERP Health under Executive
-[PASS] No S34/S33 module lost
-[PASS] No duplicate route
-[PASS] Sales Planning preserved
-[PASS] Project Profitability preserved
-[PASS] Finance Payroll preserved
-[PASS] HR Payroll preserved
-[PASS] Inventory preserved
-[PASS] IT department preserved
-[PASS] Orange active preserved
+[PASS] IT role in Access UI
+[PASS] erp_health is permission not role
+[PASS] Edge accepts IT
+[PASS] Workflow has 7 stages
+[PASS] Employee help route
+[PASS] Employee help sidebar
+[PASS] ERP health moved to IT group
+[PASS] SQL adds IT constraint

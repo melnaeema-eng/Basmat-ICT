@@ -25,7 +25,7 @@ const roles = [
   ["support", "Support"],
   ["hr", "HR"],
   ["finance", "Finance"],
-  ["erp_health", "مراقبة جاهزية ERP"],
+  ["it", "تقنية المعلومات"],
 ];
 
 const staffRoles = roles.filter(
@@ -64,6 +64,8 @@ const permissions = [
   ["procure_to_pay", "الشراء والاستلام ومطابقة الموردين"],
   ["service_management", "إدارة الخدمات وSLA"],
   ["operations_resources", "العمليات والموارد"],
+  ["erp_health", "مراقبة جاهزية ERP"],
+  ["employee_help", "دليل ومساعدة الموظف"],
 ];
 
 export default function AdminAccessControl() {

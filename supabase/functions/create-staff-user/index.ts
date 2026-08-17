@@ -11,6 +11,9 @@ const allowedRoles = new Set([
   "sales",
   "engineer",
   "support",
+  "hr",
+  "finance",
+  "it",
 ]);
 
 function json(body: unknown, status = 200) {

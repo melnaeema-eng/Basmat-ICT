@@ -1,118 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect,useState } from "react";
 import { Link } from "react-router-dom";
+import { FaArrowLeftLong,FaRotate,FaRoute } from "react-icons/fa6";
 import { supabase } from "../../lib/supabase";
 
-export default function AdminWorkflowCenter() {
-  const [quotations, setQuotations] = useState([]);
-  const [ndas, setNdas] = useState([]);
-  const [message, setMessage] = useState("");
+const stages=[
+ {key:"requests",no:"01",title:"الطلب / الاستشارة",desc:"استقبال فرصة العميل أو RFQ أو الاستشارة.",tables:["ict_contact_requests","ict_rfqs","ict_consultations"],to:"/admin/rfqs"},
+ {key:"nda",no:"02",title:"NDA",desc:"إدارة اتفاقية عدم الإفصاح عند الحاجة.",tables:["ict_nda_requests"],to:"/admin/documents"},
+ {key:"quotation",no:"03",title:"عرض السعر",desc:"إعداد العرض وإرساله ومتابعة قبول العميل.",tables:["ict_quotations"],to:"/admin/quotations"},
+ {key:"project",no:"04",title:"إنشاء المشروع",desc:"تحويل العرض المقبول إلى مشروع وتسليم المسؤولية للتنفيذ.",tables:["ict_delivery_projects"],to:"/admin/project-management"},
+ {key:"delivery",no:"05",title:"التنفيذ والمتابعة",desc:"المهام والمستندات والتكلفة والتقدم التشغيلي.",tables:["ict_project_tasks"],to:"/admin/project-commercial"},
+ {key:"billing",no:"06",title:"الفوترة والتحصيل",desc:"أمر البيع والفواتير والدفعات وإجراءات التحصيل.",tables:["ict_invoices","ict_payments"],to:"/admin/order-to-cash"},
+ {key:"service",no:"07",title:"الخدمة وSLA",desc:"الدعم والخدمة بعد التسليم ومتابعة SLA.",tables:["ict_support_tickets"],to:"/admin/service-management"},
+];
 
-  useEffect(() => { load(); }, []);
-
-  async function load() {
-    const [q, n] = await Promise.all([
-      supabase
-        .from("ict_quotations")
-        .select("id,quotation_no,customer_id,customer_name,company_name,subject,total_amount,status,rfq_id,created_at")
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("ict_nda_requests")
-        .select("id,nda_no,request_no,recipient_name,recipient_email,status,source_type,created_at")
-        .order("created_at", { ascending: false }),
-    ]);
-
-    const error = q.error || n.error;
-    if (error) return setMessage(error.message);
-
-    setQuotations(q.data || []);
-    setNdas(n.data || []);
-  }
-
-  async function convertToProject(quotationId) {
-    setMessage("");
-
-    const { data: projectId, error } = await supabase.rpc(
-      "convert_quotation_to_project",
-      { p_quotation_id: quotationId }
-    );
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setMessage("تم تحويل العرض المقبول إلى مشروع تشغيلي.");
-    window.location.href = `/admin/project-commercial?project=${projectId}`;
-  }
-
-  return (
-    <div dir="rtl" className="px-4 py-10 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <h1 className="text-4xl font-black text-[#071d49]">
-          مركز سير العمل
-        </h1>
-        <p className="mt-3 text-slate-600">
-          NDA → عرض السعر → قبول العميل → تحويل إلى مشروع.
-        </p>
-
-        {message && (
-          <div className="mt-6 rounded-2xl bg-blue-50 p-5 text-blue-800">
-            {message}
-          </div>
-        )}
-
-        <section className="mt-8 rounded-3xl border bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-black text-[#071d49]">
-            عروض الأسعار المقبولة
-          </h2>
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            {quotations
-              .filter((q) => q.status === "accepted")
-              .map((q) => (
-                <article key={q.id} className="rounded-2xl bg-slate-50 p-5">
-                  <p dir="ltr" className="text-right font-black text-blue-700">
-                    {q.quotation_no}
-                  </p>
-                  <h3 className="mt-2 text-xl font-black">{q.subject || "عرض سعر"}</h3>
-                  <p className="mt-2 text-slate-500">
-                    {q.company_name || q.customer_name}
-                  </p>
-                  <p dir="ltr" className="mt-3 text-right text-xl font-black">
-                    {Number(q.total_amount || 0).toLocaleString()} SAR
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Link to={`/admin/quotations/${q.id}`}
-                      className="rounded-xl border border-slate-300 px-4 py-2 font-black">
-                      فتح العرض
-                    </Link>
-
-                    <button onClick={() => convertToProject(q.id)}
-                      className="rounded-xl bg-[#ff7417] px-4 py-2 font-black text-white">
-                      تحويل إلى مشروع
-                    </button>
-                  </div>
-                </article>
-              ))}
-          </div>
-        </section>
-
-        <section className="mt-8 rounded-3xl border bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-black text-[#071d49]">NDA</h2>
-
-          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {ndas.map((n) => (
-              <article key={n.id} className="rounded-2xl bg-slate-50 p-4">
-                <p dir="ltr" className="text-right font-black text-blue-700">{n.nda_no}</p>
-                <p className="mt-2 font-black">{n.request_no}</p>
-                <p className="mt-2 text-sm text-slate-500">{n.recipient_email}</p>
-                <p className="mt-3 font-black">الحالة: {n.status}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+export default function AdminWorkflowCenter(){
+ const [counts,setCounts]=useState({}),[msg,setMsg]=useState(""),[loading,setLoading]=useState(true);
+ useEffect(()=>{load()},[]);
+ async function load(){
+  setLoading(true);setMsg("");
+  const pairs=await Promise.all(stages.map(async s=>{
+   let total=0,errors=[];
+   for(const table of s.tables){
+    const {count,error}=await supabase.from(table).select("*",{count:"exact",head:true});
+    if(error)errors.push(`${table}: ${error.message}`); else total+=Number(count||0);
+   }
+   return [s.key,total,errors];
+  }));
+  const next={};const errors=[];
+  pairs.forEach(([k,c,e])=>{next[k]=c;errors.push(...e)});
+  setCounts(next);if(errors.length)setMsg("بعض مؤشرات الدورة لم تُقرأ: "+errors.join(" | "));
+  setLoading(false);
+ }
+ return <div dir="rtl" className="erp-page"><div className="mx-auto max-w-[1500px]">
+  <section className="erp-page-header"><div><span className="erp-eyebrow">END-TO-END WORKFLOW</span><h1 className="erp-page-title">دورة سير العمل</h1><p className="erp-page-subtitle">من طلب العميل حتى التنفيذ والفوترة والتحصيل والخدمة بعد التسليم.</p></div><button onClick={load} className="erp-btn-secondary"><FaRotate/>تحديث</button></section>
+  {msg&&<div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-800">{msg}</div>}
+  <section className="mt-6 grid gap-4 lg:grid-cols-7">{stages.map((s,i)=><article key={s.key} className="erp-card relative p-5"><span className="text-xs font-black text-[#ff7417]">STEP {s.no}</span><h2 className="mt-2 font-black text-[#0f2747]">{s.title}</h2><p className="mt-2 min-h-20 text-sm leading-6 text-slate-500">{s.desc}</p><p className="mt-4 text-3xl font-black text-[#0f2747]">{loading?"…":Number(counts[s.key]||0).toLocaleString()}</p><Link to={s.to} className="mt-4 inline-flex items-center gap-2 font-black text-blue-700">فتح المرحلة <FaArrowLeftLong/></Link>{i<stages.length-1&&<span className="absolute -left-3 top-1/2 hidden text-slate-300 lg:block">←</span>}</article>)}</section>
+  <section className="erp-card mt-6 p-6"><h2 className="flex items-center gap-2 text-xl font-black text-[#0f2747]"><FaRoute/>قاعدة الدورة</h2><p className="mt-3 leading-8 text-slate-600">لا تنتقل المعاملة للمرحلة التالية إلا بعد اكتمال متطلبات المرحلة الحالية. العرض المقبول يتحول إلى مشروع، ثم تتم متابعة التنفيذ والتكلفة والمستندات، وبعدها الفوترة والتحصيل، ثم الخدمة والإغلاق التشغيلي.</p></section>
+ </div></div>
 }

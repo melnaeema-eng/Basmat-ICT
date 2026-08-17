@@ -1,0 +1,32 @@
+BASMAT ICT — S35 SECURITY ROUTE GUARD HOTFIX
+================================================
+
+CONFIRMED FROM CURRENT App.jsx
+
+1) /admin/mfa
+Was outside ProtectedAdminRoute.
+FIX: moved inside protected /admin layout.
+
+2) /admin/attendance-leave
+Was declared twice:
+- one permission-protected route
+- one unguarded duplicate
+FIX: removed the unguarded duplicate.
+
+3) /admin/access-control
+Already protected by RequireAdminPermission(access_control)
+inside ProtectedAdminRoute.
+NO CHANGE.
+
+4) /admin/activity-log
+Already protected by RequireAdminPermission(access_control)
+inside ProtectedAdminRoute.
+NO CHANGE.
+
+5) Admin dashboard index
+Already protected by AdminPermissionRoute(dashboard)
+inside ProtectedAdminRoute.
+NO CHANGE.
+
+NO SUPABASE.
+NO DATABASE CHANGES.
