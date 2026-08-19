@@ -28,6 +28,7 @@ import {
   FaSackDollar,
   FaUsers,
   FaUserTie,
+  FaRightFromBracket,
 } from "react-icons/fa6";
 import { Link, NavLink } from "react-router-dom";
 import { useAdminAuth } from "../../contexts/AdminAuthContext";
@@ -37,7 +38,6 @@ const groups = [
     title: "الرئيسية",
     items: [
       ["لوحة التحكم", "/admin", FaChartPie, true],
-      ["دليل ومساعدة الموظف", "/admin/employee-help", FaBookOpen],
     ],
   },
   {
@@ -108,13 +108,13 @@ const groups = [
       ["التحليلات", "/admin/analytics", FaChartSimple],
       ["التقارير التنفيذية", "/admin/executive-reports", FaChartPie],
       ["مركز القيادة والحوكمة", "/admin/executive-control", FaGaugeHigh],
+      ["مراقبة جاهزية ERP", "/admin/erp-health", FaShieldHalved],
     ],
   },
   {
     title: "إدارة تقنية المعلومات",
     items: [
       ["الصلاحيات والأدوار", "/admin/access-control", FaShieldHalved],
-      ["مراقبة جاهزية ERP", "/admin/erp-health", FaGaugeHigh],
       ["الأمان و2FA", "/admin/mfa", FaShieldHalved],
       ["سجل النشاط", "/admin/activity-log", FaClockRotateLeft],
     ],
@@ -132,7 +132,6 @@ const groups = [
 
 const permissionForPath = (path) => {
   if (path === "/admin") return "dashboard";
-  if (path === "/admin/employee-help") return "employee_help";
   if (["/admin/contacts","/admin/rfqs","/admin/consultations","/admin/documents","/admin/workflow","/admin/portal-users"].includes(path)) return "requests";
   if (["/admin/crm","/admin/customers","/admin/pipeline","/admin/followups"].includes(path)) return "crm";
   if (path.startsWith("/admin/quotations")) return "quotations";
@@ -172,7 +171,7 @@ const permissionForPath = (path) => {
 };
 
 export default function Sidebar({ menuOpen, onClose }) {
-  const { hasPermission } = useAdminAuth();
+  const { hasPermission, signOut } = useAdminAuth();
   const visibleGroups = groups.map(group => ({...group, items: group.items.filter(([,path]) => hasPermission(permissionForPath(path)))})).filter(group => group.items.length);
   return (
     <aside
@@ -223,8 +222,21 @@ export default function Sidebar({ menuOpen, onClose }) {
           </div>
         ))}
 
-        <div className="mt-auto pt-8">
+        <div className="mt-auto space-y-3 pt-8">
+          <button
+            type="button"
+            onClick={async () => {
+              onClose?.();
+              await signOut();
+            }}
+            className="flex w-full items-center justify-center gap-3 rounded-xl bg-red-50 px-4 py-3 font-black text-red-700 hover:bg-red-100"
+          >
+            <FaRightFromBracket />
+            تسجيل الخروج
+          </button>
+
           <Link to="/"
+            onClick={onClose}
             className="flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-bold text-slate-600 hover:border-slate-300 hover:bg-white">
             <FaHouse />
             العودة إلى الموقع

@@ -1,58 +1,15 @@
-BASMAT ICT — PRODUCTION COMPLETION HOTFIX
-===========================================
+ADMIN MOBILE LOGOUT HOTFIX
+===========================
 
-SCOPE
-1) Official IT role.
-2) Fix role CHECK constraint error.
-3) IT owns Access Control + ERP Health + Activity Log + 2FA access.
-4) End-to-End Workflow center.
-5) Employee Help Center.
-6) No removal of S35 modules.
+NO SQL. NO SUPABASE CHANGES.
 
-STEP 1 — SUPABASE SQL
-Run:
-supabase/PRODUCTION_COMPLETION_HOTFIX.sql
-
-Expected:
-IT role constraint | PASS ✅
-IT access control | PASS ✅
-IT ERP health | PASS ✅
-Employee help permission | PASS ✅
-
-NOTE ABOUT it@basmat.com
-- If this email already exists in ict_admin_users, SQL changes its role to IT.
-- If it does not exist, after deploying the Edge Function below, create it from "الصلاحيات والأدوار" and choose "تقنية المعلومات".
-
-STEP 2 — DEPLOY EDGE FUNCTION
-From project root:
-supabase functions deploy create-staff-user
-
-STEP 3 — INSTALL FILES
 cd C:\projects\Basmat-ICT
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-Production-Completion-Hotfix.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Admin-Mobile-Logout.zip" -DestinationPath . -Force
 npm run dev
 
-TEST
-/admin/access-control
-- Role "تقنية المعلومات" must appear.
-- Do not use "ERP Health" as a role anymore.
-
-/admin/erp-health
-- IT user can open it.
-
-/admin/activity-log
-- IT user can open it because it uses access_control.
-
-/admin/workflow
-- Shows 7-stage operational cycle.
-
-/admin/employee-help
-- Opens for all employee roles.
-
-SECURITY
-IT default allowed permissions:
-dashboard, notifications, access_control, erp_health, employee_help.
-All other business permissions default DENY.
-
-FINAL
-npm run build
+TEST ON MOBILE:
+1. Login to Admin.
+2. Open hamburger/sidebar.
+3. Scroll to bottom.
+4. "تسجيل الخروج" must appear above "العودة إلى الموقع".
+5. Tap it -> session signs out and protected admin routing returns to login.
