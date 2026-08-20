@@ -18,6 +18,7 @@ export default function PortalNotifications() {
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => { load(); }, []);
 
@@ -31,6 +32,8 @@ export default function PortalNotifications() {
       .limit(200);
     if (error) setErrorMessage(error.message);
     else setRows(data || []);
+    const { data: announcementData, error: announcementError } = await supabase.from("ict_announcement_inbox").select("*").order("created_at",{ascending:false}).limit(100);
+    if (announcementError) setErrorMessage(announcementError.message); else setAnnouncements(announcementData || []);
     setLoading(false);
   }
 
@@ -59,6 +62,12 @@ export default function PortalNotifications() {
     setRows((current) => current.map((row) => ({ ...row, is_read: true })));
   }
 
+  async function markAnnouncementRead(recipientId) {
+    const { error } = await supabase.from("ict_announcement_recipients").update({is_read:true,read_at:new Date().toISOString()}).eq("id",recipientId);
+    if (error) return setErrorMessage(error.message);
+    setAnnouncements(current=>current.map(row=>row.recipient_id===recipientId?{...row,is_read:true}:row));
+  }
+
   const unread = useMemo(() => rows.filter((row) => !row.is_read).length, [rows]);
   const visible = useMemo(() => rows.filter((row) => {
     if (filter === "all") return true;
@@ -80,6 +89,12 @@ export default function PortalNotifications() {
             <button onClick={load} disabled={loading} className="rounded-xl bg-[#123878] px-4 py-3 font-black text-white"><FaRotate className="ml-2 inline" />تحديث</button>
           </div>
         </div>
+
+        {announcements.length>0 && <section className="mt-6 space-y-3">
+          {announcements.map(item=><article key={item.recipient_id} className={["rounded-2xl border p-5 shadow-sm",item.priority==="important"?"border-orange-300 bg-orange-50":"border-blue-200 bg-blue-50"].join(" ")}>
+            <div className="flex flex-wrap items-start justify-between gap-4"><div><span className="text-xs font-black text-[#ff7417]">إعلان</span><h2 className="mt-1 text-xl font-black text-[#071d49]">{item.title}</h2><p className="mt-2 leading-7 text-slate-600">{item.message}</p></div>{!item.is_read&&<button onClick={()=>markAnnouncementRead(item.recipient_id)} className="rounded-xl bg-white px-4 py-2 font-black text-slate-700">مقروء</button>}</div>
+          </article>)}
+        </section>}
 
         <div className="mt-6 flex flex-wrap gap-2">
           {filters.map(([value, label]) => (

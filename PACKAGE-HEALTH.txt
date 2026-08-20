@@ -1,4 +1,10 @@
-[PASS] signOut from AdminAuth
-[PASS] logout button
-[PASS] mobile close on logout
-[PASS] return website preserved
+INVENTORY SCHEMA MATCH HOTFIX
+
+[PASS] No item_type usage
+[PASS] No standard_cost usage
+[PASS] No serial_tracking usage
+[PASS] Uses average_cost
+[PASS] Uses serial_tracked
+[PASS] Uses quantity_on_hand
+[PASS] Uses status active
+[PASS] No SQL changes

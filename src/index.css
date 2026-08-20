@@ -167,3 +167,50 @@ main th {
 main tbody tr {
   border-color: #eef1f4;
 }
+
+
+/* =========================================================
+   BASMAT ERP — Section Heading Emphasis
+   Production UI Hotfix
+   ========================================================= */
+.erp-card > h2,
+.erp-card > h3,
+.erp-card section > h2,
+.erp-card section > h3,
+.erp-page section > h2,
+.erp-page section > h3 {
+  position: relative;
+  color: #0f2747;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+[dir="rtl"] .erp-card > h2,
+[dir="rtl"] .erp-card > h3,
+[dir="rtl"] .erp-card section > h2,
+[dir="rtl"] .erp-card section > h3,
+[dir="rtl"] .erp-page section > h2,
+[dir="rtl"] .erp-page section > h3 {
+  border-right: 4px solid #ff7417;
+  padding-right: 0.75rem;
+}
+
+[dir="ltr"] .erp-card > h2,
+[dir="ltr"] .erp-card > h3,
+[dir="ltr"] .erp-card section > h2,
+[dir="ltr"] .erp-card section > h3,
+[dir="ltr"] .erp-page section > h2,
+[dir="ltr"] .erp-page section > h3 {
+  border-left: 4px solid #ff7417;
+  padding-left: 0.75rem;
+}
+
+/* Sidebar department names */
+.erp-sidebar nav > div > p {
+  color: #0f2747;
+  font-weight: 900;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid rgba(255,116,23,.28);
+  padding-bottom: 0.5rem;
+}

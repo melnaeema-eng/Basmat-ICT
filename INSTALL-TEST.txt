@@ -1,15 +1,27 @@
-ADMIN MOBILE LOGOUT HOTFIX
-===========================
+BASMAT ICT — INVENTORY SCHEMA MATCH HOTFIX
+===========================================
 
-NO SQL. NO SUPABASE CHANGES.
+NO SQL. NO DATABASE CHANGES.
 
+CONFIRMED ict_inventory_items SCHEMA:
+item_no, sku, name, category, unit, warehouse_id, supplier_id,
+quantity_on_hand, reorder_level, average_cost, serial_tracked,
+status, notes, created_at, updated_at.
+
+FIX:
+- Removed invalid item_type
+- Removed invalid standard_cost
+- Removed invalid serial_tracking
+- Uses average_cost
+- Uses serial_tracked
+- Uses quantity_on_hand
+- Keeps reorder_level/status/notes
+
+INSTALL:
 cd C:\projects\Basmat-ICT
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Admin-Mobile-Logout.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Inventory-Schema-Match.zip" -DestinationPath . -Force
 npm run dev
 
-TEST ON MOBILE:
-1. Login to Admin.
-2. Open hamburger/sidebar.
-3. Scroll to bottom.
-4. "تسجيل الخروج" must appear above "العودة إلى الموقع".
-5. Tap it -> session signs out and protected admin routing returns to login.
+TEST:
+/admin/inventory
+Create a new inventory item and verify it saves without schema-cache errors.

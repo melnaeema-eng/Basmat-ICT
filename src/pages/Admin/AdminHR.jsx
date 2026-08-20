@@ -680,7 +680,13 @@ export default function AdminHR() {
                         <b>{row.full_name}</b>
                         <div
                           dir="ltr"
-                          className="text-right text-xs text-slate-500"
+                          className="mt-1 text-right text-xs font-black text-[#ff7417]"
+                        >
+                          {row.employee_code || "—"}
+                        </div>
+                        <div
+                          dir="ltr"
+                          className="mt-1 text-right text-xs text-slate-500"
                         >
                           {row.email}
                         </div>
