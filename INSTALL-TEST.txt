@@ -1,46 +1,25 @@
-BASMAT ICT — QUOTATION QR VERIFICATION HOTFIX
-===============================================
+BASMAT ICT — QUOTATION PRINT LAYOUT BALANCE
+============================================
 
-WHAT CHANGED
-- Company Stamp replaced by:
-  QR Verification
-  Verification Code (QVR-YYYY-XXXXXXXX)
-- Public verification page:
-  /verify-quotation/:token
-- Verification reads directly from the quotation record.
-- Signature and Customer Signature remain.
-- IBAN and quotation item columns remain.
-- This is NOT the ZATCA invoice QR.
+NO SQL. NO DATABASE CHANGES.
 
-STEP 1 — SQL
-Run in Supabase SQL Editor:
-supabase/QUOTATION_QR_VERIFICATION.sql
+FIX:
+- DESCRIPTION gets the largest space.
+- DESCRIPTION is multiline and wraps long BOQ text.
+- QTY and UNIT are compact.
+- Price/VAT/Total columns are balanced.
+- Print uses fixed column widths to stop random spreading.
+- QR Verification, IBAN, UNIT saving, Save and Email remain unchanged.
 
-Expected:
-VERIFICATION TOKEN | PASS ✅
-VERIFICATION CODE  | PASS ✅
-VERIFY RPC          | PASS ✅
-
-STEP 2 — INSTALL FILES
+INSTALL:
 cd C:\projects\Basmat-ICT
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Quotation-QR-Verification.zip" -DestinationPath . -Force
-
-STEP 3 — INSTALL QR PACKAGE
-npm install
-
-STEP 4 — RUN
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Quotation-Print-Layout-Balance.zip" -DestinationPath . -Force
 npm run dev
 
-TEST
-1. Open/create quotation.
-2. Save it.
-3. QR + QVR code must appear instead of company stamp.
-4. Print/PDF: QR and verification code must appear.
-5. Scan QR or open:
-   http://localhost:5173/verify-quotation/<token>
-6. It should show quotation number, customer, dates, total and verification state.
-7. Change quotation to cancelled/expired and verify page reflects it.
-8. Save/email/UNIT/IBAN must still work.
-
-FINAL
-npm run build
+TEST:
+1. Open a quotation with a long DESCRIPTION.
+2. Verify DESCRIPTION has visibly more width than UNIT/QTY.
+3. Print/PDF preview.
+4. DESCRIPTION should wrap cleanly.
+5. UNIT/QTY should no longer consume excessive width.
+6. Confirm QR + QVR code + IBAN remain visible.

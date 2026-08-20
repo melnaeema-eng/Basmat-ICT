@@ -1,12 +1,7 @@
-[PASS] Company stamp removed
-[PASS] QR verification block
-[PASS] Verification code printed
-[PASS] QR generated from public URL
-[PASS] Public verification page
-[PASS] Public route
-[PASS] SQL token/code
-[PASS] Limited verification RPC
+[PASS] Fixed table layout
+[PASS] Description 43% print width
+[PASS] Compact UNIT print width
+[PASS] Description multiline
+[PASS] UNIT real field preserved
+[PASS] QR verification preserved
 [PASS] IBAN preserved
-[PASS] Real UNIT preserved
-[PASS] Save/Email preserved
-[PASS] QRCode dependency

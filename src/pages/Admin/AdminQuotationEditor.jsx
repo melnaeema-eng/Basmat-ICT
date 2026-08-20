@@ -669,6 +669,26 @@ export default function AdminQuotationEditor() {
             font-size: 8px !important;
           }
 
+          .quotation-items-table {
+            table-layout: fixed !important;
+            width: 100% !important;
+          }
+
+          .quotation-items-table .qcol-sn { width: 4% !important; }
+          .quotation-items-table .qcol-description { width: 39% !important; }
+          .quotation-items-table .qcol-qty { width: 6% !important; }
+          .quotation-items-table .qcol-unit { width: 7% !important; }
+          .quotation-items-table .qcol-unit-price { width: 11% !important; }
+          .quotation-items-table .qcol-total { width: 10% !important; }
+          .quotation-items-table .qcol-vat { width: 9% !important; }
+          .quotation-items-table .qcol-grand-total { width: 14% !important; }
+
+          .quotation-description {
+            min-height: 54px !important;
+            white-space: pre-wrap !important;
+            overflow-wrap: anywhere !important;
+          }
+
           .quotation-items th {
             padding: 5px !important;
           }
@@ -678,9 +698,45 @@ export default function AdminQuotationEditor() {
           }
 
           .quotation-items input {
-            padding: 3px 4px !important;
-            font-size: 8px !important;
-            line-height: 1.1 !important;
+            padding: 2px !important;
+            font-size: 7.5px !important;
+            line-height: 1.05 !important;
+            border: 0 !important;
+            background: transparent !important;
+            text-align: center !important;
+          }
+
+          .quotation-items textarea {
+            padding: 2px !important;
+            font-size: 7.5px !important;
+            line-height: 1.35 !important;
+            border: 0 !important;
+            background: transparent !important;
+            resize: none !important;
+            overflow: visible !important;
+            min-height: 42px !important;
+            height: auto !important;
+            white-space: pre-wrap !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .quotation-items-table .qcol-sn { width: 3% !important; }
+          .quotation-items-table .qcol-description { width: 43% !important; }
+          .quotation-items-table .qcol-qty { width: 5% !important; }
+          .quotation-items-table .qcol-unit { width: 5% !important; }
+          .quotation-items-table .qcol-unit-price { width: 10% !important; }
+          .quotation-items-table .qcol-total { width: 9% !important; }
+          .quotation-items-table .qcol-vat { width: 9% !important; }
+          .quotation-items-table .qcol-grand-total { width: 16% !important; }
+
+          .quotation-items th {
+            white-space: normal !important;
+            word-break: normal !important;
+            line-height: 1.15 !important;
+          }
+
+          .quotation-items td {
+            vertical-align: top !important;
           }
 
           .quotation-summary-block {
@@ -1185,7 +1241,18 @@ export default function AdminQuotationEditor() {
           </div>
 
           <div className="quotation-items mt-4 overflow-x-auto">
-            <table className="w-full border-collapse text-right">
+            <table className="quotation-items-table w-full border-collapse text-right">
+              <colgroup>
+                <col className="qcol-sn" />
+                <col className="qcol-description" />
+                <col className="qcol-qty" />
+                <col className="qcol-unit" />
+                <col className="qcol-unit-price" />
+                <col className="qcol-total" />
+                <col className="qcol-vat" />
+                <col className="qcol-grand-total" />
+                <col className="qcol-delete no-print" />
+              </colgroup>
               <thead className="quotation-table-head">
                 <tr className="bg-[#071d49] text-white">
                   <th className="p-2">م<br/><span className="text-[9px]">S.N</span></th>
@@ -1210,11 +1277,10 @@ export default function AdminQuotationEditor() {
                       {index + 1}
                     </td>
 
-                    <td className="p-3">
-                      <input
-                        value={
-                          item.description
-                        }
+                    <td className="p-2 align-top">
+                      <textarea
+                        rows={3}
+                        value={item.description}
                         onChange={(event) =>
                           updateItem(
                             index,
@@ -1222,7 +1288,7 @@ export default function AdminQuotationEditor() {
                             event.target.value
                           )
                         }
-                        className="w-full rounded-lg border border-slate-200 p-2 outline-none"
+                        className="quotation-description w-full resize-y rounded-lg border border-slate-200 p-2 leading-6 outline-none"
                       />
                     </td>
 
@@ -1239,7 +1305,7 @@ export default function AdminQuotationEditor() {
                             event.target.value
                           )
                         }
-                        className="w-24 rounded-lg border border-slate-200 p-2"
+                        className="w-full min-w-0 rounded-lg border border-slate-200 p-2 text-center"
                       />
                     </td>
 
@@ -1254,7 +1320,7 @@ export default function AdminQuotationEditor() {
                           )
                         }
                         placeholder="مثال: pcs / lot / m"
-                        className="w-24 rounded-lg border border-slate-200 p-2 text-center outline-none"
+                        className="w-full min-w-0 rounded-lg border border-slate-200 p-2 text-center outline-none"
                       />
                     </td>
 
@@ -1273,7 +1339,7 @@ export default function AdminQuotationEditor() {
                             event.target.value
                           )
                         }
-                        className="w-32 rounded-lg border border-slate-200 p-2"
+                        className="w-full min-w-0 rounded-lg border border-slate-200 p-2 text-center"
                       />
                     </td>
 
