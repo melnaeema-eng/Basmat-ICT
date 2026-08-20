@@ -21,11 +21,13 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
+import QRCode from "qrcode";
 import { supabase } from "../../lib/supabase";
 
 const emptyItem = {
   description: "",
   quantity: 1,
+  unit: "",
   unit_price: 0,
 };
 
@@ -60,12 +62,15 @@ export default function AdminQuotationEditor() {
     terms:
       "الأسعار سارية خلال مدة صلاحية العرض. التنفيذ حسب نطاق العمل المتفق عليه.",
     status: "draft",
+    verification_code: "",
+    verification_token: "",
   });
 
   const [items, setItems] = useState([
     { ...emptyItem },
   ]);
   const [saving, setSaving] = useState(false);
+  const [verificationQr, setVerificationQr] = useState("");
   const [sending, setSending] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [message, setMessage] = useState({
@@ -211,14 +216,49 @@ export default function AdminQuotationEditor() {
       notes: data.notes || "",
       terms: data.terms || "",
       status: data.status || "draft",
+      verification_code: data.verification_code || "",
+      verification_token: data.verification_token || "",
     });
 
     setItems(
       Array.isArray(data.items) && data.items.length
-        ? data.items
+        ? data.items.map((item) => ({
+            ...emptyItem,
+            ...item,
+            unit: item?.unit || "",
+          }))
         : [{ ...emptyItem }]
     );
   }
+
+  useEffect(() => {
+    let active = true;
+
+    async function buildVerificationQr() {
+      if (!form.verification_token) {
+        setVerificationQr("");
+        return;
+      }
+
+      try {
+        const verificationUrl =
+          `${window.location.origin}/verify-quotation/${form.verification_token}`;
+        const dataUrl = await QRCode.toDataURL(verificationUrl, {
+          width: 220,
+          margin: 1,
+          errorCorrectionLevel: "M",
+        });
+        if (active) setVerificationQr(dataUrl);
+      } catch {
+        if (active) setVerificationQr("");
+      }
+    }
+
+    buildVerificationQr();
+    return () => {
+      active = false;
+    };
+  }, [form.verification_token]);
 
   const subtotal = useMemo(
     () =>
@@ -304,8 +344,14 @@ export default function AdminQuotationEditor() {
       const { data: authData } =
         await supabase.auth.getUser();
 
+      const {
+        verification_code: _verificationCode,
+        verification_token: _verificationToken,
+        ...editableForm
+      } = form;
+
       const payload = {
-        ...form,
+        ...editableForm,
         rfq_id: form.rfq_id || null,
         consultation_id: form.consultation_id || null,
         customer_id: form.customer_id,
@@ -331,6 +377,7 @@ export default function AdminQuotationEditor() {
           quantity: Number(
             item.quantity || 0
           ),
+          unit: String(item.unit || "").trim(),
           unit_price: Number(
             item.unit_price || 0
           ),
@@ -350,19 +397,27 @@ export default function AdminQuotationEditor() {
           .from("ict_quotations")
           .update(payload)
           .eq("id", id)
-          .select("id")
+          .select("id,verification_code,verification_token")
           .single();
       } else {
         result = await supabase
           .from("ict_quotations")
           .insert(payload)
-          .select("id")
+          .select("id,verification_code,verification_token")
           .single();
       }
 
       if (result.error) {
         throw result.error;
       }
+
+      setForm((current) => ({
+        ...current,
+        verification_code:
+          result.data.verification_code || current.verification_code || "",
+        verification_token:
+          result.data.verification_token || current.verification_token || "",
+      }));
 
       setMessage({
         type: "success",
@@ -1006,10 +1061,10 @@ export default function AdminQuotationEditor() {
 
               <div>
                 <h2 className="text-xl font-black text-[#071d49]">
-                  بصمة النوابغ
+                  شركة بصمة النوابغ لتقنية المعلومات والاتصالات
                 </h2>
-                <p className="mt-1 text-sm text-slate-600">
-                  لتقنية المعلومات والاتصالات
+                <p className="mt-1 text-xs font-black text-[#9b1733]">
+                  SMART SOLUTIONS FOR A CONNECTED WORLD
                 </p>
                 <p className="mt-1 text-xs font-bold text-blue-700">
                   BASMAT ALNAWABIGH ICT
@@ -1018,9 +1073,8 @@ export default function AdminQuotationEditor() {
             </div>
 
             <div className="text-left">
-              <p className="text-sm font-bold text-slate-500">
-                QUOTATION
-              </p>
+              <p className="text-lg font-black text-[#071d49]">QUOTATION</p>
+              <p className="text-sm font-black text-[#071d49]">عرض سعر</p>
 
               <input
                 value={form.quotation_no}
@@ -1046,7 +1100,7 @@ export default function AdminQuotationEditor() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 py-3 text-xs font-black text-[#071d49]">
-            <span dir="ltr">CR: 530976143</span>
+            <span dir="ltr">CR: 7053976143</span>
             <span dir="ltr">VAT: 314712238300003</span>
           </div>
 
@@ -1134,22 +1188,15 @@ export default function AdminQuotationEditor() {
             <table className="w-full border-collapse text-right">
               <thead className="quotation-table-head">
                 <tr className="bg-[#071d49] text-white">
-                  <th className="p-3">#</th>
-                  <th className="p-3">
-                    الوصف
-                  </th>
-                  <th className="p-3">
-                    الكمية
-                  </th>
-                  <th className="p-3">
-                    سعر الوحدة
-                  </th>
-                  <th className="p-3">
-                    الإجمالي
-                  </th>
-                  <th className="no-print p-3">
-                    حذف
-                  </th>
+                  <th className="p-2">م<br/><span className="text-[9px]">S.N</span></th>
+                  <th className="p-2">البيان<br/><span className="text-[9px]">DESCRIPTION</span></th>
+                  <th className="p-2">الكمية<br/><span className="text-[9px]">QTY</span></th>
+                  <th className="p-2">الوحدة<br/><span className="text-[9px]">UNIT</span></th>
+                  <th className="p-2">سعر الوحدة<br/><span className="text-[9px]">UNIT PRICE (SAR)</span></th>
+                  <th className="p-2">الإجمالي<br/><span className="text-[9px]">TOTAL (SAR)</span></th>
+                  <th className="p-2">ضريبة القيمة المضافة<br/><span className="text-[9px]">VAT {form.tax_rate}% (SAR)</span></th>
+                  <th className="p-2">الإجمالي شامل الضريبة<br/><span className="text-[9px]">TOTAL VAT INCLUDED</span></th>
+                  <th className="no-print p-2">حذف</th>
                 </tr>
               </thead>
 
@@ -1196,6 +1243,21 @@ export default function AdminQuotationEditor() {
                       />
                     </td>
 
+                    <td className="p-2">
+                      <input
+                        value={item.unit || ""}
+                        onChange={(event) =>
+                          updateItem(
+                            index,
+                            "unit",
+                            event.target.value
+                          )
+                        }
+                        placeholder="مثال: pcs / lot / m"
+                        className="w-24 rounded-lg border border-slate-200 p-2 text-center outline-none"
+                      />
+                    </td>
+
                     <td className="p-3">
                       <input
                         type="number"
@@ -1227,6 +1289,22 @@ export default function AdminQuotationEditor() {
                             item.unit_price ||
                               0
                           )
+                      )}
+                    </td>
+
+                    <td dir="ltr" className="p-2 font-black">
+                      {formatMoney(
+                        Number(item.quantity || 0) *
+                        Number(item.unit_price || 0) *
+                        (Number(form.tax_rate || 0) / 100)
+                      )}
+                    </td>
+
+                    <td dir="ltr" className="p-2 font-black">
+                      {formatMoney(
+                        Number(item.quantity || 0) *
+                        Number(item.unit_price || 0) *
+                        (1 + Number(form.tax_rate || 0) / 100)
                       )}
                     </td>
 
@@ -1277,7 +1355,7 @@ export default function AdminQuotationEditor() {
 
               <label className="mt-4 block">
                 <span className="mb-2 block font-bold text-slate-700">
-                  الشروط
+                  الشروط والأحكام / Terms & Conditions
                 </span>
                 <textarea
                   rows={5}
@@ -1295,7 +1373,7 @@ export default function AdminQuotationEditor() {
 
             <div className="quotation-totals rounded-xl bg-slate-50 p-4">
               <SummaryRow
-                label="المجموع قبل الضريبة"
+                label="المجموع قبل الضريبة / Total Before VAT"
                 value={`${formatMoney(
                   subtotal
                 )} ${form.currency}`}
@@ -1332,7 +1410,7 @@ export default function AdminQuotationEditor() {
               </div>
 
               <SummaryRow
-                label="قيمة الضريبة"
+                label="ضريبة القيمة المضافة / VAT"
                 value={`${formatMoney(
                   taxAmount
                 )} ${form.currency}`}
@@ -1340,7 +1418,7 @@ export default function AdminQuotationEditor() {
 
               <div className="mt-5 border-t border-slate-300 pt-5">
                 <SummaryRow
-                  label="الإجمالي"
+                  label="الإجمالي شامل الضريبة / Total Due (Incl. VAT)"
                   value={`${formatMoney(
                     totalAmount
                   )} ${form.currency}`}
@@ -1402,6 +1480,33 @@ export default function AdminQuotationEditor() {
             </div>
           </div>
 
+          <div className="mt-8 grid gap-6 border-t border-slate-200 pt-6 text-center md:grid-cols-3">
+            <div>
+              <p className="font-black text-[#071d49]">التحقق من صحة العرض / Verify Quotation</p>
+              {form.verification_token && verificationQr ? (
+                <>
+                  <img
+                    src={verificationQr}
+                    alt="Quotation verification QR"
+                    className="mx-auto mt-3 h-24 w-24 rounded-lg border border-slate-200 bg-white p-1"
+                  />
+                  <p dir="ltr" className="mt-2 text-xs font-black tracking-wide text-[#071d49]">
+                    {form.verification_code}
+                  </p>
+                  <p className="mt-1 text-[9px] text-slate-500">
+                    امسح QR للتحقق من حالة وصحة عرض السعر
+                  </p>
+                </>
+              ) : (
+                <div className="mx-auto mt-5 max-w-48 rounded-lg border border-dashed border-slate-300 p-3 text-[10px] text-slate-500">
+                  احفظ عرض السعر لإنشاء رمز التحقق تلقائيًا.
+                </div>
+              )}
+            </div>
+            <div><p className="font-black text-[#071d49]">التوقيع / Signature</p><div className="mx-auto mt-8 w-40 border-b border-dotted border-slate-500" /></div>
+            <div><p className="font-black text-[#071d49]">اعتماد العميل / Customer Signature & Stamp</p><div className="mx-auto mt-8 w-40 border-b border-dotted border-slate-500" /></div>
+          </div>
+
           <footer
             className="quotation-footer -mx-7 -mb-7 mt-12 overflow-hidden md:-mx-10 md:-mb-10"
             style={{
@@ -1436,7 +1541,7 @@ export default function AdminQuotationEditor() {
                 <div className="mt-2 space-y-1.5 text-[10px] leading-4 text-white">
                   <p className="flex items-center gap-3"><FaPhone /><span dir="ltr">+966 55 007 3576</span></p>
                   <p className="flex items-center gap-3"><FaPhone /><span dir="ltr">+966 53 480 7359</span></p>
-                  <p className="flex items-center gap-3"><FaEnvelope /><span dir="ltr" className="break-all">info@basmat-alnawabig.com.sa</span></p>
+                  <p className="flex items-center gap-3"><FaEnvelope /><span dir="ltr" className="break-all">info@ict.basmat-alnawabig.com.sa</span></p>
                 </div>
               </section>
 
@@ -1450,14 +1555,14 @@ export default function AdminQuotationEditor() {
               </section>
 
               <section className="px-4 py-3">
-                <p className="text-xs font-black text-white">البيانات البنكية</p>
+                <p className="text-xs font-black text-white">الحساب البنكي / BANK ACCOUNT</p>
                 <div className="mt-2 space-y-1.5 text-[10px] leading-4 text-white">
                   <p className="flex items-center gap-3"><FaBuildingColumns /><span>مصرف الراجحي</span></p>
                   <p>اسم الحساب: <strong>بصمة النوابغ</strong></p>
                   <div>
-                    <p className="text-xs font-black">IBAN</p>
+                    <p className="text-xs font-black">IBAN / آيبان</p>
                     <p dir="ltr" className="mt-1 rounded-md border border-white/25 bg-white/10 px-2 py-1.5 text-center text-[9px] font-black">
-                      SA49 8000 0282 6080 1979 1093
+                      SA98800002262080197371903
                     </p>
                   </div>
                 </div>
@@ -1465,7 +1570,7 @@ export default function AdminQuotationEditor() {
             </div>
 
             <div className="border-t border-white/20 px-4 py-2 text-center text-[9px] font-bold text-white">
-              <span>CR: 530976143</span>
+              <span>CR: 7053976143</span>
               <span className="mx-3">•</span>
               <span>VAT: 314712238300003</span>
               <span className="mx-3">•</span>

@@ -93,6 +93,7 @@ import PortalResetPassword from "./pages/Portal/PortalResetPassword";
 
 import PortalRegister from "./pages/PortalAuth/PortalRegister";
 import Quote from "./pages/Quote/Quote";
+import VerifyQuotation from "./pages/VerifyQuotation/VerifyQuotation";
 
 export default function App() {
   return (
@@ -104,6 +105,7 @@ export default function App() {
             <Route element={<MainLayout><Outlet /></MainLayout>}>
               <Route path="/" element={<Home />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/verify-quotation/:token" element={<VerifyQuotation />} />
             </Route>
 
             {/* Customer authentication */}
