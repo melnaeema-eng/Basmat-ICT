@@ -1,7 +1,6 @@
-[PASS] Fixed table layout
-[PASS] Description 43% print width
-[PASS] Compact UNIT print width
-[PASS] Description multiline
-[PASS] UNIT real field preserved
-[PASS] QR verification preserved
-[PASS] IBAN preserved
+[PASS] Reads admin data.factors
+[PASS] Filters TOTP
+[PASS] Deletes with userId
+[PASS] Re-lists after deletion
+[PASS] Verifies zero remaining TOTP
+[PASS] Returns remaining_totp zero

@@ -33,6 +33,8 @@ export default function AdminMFA() {
   const [enrollment, setEnrollment] = useState(null);
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const [recoveryCode, setRecoveryCode] = useState("");
+  const [recoveryEmail, setRecoveryEmail] = useState("");
   const [message, setMessage] = useState({
     type: "",
     text: "",
@@ -237,6 +239,79 @@ export default function AdminMFA() {
     }
   }
 
+  async function requestMfaRecovery() {
+    setBusy(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "mfa-recovery",
+        { body: { action: "request" } }
+      );
+
+      if (error) throw error;
+      if (!data?.ok) throw new Error(data?.error || "تعذر إرسال رمز الاسترداد.");
+
+      setRecoveryEmail(data.masked_email || "");
+      setRecoveryCode("");
+      setMode("recovery");
+
+      setMessage({
+        type: "success",
+        text: "تم إرسال رمز استرداد إلى بريدك الإلكتروني المسجل.",
+      });
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.message || "تعذر إرسال رمز استرداد MFA.",
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function verifyMfaRecovery() {
+    if (recoveryCode.trim().length !== 6) {
+      setMessage({
+        type: "error",
+        text: "أدخل رمز الاسترداد المكون من 6 أرقام.",
+      });
+      return;
+    }
+
+    setBusy(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "mfa-recovery",
+        {
+          body: {
+            action: "verify",
+            code: recoveryCode.trim(),
+          },
+        }
+      );
+
+      if (error) throw error;
+      if (!data?.ok) throw new Error(data?.error || "رمز الاسترداد غير صحيح.");
+
+      setMode("recovery-success");
+      setMessage({
+        type: "success",
+        text:
+          "تمت إعادة ضبط المصادقة الثنائية. ستحتاج إلى تسجيل الدخول من جديد ثم تفعيل Authenticator جديد.",
+      });
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.message || "تعذر إعادة ضبط MFA.",
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function disableMfa() {
     const { data: factorsData, error: factorsError } =
       await supabase.auth.mfa.listFactors();
@@ -377,6 +452,93 @@ export default function AdminMFA() {
               className="mt-4 w-full rounded-2xl bg-[#ff7417] px-5 py-4 font-black text-white disabled:opacity-60"
             >
               {busy ? "جارٍ التحقق..." : "تحقق ودخول"}
+            </button>
+
+            <button
+              type="button"
+              onClick={requestMfaRecovery}
+              disabled={busy}
+              className="mt-3 w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-black text-[#071d49] disabled:opacity-60"
+            >
+              فقدت رمز المصادقة؟ استرداد عبر البريد
+            </button>
+          </div>
+        )}
+
+        {mode === "recovery" && (
+          <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/50 p-6">
+            <h2 className="font-black text-[#071d49]">
+              استرداد المصادقة الثنائية عبر البريد
+            </h2>
+
+            <p className="mt-3 leading-7 text-slate-600">
+              أرسلنا رمزًا من 6 أرقام إلى بريدك المسجل
+              {recoveryEmail ? ` (${recoveryEmail})` : ""}.
+              الرمز صالح لمدة 10 دقائق.
+            </p>
+
+            <input
+              value={recoveryCode}
+              onChange={(event) =>
+                setRecoveryCode(
+                  event.target.value.replace(/\D/g, "").slice(0, 6)
+                )
+              }
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              dir="ltr"
+              placeholder="000000"
+              className="mt-4 w-full rounded-2xl border border-slate-300 px-5 py-4 text-center text-2xl font-black tracking-[0.4em]"
+            />
+
+            <button
+              type="button"
+              onClick={verifyMfaRecovery}
+              disabled={busy}
+              className="mt-4 w-full rounded-2xl bg-[#071d49] px-5 py-4 font-black text-white disabled:opacity-60"
+            >
+              {busy ? "جارٍ التحقق..." : "تحقق وأعد ضبط 2FA"}
+            </button>
+
+            <button
+              type="button"
+              onClick={requestMfaRecovery}
+              disabled={busy}
+              className="mt-3 w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-black text-slate-700 disabled:opacity-60"
+            >
+              إعادة إرسال الرمز
+            </button>
+
+            <button
+              type="button"
+              onClick={determineMfaMode}
+              disabled={busy}
+              className="mt-3 w-full rounded-2xl border border-slate-200 px-5 py-3 font-black text-slate-500"
+            >
+              العودة لرمز Authenticator
+            </button>
+          </div>
+        )}
+
+        {mode === "recovery-success" && (
+          <div className="mt-8 rounded-2xl border border-green-200 bg-green-50 p-6 text-center">
+            <h2 className="text-xl font-black text-green-800">
+              تمت إعادة ضبط 2FA
+            </h2>
+            <p className="mt-3 leading-7 text-green-700">
+              تم حذف عامل المصادقة القديم بأمان. سجّل الدخول مرة أخرى،
+              ثم افتح صفحة 2FA لتسجيل Authenticator جديد ومسح QR جديد.
+            </p>
+
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate("/admin/login", { replace: true });
+              }}
+              className="mt-5 w-full rounded-2xl bg-[#ff7417] px-5 py-4 font-black text-white"
+            >
+              تسجيل الدخول من جديد
             </button>
           </div>
         )}

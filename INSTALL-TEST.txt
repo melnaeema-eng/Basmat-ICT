@@ -1,25 +1,39 @@
-BASMAT ICT — QUOTATION PRINT LAYOUT BALANCE
-============================================
+BASMAT ICT — MFA RECOVERY RESET FIX
+=====================================
 
-NO SQL. NO DATABASE CHANGES.
+THIS FIX ADDRESSES THE CONFIRMED PROBLEM:
+Email OTP succeeds, but the old Authenticator factor was not actually removed.
 
-FIX:
-- DESCRIPTION gets the largest space.
-- DESCRIPTION is multiline and wraps long BOQ text.
-- QTY and UNIT are compact.
-- Price/VAT/Total columns are balanced.
-- Print uses fixed column widths to stop random spreading.
-- QR Verification, IBAN, UNIT saving, Save and Email remain unchanged.
+ROOT CAUSE FIXED:
+The Admin listFactors result is read from data.factors.
+The previous recovery function was reading data.totp / data.phone.
+
+NO SQL.
+NO DATABASE CHANGE.
+NO FRONTEND CHANGE.
 
 INSTALL:
 cd C:\projects\Basmat-ICT
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Quotation-Print-Layout-Balance.zip" -DestinationPath . -Force
-npm run dev
+
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-MFA-Recovery-RESET-FIX.zip" -DestinationPath . -Force
+
+DEPLOY:
+npx supabase functions deploy mfa-recovery --use-api
 
 TEST:
-1. Open a quotation with a long DESCRIPTION.
-2. Verify DESCRIPTION has visibly more width than UNIT/QTY.
-3. Print/PDF preview.
-4. DESCRIPTION should wrap cleanly.
-5. UNIT/QTY should no longer consume excessive width.
-6. Confirm QR + QVR code + IBAN remain visible.
+1. Login with email + password.
+2. At /admin/mfa click "فقدت رمز المصادقة؟".
+3. Enter the email OTP.
+4. The function now:
+   - lists the account factors from data.factors
+   - finds TOTP factor(s)
+   - deletes each TOTP factor server-side
+   - lists factors AGAIN
+   - refuses to return SUCCESS unless remaining TOTP = 0
+5. Login again.
+6. /admin/mfa must now enter ENROLL mode and show a NEW QR.
+7. Scan the new QR and verify the new Authenticator code.
+
+IMPORTANT:
+If Supabase still reports a remaining TOTP factor, the function returns an ERROR
+instead of falsely saying that the reset succeeded.
