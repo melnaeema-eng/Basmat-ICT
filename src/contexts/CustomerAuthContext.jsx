@@ -13,6 +13,7 @@ const CustomerAuthContext = createContext(null);
 export function CustomerAuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [canAccessAdmin, setCanAccessAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,8 +29,10 @@ export function CustomerAuthProvider({ children }) {
 
       if (currentSession?.user) {
         await ensureAndLoad(currentSession.user.id);
+        await loadAdminAccess();
       } else {
         setProfile(null);
+        setCanAccessAdmin(false);
       }
 
       if (mounted) setLoading(false);
@@ -43,8 +46,10 @@ export function CustomerAuthProvider({ children }) {
 
         if (nextSession?.user) {
           await ensureAndLoad(nextSession.user.id);
+          await loadAdminAccess();
         } else {
           setProfile(null);
+          setCanAccessAdmin(false);
         }
 
         setLoading(false);
@@ -55,6 +60,28 @@ export function CustomerAuthProvider({ children }) {
       subscription.unsubscribe();
     };
   }, []);
+
+  async function loadAdminAccess() {
+    try {
+      const { data, error } = await supabase.rpc(
+        "ict_current_user_can_access_admin"
+      );
+
+      if (error) {
+        console.error("تعذر التحقق من صلاحية دخول الإدارة:", error);
+        setCanAccessAdmin(false);
+        return false;
+      }
+
+      const allowed = data === true;
+      setCanAccessAdmin(allowed);
+      return allowed;
+    } catch (error) {
+      console.error("تعذر التحقق من صلاحية دخول الإدارة:", error);
+      setCanAccessAdmin(false);
+      return false;
+    }
+  }
 
   async function loadProfile(userId) {
     const { data, error } = await supabase
@@ -114,6 +141,7 @@ export function CustomerAuthProvider({ children }) {
     }
 
     setSession(data.session);
+    await loadAdminAccess();
     return customerProfile;
   }
 
@@ -188,6 +216,7 @@ export function CustomerAuthProvider({ children }) {
     await supabase.auth.signOut();
     setSession(null);
     setProfile(null);
+    setCanAccessAdmin(false);
   }
 
   const value = useMemo(
@@ -195,6 +224,7 @@ export function CustomerAuthProvider({ children }) {
       session,
       user: session?.user || null,
       profile,
+      canAccessAdmin,
       loading,
       isAuthenticated:
         Boolean(session?.user) && Boolean(profile?.is_active),
@@ -205,12 +235,14 @@ export function CustomerAuthProvider({ children }) {
       signOut,
       reloadProfile: async () => {
         if (session?.user?.id) {
-          return await ensureAndLoad(session.user.id);
+          const result = await ensureAndLoad(session.user.id);
+          await loadAdminAccess();
+          return result;
         }
         return null;
       },
     }),
-    [session, profile, loading]
+    [session, profile, canAccessAdmin, loading]
   );
 
   return (

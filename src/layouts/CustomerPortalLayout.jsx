@@ -7,6 +7,7 @@ import {
   FaListCheck,
   FaRightFromBracket,
   FaClockRotateLeft,
+  FaShieldHalved,
 } from "react-icons/fa6";
 import {
   NavLink,
@@ -19,6 +20,7 @@ import { useCustomerAuth } from "../contexts/CustomerAuthContext";
 export default function CustomerPortalLayout() {
   const {
     profile,
+    canAccessAdmin,
     signOut,
   } = useCustomerAuth();
 
@@ -68,6 +70,17 @@ export default function CustomerPortalLayout() {
               <FaHouse />
               العودة إلى الموقع
             </button>
+
+            {canAccessAdmin && (
+              <button
+                type="button"
+                onClick={() => navigate("/admin")}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#ff7417] px-4 py-3 font-black text-white shadow-lg transition hover:bg-orange-600"
+              >
+                <FaShieldHalved />
+                لوحة الإدارة
+              </button>
+            )}
 
             <button
               type="button"

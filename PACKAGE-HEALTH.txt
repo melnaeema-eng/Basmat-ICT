@@ -1,6 +1,6 @@
-[PASS] Reads admin data.factors
-[PASS] Filters TOTP
-[PASS] Deletes with userId
-[PASS] Re-lists after deletion
-[PASS] Verifies zero remaining TOTP
-[PASS] Returns remaining_totp zero
+[PASS] Secure RPC check
+[PASS] Admin button conditional
+[PASS] Admin route
+[PASS] MFA/admin route protection preserved
+[PASS] Portal logout preserved
+[PASS] No admin table direct query from browser

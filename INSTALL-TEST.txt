@@ -1,39 +1,50 @@
-BASMAT ICT — MFA RECOVERY RESET FIX
-=====================================
+BASMAT ICT — PORTAL ADMIN BUTTON
+=================================
 
-THIS FIX ADDRESSES THE CONFIRMED PROBLEM:
-Email OTP succeeds, but the old Authenticator factor was not actually removed.
+PURPOSE
+A user who is BOTH:
+- an active Customer Portal user, and
+- an active/non-archived ict_admin_users user
 
-ROOT CAUSE FIXED:
-The Admin listFactors result is read from data.factors.
-The previous recovery function was reading data.totp / data.phone.
+will see:
+"لوحة الإدارة"
 
-NO SQL.
-NO DATABASE CHANGE.
-NO FRONTEND CHANGE.
+in the Customer Portal header.
 
-INSTALL:
+Normal customers will NOT see the button.
+
+SECURITY
+The button itself is not the security control.
+Existing /admin ProtectedAdminRoute + permissions + MFA remain the actual protection.
+The browser does NOT directly query ict_admin_users; it calls a small secure RPC.
+
+STEP 1 — INSTALL
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-MFA-Recovery-RESET-FIX.zip" -DestinationPath . -Force
+Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Portal-Admin-Button.zip" -DestinationPath . -Force
 
-DEPLOY:
-npx supabase functions deploy mfa-recovery --use-api
+STEP 2 — SQL
+Run in Supabase SQL Editor:
+supabase/PORTAL_ADMIN_ACCESS_BUTTON.sql
 
-TEST:
-1. Login with email + password.
-2. At /admin/mfa click "فقدت رمز المصادقة؟".
-3. Enter the email OTP.
-4. The function now:
-   - lists the account factors from data.factors
-   - finds TOTP factor(s)
-   - deletes each TOTP factor server-side
-   - lists factors AGAIN
-   - refuses to return SUCCESS unless remaining TOTP = 0
-5. Login again.
-6. /admin/mfa must now enter ENROLL mode and show a NEW QR.
-7. Scan the new QR and verify the new Authenticator code.
+Expected:
+PORTAL ADMIN ACCESS RPC | PASS ✅
 
-IMPORTANT:
-If Supabase still reports a remaining TOTP factor, the function returns an ERROR
-instead of falsely saying that the reset succeeded.
+STEP 3 — TEST
+npm run dev
+
+TEST A — Authorized dual-role user
+1. Login through /portal/login.
+2. User must exist in ict_customer_portal_users.
+3. Same auth user_id must exist in ict_admin_users and be active.
+4. "لوحة الإدارة" must appear in portal header.
+5. Click it.
+6. Existing admin authorization/MFA must apply normally.
+
+TEST B — Normal customer
+1. Login with a customer who is NOT in active ict_admin_users.
+2. "لوحة الإدارة" must NOT appear.
+3. Direct /admin access must still be blocked by existing admin protection.
+
+FINAL
+npm run build
