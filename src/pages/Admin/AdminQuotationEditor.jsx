@@ -548,8 +548,380 @@ export default function AdminQuotationEditor() {
       className="px-4 py-10 md:px-8"
     >
       <style>{`
+        .corporate-print {
+          display: none;
+        }
+
         @media print {
-          aside, header, .no-print {
+          .editor-quotation-paper {
+            display: none !important;
+          }
+
+          .corporate-print {
+            display: block !important;
+            direction: rtl;
+            font-family: Arial, Tahoma, sans-serif !important;
+            font-size: 9.2px !important;
+            line-height: 1.48 !important;
+            color: #0f172a !important;
+          }
+
+          .corporate-print, .corporate-print * {
+            box-sizing: border-box !important;
+          }
+
+          .corporate-print p,
+          .corporate-print h1,
+          .corporate-print h2,
+          .corporate-print h3 {
+            margin: 0 !important;
+            line-height: 1.48 !important;
+          }
+
+          .cp-page {
+            width: 100% !important;
+            background: #ffffff !important;
+          }
+
+          .cp-header {
+            display: grid !important;
+            grid-template-columns: 1.45fr 0.8fr !important;
+            gap: 8mm !important;
+            align-items: start !important;
+            padding-bottom: 4mm !important;
+            border-bottom: 2px solid #071d49 !important;
+          }
+
+          .cp-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 4mm !important;
+          }
+
+          .cp-brand img {
+            width: 19mm !important;
+            height: 19mm !important;
+            object-fit: contain !important;
+          }
+
+          .cp-company-ar {
+            font-size: 14px !important;
+            line-height: 1.35 !important;
+            font-weight: 900 !important;
+            color: #071d49 !important;
+          }
+
+          .cp-company-en {
+            margin-top: 1mm !important;
+            font-size: 8.5px !important;
+            font-weight: 800 !important;
+            color: #071d49 !important;
+            letter-spacing: .35px !important;
+          }
+
+          .cp-tagline {
+            margin-top: .7mm !important;
+            font-size: 7.5px !important;
+            font-weight: 800 !important;
+            color: #9b1733 !important;
+          }
+
+          .cp-title-card {
+            border: 1px solid #cbd5e1 !important;
+            border-top: 4px solid #ff7417 !important;
+            border-radius: 3mm !important;
+            padding: 3mm 4mm !important;
+            text-align: left !important;
+          }
+
+          .cp-title {
+            color: #071d49 !important;
+            font-size: 17px !important;
+            font-weight: 900 !important;
+            letter-spacing: .5px !important;
+          }
+
+          .cp-title-ar {
+            color: #475569 !important;
+            font-size: 9px !important;
+            font-weight: 800 !important;
+          }
+
+          .cp-meta-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1.5mm 3mm !important;
+            margin-top: 2.5mm !important;
+            font-size: 7.8px !important;
+          }
+
+          .cp-meta-label {
+            color: #64748b !important;
+            font-weight: 700 !important;
+          }
+
+          .cp-meta-value {
+            color: #0f172a !important;
+            font-weight: 900 !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .cp-info-strip {
+            display: flex !important;
+            justify-content: space-between !important;
+            gap: 4mm !important;
+            padding: 2mm 0 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #334155 !important;
+            font-size: 7.5px !important;
+            font-weight: 800 !important;
+          }
+
+          .cp-section {
+            margin-top: 4mm !important;
+          }
+
+          .cp-section-title {
+            border-right: 3px solid #ff7417 !important;
+            padding: 1.5mm 2.5mm !important;
+            background: #f8fafc !important;
+            color: #071d49 !important;
+            font-size: 9px !important;
+            font-weight: 900 !important;
+          }
+
+          .cp-customer-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            border: 1px solid #dbe3ee !important;
+            border-top: 0 !important;
+          }
+
+          .cp-field {
+            min-height: 12mm !important;
+            padding: 2.2mm 3mm !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+          }
+
+          .cp-field:nth-child(odd) {
+            border-left: 1px solid #e2e8f0 !important;
+          }
+
+          .cp-field-wide {
+            grid-column: 1 / -1 !important;
+            border-left: 0 !important;
+          }
+
+          .cp-field-label {
+            color: #64748b !important;
+            font-size: 7.3px !important;
+            font-weight: 800 !important;
+          }
+
+          .cp-field-value {
+            margin-top: 1mm !important;
+            color: #0f172a !important;
+            font-size: 9px !important;
+            font-weight: 800 !important;
+            line-height: 1.45 !important;
+            white-space: pre-wrap !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .cp-items {
+            width: 100% !important;
+            table-layout: fixed !important;
+            border-collapse: collapse !important;
+            margin-top: 4mm !important;
+          }
+
+          .cp-items thead {
+            display: table-header-group !important;
+          }
+
+          .cp-items th {
+            background: #071d49 !important;
+            color: #ffffff !important;
+            padding: 2mm 1mm !important;
+            border: 1px solid #071d49 !important;
+            font-size: 7.2px !important;
+            line-height: 1.25 !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            white-space: normal !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .cp-items td {
+            border: 1px solid #dbe3ee !important;
+            padding: 2.2mm 1.5mm !important;
+            vertical-align: top !important;
+            font-size: 8px !important;
+            line-height: 1.48 !important;
+            overflow: visible !important;
+            white-space: normal !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .cp-items tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
+          .cp-items .cp-desc {
+            text-align: right !important;
+            white-space: pre-wrap !important;
+            font-weight: 650 !important;
+            line-height: 1.52 !important;
+          }
+
+          .cp-items .cp-num {
+            text-align: center !important;
+            vertical-align: middle !important;
+            font-size: 7.7px !important;
+            font-variant-numeric: tabular-nums !important;
+          }
+
+          .cp-bottom-grid {
+            display: grid !important;
+            grid-template-columns: 1.2fr .8fr !important;
+            gap: 5mm !important;
+            margin-top: 4mm !important;
+            align-items: start !important;
+          }
+
+          .cp-text-box, .cp-total-box, .cp-bank-box, .cp-verify-box {
+            border: 1px solid #dbe3ee !important;
+            border-radius: 2.5mm !important;
+            overflow: hidden !important;
+            break-inside: avoid !important;
+          }
+
+          .cp-box-title {
+            background: #f1f5f9 !important;
+            color: #071d49 !important;
+            padding: 2mm 3mm !important;
+            font-size: 8px !important;
+            font-weight: 900 !important;
+            border-bottom: 1px solid #dbe3ee !important;
+          }
+
+          .cp-box-body {
+            padding: 2.5mm 3mm !important;
+            font-size: 8px !important;
+            line-height: 1.55 !important;
+            white-space: pre-wrap !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .cp-total-row {
+            display: flex !important;
+            justify-content: space-between !important;
+            gap: 4mm !important;
+            padding: 2.2mm 3mm !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            font-size: 8px !important;
+            font-weight: 800 !important;
+          }
+
+          .cp-total-row:last-child {
+            border-bottom: 0 !important;
+          }
+
+          .cp-grand-total {
+            background: #071d49 !important;
+            color: #ffffff !important;
+            font-size: 10px !important;
+            font-weight: 900 !important;
+          }
+
+          .cp-bank-verify {
+            display: grid !important;
+            grid-template-columns: 1.2fr .8fr !important;
+            gap: 5mm !important;
+            margin-top: 4mm !important;
+          }
+
+          .cp-bank-line {
+            display: grid !important;
+            grid-template-columns: 36mm 1fr !important;
+            gap: 2mm !important;
+            padding: 1.5mm 3mm !important;
+            font-size: 8px !important;
+            border-bottom: 1px solid #eef2f7 !important;
+          }
+
+          .cp-bank-line:last-child {
+            border-bottom: 0 !important;
+          }
+
+          .cp-bank-label {
+            color: #64748b !important;
+            font-weight: 800 !important;
+          }
+
+          .cp-bank-value {
+            color: #0f172a !important;
+            font-weight: 900 !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .cp-verify-body {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 3mm !important;
+            padding: 3mm !important;
+            text-align: center !important;
+          }
+
+          .cp-verify-body img {
+            width: 22mm !important;
+            height: 22mm !important;
+            object-fit: contain !important;
+          }
+
+          .cp-verify-code {
+            color: #071d49 !important;
+            font-size: 8px !important;
+            font-weight: 900 !important;
+            letter-spacing: .4px !important;
+            overflow-wrap: anywhere !important;
+          }
+
+          .cp-signatures {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 16mm !important;
+            margin-top: 8mm !important;
+            break-inside: avoid !important;
+          }
+
+          .cp-signature {
+            text-align: center !important;
+            color: #334155 !important;
+            font-size: 8px !important;
+            font-weight: 800 !important;
+          }
+
+          .cp-signature-line {
+            margin-top: 10mm !important;
+            border-bottom: 1px solid #94a3b8 !important;
+          }
+
+          .cp-footer {
+            margin-top: 7mm !important;
+            background: #071d49 !important;
+            color: #ffffff !important;
+            padding: 3mm 4mm !important;
+            border-radius: 2mm !important;
+            font-size: 7.2px !important;
+            line-height: 1.4 !important;
+            text-align: center !important;
+            break-inside: avoid !important;
+          }
+
+          aside, header:not(.cp-header), .no-print {
             display: none !important;
           }
 
@@ -1106,7 +1478,7 @@ export default function AdminQuotationEditor() {
           </div>
         )}
 
-        <div className="quotation-paper mt-8 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+        <div className="quotation-paper editor-quotation-paper mt-8 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
           <div className="quotation-header flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-4">
             <div className="flex items-center gap-4">
               <img
@@ -1644,6 +2016,194 @@ export default function AdminQuotationEditor() {
             </div>
           </footer>
         </div>
+
+        <section className="corporate-print" aria-hidden="true">
+          <div className="cp-page">
+            <header className="cp-header">
+              <div className="cp-brand">
+                <img src="/logo.png" alt="بصمة النوابغ" />
+                <div>
+                  <h1 className="cp-company-ar">شركة بصمة النوابغ لتقنية المعلومات والاتصالات</h1>
+                  <p className="cp-company-en">BASMAT ALNAWABIGH ICT</p>
+                  <p className="cp-tagline">SMART SOLUTIONS FOR A CONNECTED WORLD</p>
+                </div>
+              </div>
+
+              <div className="cp-title-card" dir="ltr">
+                <p className="cp-title">QUOTATION</p>
+                <p className="cp-title-ar" dir="rtl">عرض سعر</p>
+                <div className="cp-meta-grid">
+                  <span className="cp-meta-label">Quotation No.</span>
+                  <span className="cp-meta-value">{form.quotation_no || "—"}</span>
+                  <span className="cp-meta-label">Date</span>
+                  <span className="cp-meta-value">{new Intl.DateTimeFormat("en-GB").format(new Date())}</span>
+                  <span className="cp-meta-label">Validity</span>
+                  <span className="cp-meta-value">{form.validity_days || 0} Days</span>
+                  <span className="cp-meta-label">Currency</span>
+                  <span className="cp-meta-value">{form.currency || "SAR"}</span>
+                </div>
+              </div>
+            </header>
+
+            <div className="cp-info-strip" dir="ltr">
+              <span>CR: 7053976143</span>
+              <span>VAT: 314712238300003</span>
+              <span>Riyadh, Saudi Arabia</span>
+            </div>
+
+            <section className="cp-section">
+              <div className="cp-section-title">بيانات العميل / CUSTOMER INFORMATION</div>
+              <div className="cp-customer-grid">
+                <div className="cp-field">
+                  <p className="cp-field-label">اسم العميل / Customer Name</p>
+                  <p className="cp-field-value">{form.customer_name || "—"}</p>
+                </div>
+                <div className="cp-field">
+                  <p className="cp-field-label">الشركة / Company</p>
+                  <p className="cp-field-value">{form.company_name || "—"}</p>
+                </div>
+                <div className="cp-field">
+                  <p className="cp-field-label">البريد / Email</p>
+                  <p className="cp-field-value" dir="ltr">{form.customer_email || "—"}</p>
+                </div>
+                <div className="cp-field">
+                  <p className="cp-field-label">الجوال / Mobile</p>
+                  <p className="cp-field-value" dir="ltr">{form.customer_phone || "—"}</p>
+                </div>
+                <div className="cp-field cp-field-wide">
+                  <p className="cp-field-label">موضوع العرض / Subject</p>
+                  <p className="cp-field-value">{form.subject || "—"}</p>
+                </div>
+              </div>
+            </section>
+
+            <table className="cp-items">
+              <colgroup>
+                <col style={{ width: "4%" }} />
+                <col style={{ width: "43%" }} />
+                <col style={{ width: "6%" }} />
+                <col style={{ width: "7%" }} />
+                <col style={{ width: "10%" }} />
+                <col style={{ width: "9%" }} />
+                <col style={{ width: "9%" }} />
+                <col style={{ width: "12%" }} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>S.N<br />م</th>
+                  <th>DESCRIPTION<br />البيان</th>
+                  <th>QTY<br />الكمية</th>
+                  <th>UNIT<br />الوحدة</th>
+                  <th>UNIT PRICE<br />(SAR)</th>
+                  <th>TOTAL<br />(SAR)</th>
+                  <th>VAT {form.tax_rate}%<br />(SAR)</th>
+                  <th>TOTAL VAT<br />INCLUDED</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => {
+                  const lineTotal = Number(item.quantity || 0) * Number(item.unit_price || 0);
+                  const lineVat = lineTotal * (Number(form.tax_rate || 0) / 100);
+                  const lineGrandTotal = lineTotal + lineVat;
+
+                  return (
+                    <tr key={`print-${index}`}>
+                      <td className="cp-num">{index + 1}</td>
+                      <td className="cp-desc">{item.description || "—"}</td>
+                      <td className="cp-num">{item.quantity || 0}</td>
+                      <td className="cp-num">{item.unit || "—"}</td>
+                      <td className="cp-num" dir="ltr">{formatMoney(item.unit_price)}</td>
+                      <td className="cp-num" dir="ltr">{formatMoney(lineTotal)}</td>
+                      <td className="cp-num" dir="ltr">{formatMoney(lineVat)}</td>
+                      <td className="cp-num" dir="ltr">{formatMoney(lineGrandTotal)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            <div className="cp-bottom-grid">
+              <div>
+                <div className="cp-text-box">
+                  <div className="cp-box-title">ملاحظات / NOTES</div>
+                  <div className="cp-box-body">{form.notes || "—"}</div>
+                </div>
+                <div className="cp-text-box" style={{ marginTop: "4mm" }}>
+                  <div className="cp-box-title">الشروط والأحكام / TERMS &amp; CONDITIONS</div>
+                  <div className="cp-box-body">{form.terms || "—"}</div>
+                </div>
+              </div>
+
+              <div className="cp-total-box">
+                <div className="cp-box-title">الملخص المالي / FINANCIAL SUMMARY</div>
+                <div className="cp-total-row">
+                  <span>المجموع قبل الضريبة</span>
+                  <span dir="ltr">{formatMoney(subtotal)} {form.currency}</span>
+                </div>
+                <div className="cp-total-row">
+                  <span>ضريبة القيمة المضافة ({form.tax_rate}%)</span>
+                  <span dir="ltr">{formatMoney(taxAmount)} {form.currency}</span>
+                </div>
+                <div className="cp-total-row cp-grand-total">
+                  <span>الإجمالي شامل الضريبة</span>
+                  <span dir="ltr">{formatMoney(totalAmount)} {form.currency}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="cp-bank-verify">
+              <div className="cp-bank-box">
+                <div className="cp-box-title">بيانات الحساب البنكي / BANK DETAILS</div>
+                <div className="cp-bank-line">
+                  <span className="cp-bank-label">Bank / البنك</span>
+                  <span className="cp-bank-value">مصرف الراجحي / Al Rajhi Bank</span>
+                </div>
+                <div className="cp-bank-line">
+                  <span className="cp-bank-label">Account Name</span>
+                  <span className="cp-bank-value">بصمة النوابغ</span>
+                </div>
+                <div className="cp-bank-line">
+                  <span className="cp-bank-label">IBAN</span>
+                  <span className="cp-bank-value" dir="ltr">SA98800002262080197371903</span>
+                </div>
+              </div>
+
+              <div className="cp-verify-box">
+                <div className="cp-box-title">التحقق / VERIFICATION</div>
+                <div className="cp-verify-body">
+                  {form.verification_token && verificationQr ? (
+                    <>
+                      <img src={verificationQr} alt="Quotation verification QR" />
+                      <div>
+                        <p className="cp-verify-code" dir="ltr">{form.verification_code || "—"}</p>
+                        <p style={{ marginTop: "1mm", fontSize: "6.8px", color: "#64748b" }}>Scan QR to verify quotation authenticity.</p>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="cp-verify-code">احفظ عرض السعر لإنشاء رمز التحقق.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="cp-signatures">
+              <div className="cp-signature">
+                <p>التوقيع المعتمد / Authorized Signature</p>
+                <div className="cp-signature-line" />
+              </div>
+              <div className="cp-signature">
+                <p>اعتماد العميل / Customer Acceptance</p>
+                <div className="cp-signature-line" />
+              </div>
+            </div>
+
+            <footer className="cp-footer" dir="ltr">
+              +966 55 007 3576 &nbsp; • &nbsp; +966 53 480 7359 &nbsp; • &nbsp; info@ict.basmat-alnawabig.com.sa &nbsp; • &nbsp; ict.basmat-alnawabig.com.sa
+              <br />
+              CR: 7053976143 &nbsp; • &nbsp; VAT: 314712238300003 &nbsp; • &nbsp; Riyadh, Saudi Arabia
+            </footer>
+          </div>
+        </section>
       </div>
     </div>
   );

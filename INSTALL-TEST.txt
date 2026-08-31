@@ -1,50 +1,49 @@
-BASMAT ICT — PORTAL ADMIN BUTTON
-=================================
+BASMAT ICT — QUOTATION PRINT V2 CORPORATE
+==========================================
 
-PURPOSE
-A user who is BOTH:
-- an active Customer Portal user, and
-- an active/non-archived ict_admin_users user
+TARGET
+C:\projects\Basmat-ICT
 
-will see:
-"لوحة الإدارة"
+WHAT CHANGED
+- New dedicated Corporate Print layout for quotation.
+- Editor screen remains unchanged.
+- Print no longer uses form inputs/textareas.
+- Font overlap fixed by controlled Arial/Tahoma print typography and line-height.
+- Customer information displayed as clean document fields.
+- Professional quotation header with number, date, validity and currency.
+- DESCRIPTION receives 43% of table width.
+- Full multi-line description wraps without clipping.
+- Balanced QTY / UNIT / UNIT PRICE / TOTAL / VAT / TOTAL VAT INCLUDED columns.
+- Clear Financial Summary with highlighted Grand Total.
+- Notes and Terms are printed as full text blocks.
+- Bank Details preserved with Al Rajhi IBAN.
+- QR Verification and verification code preserved.
+- Signature areas and corporate footer included.
+- No SQL or database changes.
 
-in the Customer Portal header.
-
-Normal customers will NOT see the button.
-
-SECURITY
-The button itself is not the security control.
-Existing /admin ProtectedAdminRoute + permissions + MFA remain the actual protection.
-The browser does NOT directly query ict_admin_users; it calls a small secure RPC.
-
-STEP 1 — INSTALL
+INSTALL
 cd C:\projects\Basmat-ICT
 
-Expand-Archive -Path "$env:USERPROFILE\Downloads\Basmat-ICT-HOTFIX-Portal-Admin-Button.zip" -DestinationPath . -Force
+Expand-Archive `
+  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-QUOTATION-CORPORATE-V2.zip" `
+  -DestinationPath . `
+  -Force
 
-STEP 2 — SQL
-Run in Supabase SQL Editor:
-supabase/PORTAL_ADMIN_ACCESS_BUTTON.sql
-
-Expected:
-PORTAL ADMIN ACCESS RPC | PASS ✅
-
-STEP 3 — TEST
+RUN
 npm run dev
 
-TEST A — Authorized dual-role user
-1. Login through /portal/login.
-2. User must exist in ict_customer_portal_users.
-3. Same auth user_id must exist in ict_admin_users and be active.
-4. "لوحة الإدارة" must appear in portal header.
-5. Click it.
-6. Existing admin authorization/MFA must apply normally.
+TEST
+1) Open a quotation with a long DESCRIPTION (several lines).
+2) Add several items.
+3) Add long Notes and Terms.
+4) Click Print and inspect Print Preview.
+5) Confirm no overlapping text and all 8 columns are visible.
+6) Confirm QR, IBAN and footer are visible.
 
-TEST B — Normal customer
-1. Login with a customer who is NOT in active ict_admin_users.
-2. "لوحة الإدارة" must NOT appear.
-3. Direct /admin access must still be blocked by existing admin protection.
-
-FINAL
+BUILD
 npm run build
+
+Only after PASS:
+git add .
+git commit -m "Upgrade quotation print to corporate V2"
+git push origin main

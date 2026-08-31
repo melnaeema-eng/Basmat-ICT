@@ -1,6 +1,12 @@
-[PASS] Secure RPC check
-[PASS] Admin button conditional
-[PASS] Admin route
-[PASS] MFA/admin route protection preserved
-[PASS] Portal logout preserved
-[PASS] No admin table direct query from browser
+[PASS] Separate corporate print document added
+[PASS] Existing editor preserved for screen
+[PASS] Print font family and line-height controlled
+[PASS] Full DESCRIPTION printed as text
+[PASS] 8 quotation columns preserved
+[PASS] Financial summary included
+[PASS] Notes and Terms included
+[PASS] Al Rajhi IBAN preserved
+[PASS] QR verification preserved
+[PASS] CR and VAT preserved
+[PASS] No SQL changes
+[INFO] Container build not executed because node_modules/vite are not present in the uploaded archive; run npm run build in the local project after extraction.
