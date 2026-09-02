@@ -26,8 +26,12 @@ import { supabase } from "../../lib/supabase";
 
 const emptyItem = {
   description: "",
+  description_ar: "",
+  description_en: "",
   quantity: 1,
   unit: "",
+  unit_ar: "",
+  unit_en: "",
   unit_price: 0,
 };
 
@@ -55,12 +59,22 @@ export default function AdminQuotationEditor() {
     customer_email: "",
     customer_phone: "",
     subject: "",
+    subject_ar: "",
+    subject_en: "",
     currency: "SAR",
     tax_rate: 15,
+    discount_type: "percent",
+    discount_value: 0,
     validity_days: 15,
     notes: "",
+    notes_ar: "",
+    notes_en: "",
     terms:
       "الأسعار سارية خلال مدة صلاحية العرض. التنفيذ حسب نطاق العمل المتفق عليه.",
+    terms_ar:
+      "الأسعار سارية خلال مدة صلاحية العرض. التنفيذ حسب نطاق العمل المتفق عليه.",
+    terms_en:
+      "Prices are valid during the quotation validity period. Execution is subject to the agreed scope of work.",
     status: "draft",
     verification_code: "",
     verification_token: "",
@@ -72,6 +86,7 @@ export default function AdminQuotationEditor() {
   const [saving, setSaving] = useState(false);
   const [verificationQr, setVerificationQr] = useState("");
   const [sending, setSending] = useState(false);
+  const [printLanguage, setPrintLanguage] = useState("en");
   const [customers, setCustomers] = useState([]);
   const [message, setMessage] = useState({
     type: "",
@@ -147,8 +162,9 @@ export default function AdminQuotationEditor() {
       subject: `عرض سعر - ${
         data.project_type || data.request_no
       }`,
-      notes:
-        data.project_description || "",
+      subject_ar: `عرض سعر - ${data.project_type || data.request_no}`,
+      notes: data.project_description || "",
+      notes_ar: data.project_description || "",
     }));
   }
 
@@ -179,7 +195,9 @@ export default function AdminQuotationEditor() {
       customer_email: data.email || "",
       customer_phone: data.phone || "",
       subject: `عرض سعر - ${data.subject || data.consultation_type || data.request_no}`,
+      subject_ar: `عرض سعر - ${data.subject || data.consultation_type || data.request_no}`,
       notes: data.details || "",
+      notes_ar: data.details || "",
     }));
   }
 
@@ -207,14 +225,22 @@ export default function AdminQuotationEditor() {
       company_name: data.company_name || "",
       customer_email: data.customer_email || "",
       customer_phone: data.customer_phone || "",
-      subject: data.subject || "",
+      subject: data.subject || data.subject_ar || data.subject_en || "",
+      subject_ar: data.subject_ar || data.subject || "",
+      subject_en: data.subject_en || "",
       currency: data.currency || "SAR",
       tax_rate: Number(data.tax_rate || 15),
+      discount_type: data.discount_type || "percent",
+      discount_value: Number(data.discount_value || 0),
       validity_days: Number(
         data.validity_days || 15
       ),
-      notes: data.notes || "",
-      terms: data.terms || "",
+      notes: data.notes || data.notes_ar || data.notes_en || "",
+      notes_ar: data.notes_ar || data.notes || "",
+      notes_en: data.notes_en || "",
+      terms: data.terms || data.terms_ar || data.terms_en || "",
+      terms_ar: data.terms_ar || data.terms || "",
+      terms_en: data.terms_en || "",
       status: data.status || "draft",
       verification_code: data.verification_code || "",
       verification_token: data.verification_token || "",
@@ -225,7 +251,11 @@ export default function AdminQuotationEditor() {
         ? data.items.map((item) => ({
             ...emptyItem,
             ...item,
-            unit: item?.unit || "",
+            description_ar: item?.description_ar || item?.description || "",
+            description_en: item?.description_en || "",
+            unit: item?.unit || item?.unit_ar || item?.unit_en || "",
+            unit_ar: item?.unit_ar || item?.unit || "",
+            unit_en: item?.unit_en || "",
           }))
         : [{ ...emptyItem }]
     );
@@ -272,11 +302,31 @@ export default function AdminQuotationEditor() {
     [items]
   );
 
+  const discountAmount = useMemo(() => {
+    const value = Math.max(0, Number(form.discount_value || 0));
+    if (form.discount_type === "amount") {
+      return Math.min(subtotal, value);
+    }
+    const percent = Math.min(100, value);
+    return subtotal * (percent / 100);
+  }, [subtotal, form.discount_type, form.discount_value]);
+
+  const netBeforeVat = Math.max(0, subtotal - discountAmount);
+
   const taxAmount =
-    subtotal *
+    netBeforeVat *
     (Number(form.tax_rate || 0) / 100);
 
-  const totalAmount = subtotal + taxAmount;
+  const totalAmount = netBeforeVat + taxAmount;
+
+  const discountRatio = subtotal > 0 ? discountAmount / subtotal : 0;
+
+  function printQuotation(language) {
+    setPrintLanguage(language);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => window.print());
+    });
+  }
 
   function updateField(name, value) {
     setForm((current) => ({
@@ -332,7 +382,7 @@ export default function AdminQuotationEditor() {
       if (
         !items.some(
           (item) =>
-            item.description.trim() &&
+            String(item.description_ar || item.description_en || item.description || "").trim() &&
             Number(item.quantity) > 0
         )
       ) {
@@ -365,25 +415,35 @@ export default function AdminQuotationEditor() {
           form.customer_phone.trim() || null,
         subject: form.subject.trim() || null,
         tax_rate: Number(form.tax_rate || 0),
+        discount_type: form.discount_type === "amount" ? "amount" : "percent",
+        discount_value: Math.max(0, Number(form.discount_value || 0)),
+        discount_amount: discountAmount,
+        net_before_vat: netBeforeVat,
         validity_days: Number(
           form.validity_days || 15
         ),
         subtotal,
         tax_amount: taxAmount,
         total_amount: totalAmount,
+        subject: (form.subject_ar || form.subject_en || form.subject || "").trim() || null,
+        subject_ar: form.subject_ar.trim() || null,
+        subject_en: form.subject_en.trim() || null,
         items: items.map((item) => ({
-          description:
-            item.description.trim(),
-          quantity: Number(
-            item.quantity || 0
-          ),
-          unit: String(item.unit || "").trim(),
-          unit_price: Number(
-            item.unit_price || 0
-          ),
+          description: String(item.description_ar || item.description_en || item.description || "").trim(),
+          description_ar: String(item.description_ar || "").trim(),
+          description_en: String(item.description_en || "").trim(),
+          quantity: Number(item.quantity || 0),
+          unit: String(item.unit_ar || item.unit_en || item.unit || "").trim(),
+          unit_ar: String(item.unit_ar || "").trim(),
+          unit_en: String(item.unit_en || "").trim(),
+          unit_price: Number(item.unit_price || 0),
         })),
-        notes: form.notes.trim() || null,
-        terms: form.terms.trim() || null,
+        notes: (form.notes_ar || form.notes_en || form.notes || "").trim() || null,
+        notes_ar: form.notes_ar.trim() || null,
+        notes_en: form.notes_en.trim() || null,
+        terms: (form.terms_ar || form.terms_en || form.terms || "").trim() || null,
+        terms_ar: form.terms_ar.trim() || null,
+        terms_en: form.terms_en.trim() || null,
         created_by:
           authData.user?.id || null,
         updated_at:
@@ -1442,13 +1502,20 @@ export default function AdminQuotationEditor() {
 
             <button
               type="button"
-              onClick={() =>
-                window.print()
-              }
+              onClick={() => printQuotation("ar")}
               className="inline-flex items-center gap-2 rounded-xl bg-slate-800 px-5 py-3 font-black text-white"
             >
               <FaPrint />
-              طباعة / حفظ PDF
+              طباعة عربي
+            </button>
+
+            <button
+              type="button"
+              onClick={() => printQuotation("en")}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#071d49] px-5 py-3 font-black text-white"
+            >
+              <FaPrint />
+              Print English
             </button>
 
             <button
@@ -1598,16 +1665,17 @@ export default function AdminQuotationEditor() {
               }
             />
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 grid gap-3 md:grid-cols-2">
               <Input
-                label="موضوع العرض"
-                value={form.subject}
-                onChange={(value) =>
-                  updateField(
-                    "subject",
-                    value
-                  )
-                }
+                label="موضوع العرض — عربي"
+                value={form.subject_ar}
+                onChange={(value) => updateField("subject_ar", value)}
+              />
+              <Input
+                label="Quotation Subject — English"
+                value={form.subject_en}
+                dir="ltr"
+                onChange={(value) => updateField("subject_en", value)}
               />
             </div>
           </div>
@@ -1652,15 +1720,18 @@ export default function AdminQuotationEditor() {
                     <td className="p-2 align-top">
                       <textarea
                         rows={3}
-                        value={item.description}
-                        onChange={(event) =>
-                          updateItem(
-                            index,
-                            "description",
-                            event.target.value
-                          )
-                        }
+                        value={item.description_ar || ""}
+                        onChange={(event) => updateItem(index, "description_ar", event.target.value)}
+                        placeholder="الوصف بالعربية"
                         className="quotation-description w-full resize-y rounded-lg border border-slate-200 p-2 leading-6 outline-none"
+                      />
+                      <textarea
+                        rows={3}
+                        dir="ltr"
+                        value={item.description_en || ""}
+                        onChange={(event) => updateItem(index, "description_en", event.target.value)}
+                        placeholder="Description in English"
+                        className="quotation-description mt-2 w-full resize-y rounded-lg border border-slate-200 p-2 leading-6 outline-none"
                       />
                     </td>
 
@@ -1683,16 +1754,17 @@ export default function AdminQuotationEditor() {
 
                     <td className="p-2">
                       <input
-                        value={item.unit || ""}
-                        onChange={(event) =>
-                          updateItem(
-                            index,
-                            "unit",
-                            event.target.value
-                          )
-                        }
-                        placeholder="مثال: pcs / lot / m"
+                        value={item.unit_ar || ""}
+                        onChange={(event) => updateItem(index, "unit_ar", event.target.value)}
+                        placeholder="وحدة"
                         className="w-full min-w-0 rounded-lg border border-slate-200 p-2 text-center outline-none"
+                      />
+                      <input
+                        dir="ltr"
+                        value={item.unit_en || ""}
+                        onChange={(event) => updateItem(index, "unit_en", event.target.value)}
+                        placeholder="Unit"
+                        className="mt-2 w-full min-w-0 rounded-lg border border-slate-200 p-2 text-center outline-none"
                       />
                     </td>
 
@@ -1734,6 +1806,7 @@ export default function AdminQuotationEditor() {
                       {formatMoney(
                         Number(item.quantity || 0) *
                         Number(item.unit_price || 0) *
+                        (1 - discountRatio) *
                         (Number(form.tax_rate || 0) / 100)
                       )}
                     </td>
@@ -1742,6 +1815,7 @@ export default function AdminQuotationEditor() {
                       {formatMoney(
                         Number(item.quantity || 0) *
                         Number(item.unit_price || 0) *
+                        (1 - discountRatio) *
                         (1 + Number(form.tax_rate || 0) / 100)
                       )}
                     </td>
@@ -1774,47 +1848,50 @@ export default function AdminQuotationEditor() {
 
           <div className="quotation-summary-block mt-5 grid gap-4 lg:grid-cols-2">
             <div>
-              <label>
-                <span className="mb-2 block font-bold text-slate-700">
-                  ملاحظات
-                </span>
-                <textarea
-                  rows={5}
-                  value={form.notes}
-                  onChange={(event) =>
-                    updateField(
-                      "notes",
-                      event.target.value
-                    )
-                  }
-                  className="form-input resize-none"
-                />
-              </label>
-
-              <label className="mt-4 block">
-                <span className="mb-2 block font-bold text-slate-700">
-                  الشروط والأحكام / Terms & Conditions
-                </span>
-                <textarea
-                  rows={5}
-                  value={form.terms}
-                  onChange={(event) =>
-                    updateField(
-                      "terms",
-                      event.target.value
-                    )
-                  }
-                  className="form-input resize-none"
-                />
-              </label>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label>
+                  <span className="mb-2 block font-bold text-slate-700">ملاحظات — عربي</span>
+                  <textarea rows={5} value={form.notes_ar} onChange={(event) => updateField("notes_ar", event.target.value)} className="form-input resize-none" />
+                </label>
+                <label>
+                  <span className="mb-2 block font-bold text-slate-700">Notes — English</span>
+                  <textarea rows={5} dir="ltr" value={form.notes_en} onChange={(event) => updateField("notes_en", event.target.value)} className="form-input resize-none" />
+                </label>
+                <label>
+                  <span className="mb-2 block font-bold text-slate-700">الشروط والأحكام — عربي</span>
+                  <textarea rows={6} value={form.terms_ar} onChange={(event) => updateField("terms_ar", event.target.value)} className="form-input resize-none" />
+                </label>
+                <label>
+                  <span className="mb-2 block font-bold text-slate-700">Terms &amp; Conditions — English</span>
+                  <textarea rows={6} dir="ltr" value={form.terms_en} onChange={(event) => updateField("terms_en", event.target.value)} className="form-input resize-none" />
+                </label>
+              </div>
             </div>
 
             <div className="quotation-totals rounded-xl bg-slate-50 p-4">
               <SummaryRow
-                label="المجموع قبل الضريبة / Total Before VAT"
-                value={`${formatMoney(
-                  subtotal
-                )} ${form.currency}`}
+                label="المجموع / Subtotal"
+                value={`${formatMoney(subtotal)} ${form.currency}`}
+              />
+
+              <div className="no-print mt-4 rounded-xl border border-slate-200 bg-white p-3">
+                <p className="mb-2 font-bold text-slate-700">الخصم / Discount</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <select value={form.discount_type} onChange={(event) => updateField("discount_type", event.target.value)} className="form-input">
+                    <option value="percent">نسبة مئوية / Percentage %</option>
+                    <option value="amount">مبلغ ثابت / Fixed Amount</option>
+                  </select>
+                  <input type="number" min="0" step="0.01" value={form.discount_value} onChange={(event) => updateField("discount_value", event.target.value)} className="form-input" />
+                </div>
+              </div>
+
+              <SummaryRow
+                label="قيمة الخصم / Discount"
+                value={`- ${formatMoney(discountAmount)} ${form.currency}`}
+              />
+              <SummaryRow
+                label="الصافي قبل الضريبة / Net Before VAT"
+                value={`${formatMoney(netBeforeVat)} ${form.currency}`}
               />
 
               <div className="mt-4 flex items-center justify-between gap-4">
@@ -2017,29 +2094,28 @@ export default function AdminQuotationEditor() {
           </footer>
         </div>
 
-        <section className="corporate-print" aria-hidden="true">
+        <section className="corporate-print" aria-hidden="true" dir={printLanguage === "ar" ? "rtl" : "ltr"}>
           <div className="cp-page">
             <header className="cp-header">
               <div className="cp-brand">
-                <img src="/logo.png" alt="بصمة النوابغ" />
+                <img src="/logo.png" alt="Basmat Alnawabigh" />
                 <div>
-                  <h1 className="cp-company-ar">شركة بصمة النوابغ لتقنية المعلومات والاتصالات</h1>
-                  <p className="cp-company-en">BASMAT ALNAWABIGH ICT</p>
+                  <h1 className="cp-company-ar">{printLanguage === "ar" ? "شركة بصمة النوابغ لتقنية المعلومات والاتصالات" : "BASMAT ALNAWABIGH ICT"}</h1>
+                  <p className="cp-company-en">{printLanguage === "ar" ? "BASMAT ALNAWABIGH ICT" : "Information & Communication Technology"}</p>
                   <p className="cp-tagline">SMART SOLUTIONS FOR A CONNECTED WORLD</p>
                 </div>
               </div>
 
-              <div className="cp-title-card" dir="ltr">
-                <p className="cp-title">QUOTATION</p>
-                <p className="cp-title-ar" dir="rtl">عرض سعر</p>
+              <div className="cp-title-card" dir={printLanguage === "ar" ? "rtl" : "ltr"}>
+                <p className="cp-title">{printLanguage === "ar" ? "عرض سعر" : "QUOTATION"}</p>
                 <div className="cp-meta-grid">
-                  <span className="cp-meta-label">Quotation No.</span>
-                  <span className="cp-meta-value">{form.quotation_no || "—"}</span>
-                  <span className="cp-meta-label">Date</span>
-                  <span className="cp-meta-value">{new Intl.DateTimeFormat("en-GB").format(new Date())}</span>
-                  <span className="cp-meta-label">Validity</span>
-                  <span className="cp-meta-value">{form.validity_days || 0} Days</span>
-                  <span className="cp-meta-label">Currency</span>
+                  <span className="cp-meta-label">{printLanguage === "ar" ? "رقم العرض" : "Quotation No."}</span>
+                  <span className="cp-meta-value" dir="ltr">{form.quotation_no || "—"}</span>
+                  <span className="cp-meta-label">{printLanguage === "ar" ? "التاريخ" : "Date"}</span>
+                  <span className="cp-meta-value" dir="ltr">{new Intl.DateTimeFormat(printLanguage === "ar" ? "ar-SA" : "en-GB").format(new Date())}</span>
+                  <span className="cp-meta-label">{printLanguage === "ar" ? "الصلاحية" : "Validity"}</span>
+                  <span className="cp-meta-value">{form.validity_days || 0} {printLanguage === "ar" ? "يوم" : "Days"}</span>
+                  <span className="cp-meta-label">{printLanguage === "ar" ? "العملة" : "Currency"}</span>
                   <span className="cp-meta-value">{form.currency || "SAR"}</span>
                 </div>
               </div>
@@ -2052,156 +2128,63 @@ export default function AdminQuotationEditor() {
             </div>
 
             <section className="cp-section">
-              <div className="cp-section-title">بيانات العميل / CUSTOMER INFORMATION</div>
+              <div className="cp-section-title">{printLanguage === "ar" ? "بيانات العميل" : "CUSTOMER INFORMATION"}</div>
               <div className="cp-customer-grid">
-                <div className="cp-field">
-                  <p className="cp-field-label">اسم العميل / Customer Name</p>
-                  <p className="cp-field-value">{form.customer_name || "—"}</p>
-                </div>
-                <div className="cp-field">
-                  <p className="cp-field-label">الشركة / Company</p>
-                  <p className="cp-field-value">{form.company_name || "—"}</p>
-                </div>
-                <div className="cp-field">
-                  <p className="cp-field-label">البريد / Email</p>
-                  <p className="cp-field-value" dir="ltr">{form.customer_email || "—"}</p>
-                </div>
-                <div className="cp-field">
-                  <p className="cp-field-label">الجوال / Mobile</p>
-                  <p className="cp-field-value" dir="ltr">{form.customer_phone || "—"}</p>
-                </div>
-                <div className="cp-field cp-field-wide">
-                  <p className="cp-field-label">موضوع العرض / Subject</p>
-                  <p className="cp-field-value">{form.subject || "—"}</p>
-                </div>
+                <div className="cp-field"><p className="cp-field-label">{printLanguage === "ar" ? "اسم العميل" : "Customer Name"}</p><p className="cp-field-value">{form.customer_name || "—"}</p></div>
+                <div className="cp-field"><p className="cp-field-label">{printLanguage === "ar" ? "الشركة" : "Company"}</p><p className="cp-field-value">{form.company_name || "—"}</p></div>
+                <div className="cp-field"><p className="cp-field-label">{printLanguage === "ar" ? "البريد الإلكتروني" : "Email"}</p><p className="cp-field-value" dir="ltr">{form.customer_email || "—"}</p></div>
+                <div className="cp-field"><p className="cp-field-label">{printLanguage === "ar" ? "الجوال" : "Mobile"}</p><p className="cp-field-value" dir="ltr">{form.customer_phone || "—"}</p></div>
+                <div className="cp-field cp-field-wide"><p className="cp-field-label">{printLanguage === "ar" ? "موضوع العرض" : "Subject"}</p><p className="cp-field-value">{printLanguage === "ar" ? (form.subject_ar || form.subject_en || "—") : (form.subject_en || form.subject_ar || "—")}</p></div>
               </div>
             </section>
 
             <table className="cp-items">
-              <colgroup>
-                <col style={{ width: "4%" }} />
-                <col style={{ width: "43%" }} />
-                <col style={{ width: "6%" }} />
-                <col style={{ width: "7%" }} />
-                <col style={{ width: "10%" }} />
-                <col style={{ width: "9%" }} />
-                <col style={{ width: "9%" }} />
-                <col style={{ width: "12%" }} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>S.N<br />م</th>
-                  <th>DESCRIPTION<br />البيان</th>
-                  <th>QTY<br />الكمية</th>
-                  <th>UNIT<br />الوحدة</th>
-                  <th>UNIT PRICE<br />(SAR)</th>
-                  <th>TOTAL<br />(SAR)</th>
-                  <th>VAT {form.tax_rate}%<br />(SAR)</th>
-                  <th>TOTAL VAT<br />INCLUDED</th>
-                </tr>
-              </thead>
+              <colgroup><col style={{ width: "4%" }} /><col style={{ width: "43%" }} /><col style={{ width: "6%" }} /><col style={{ width: "7%" }} /><col style={{ width: "10%" }} /><col style={{ width: "9%" }} /><col style={{ width: "9%" }} /><col style={{ width: "12%" }} /></colgroup>
+              <thead><tr>
+                <th>{printLanguage === "ar" ? "م" : "S.N"}</th>
+                <th>{printLanguage === "ar" ? "البيان" : "DESCRIPTION"}</th>
+                <th>{printLanguage === "ar" ? "الكمية" : "QTY"}</th>
+                <th>{printLanguage === "ar" ? "الوحدة" : "UNIT"}</th>
+                <th>{printLanguage === "ar" ? "سعر الوحدة" : "UNIT PRICE"}<br />(SAR)</th>
+                <th>{printLanguage === "ar" ? "الإجمالي" : "TOTAL"}<br />(SAR)</th>
+                <th>VAT {form.tax_rate}%<br />(SAR)</th>
+                <th>{printLanguage === "ar" ? "شامل الضريبة" : "TOTAL VAT INCLUDED"}</th>
+              </tr></thead>
               <tbody>
                 {items.map((item, index) => {
                   const lineTotal = Number(item.quantity || 0) * Number(item.unit_price || 0);
-                  const lineVat = lineTotal * (Number(form.tax_rate || 0) / 100);
-                  const lineGrandTotal = lineTotal + lineVat;
-
-                  return (
-                    <tr key={`print-${index}`}>
-                      <td className="cp-num">{index + 1}</td>
-                      <td className="cp-desc">{item.description || "—"}</td>
-                      <td className="cp-num">{item.quantity || 0}</td>
-                      <td className="cp-num">{item.unit || "—"}</td>
-                      <td className="cp-num" dir="ltr">{formatMoney(item.unit_price)}</td>
-                      <td className="cp-num" dir="ltr">{formatMoney(lineTotal)}</td>
-                      <td className="cp-num" dir="ltr">{formatMoney(lineVat)}</td>
-                      <td className="cp-num" dir="ltr">{formatMoney(lineGrandTotal)}</td>
-                    </tr>
-                  );
+                  const lineNet = lineTotal * (1 - discountRatio);
+                  const lineVat = lineNet * (Number(form.tax_rate || 0) / 100);
+                  const lineGrandTotal = lineNet + lineVat;
+                  const desc = printLanguage === "ar" ? (item.description_ar || item.description_en || item.description || "—") : (item.description_en || item.description_ar || item.description || "—");
+                  const unit = printLanguage === "ar" ? (item.unit_ar || item.unit_en || item.unit || "—") : (item.unit_en || item.unit_ar || item.unit || "—");
+                  return <tr key={`print-${index}`}><td className="cp-num">{index + 1}</td><td className="cp-desc">{desc}</td><td className="cp-num">{item.quantity || 0}</td><td className="cp-num">{unit}</td><td className="cp-num" dir="ltr">{formatMoney(item.unit_price)}</td><td className="cp-num" dir="ltr">{formatMoney(lineTotal)}</td><td className="cp-num" dir="ltr">{formatMoney(lineVat)}</td><td className="cp-num" dir="ltr">{formatMoney(lineGrandTotal)}</td></tr>;
                 })}
               </tbody>
             </table>
 
             <div className="cp-bottom-grid">
               <div>
-                <div className="cp-text-box">
-                  <div className="cp-box-title">ملاحظات / NOTES</div>
-                  <div className="cp-box-body">{form.notes || "—"}</div>
-                </div>
-                <div className="cp-text-box" style={{ marginTop: "4mm" }}>
-                  <div className="cp-box-title">الشروط والأحكام / TERMS &amp; CONDITIONS</div>
-                  <div className="cp-box-body">{form.terms || "—"}</div>
-                </div>
+                <div className="cp-text-box"><div className="cp-box-title">{printLanguage === "ar" ? "ملاحظات" : "NOTES"}</div><div className="cp-box-body">{printLanguage === "ar" ? (form.notes_ar || "—") : (form.notes_en || "—")}</div></div>
+                <div className="cp-text-box" style={{ marginTop: "4mm" }}><div className="cp-box-title">{printLanguage === "ar" ? "الشروط والأحكام" : "TERMS & CONDITIONS"}</div><div className="cp-box-body">{printLanguage === "ar" ? (form.terms_ar || "—") : (form.terms_en || "—")}</div></div>
               </div>
-
               <div className="cp-total-box">
-                <div className="cp-box-title">الملخص المالي / FINANCIAL SUMMARY</div>
-                <div className="cp-total-row">
-                  <span>المجموع قبل الضريبة</span>
-                  <span dir="ltr">{formatMoney(subtotal)} {form.currency}</span>
-                </div>
-                <div className="cp-total-row">
-                  <span>ضريبة القيمة المضافة ({form.tax_rate}%)</span>
-                  <span dir="ltr">{formatMoney(taxAmount)} {form.currency}</span>
-                </div>
-                <div className="cp-total-row cp-grand-total">
-                  <span>الإجمالي شامل الضريبة</span>
-                  <span dir="ltr">{formatMoney(totalAmount)} {form.currency}</span>
-                </div>
+                <div className="cp-box-title">{printLanguage === "ar" ? "الملخص المالي" : "FINANCIAL SUMMARY"}</div>
+                <div className="cp-total-row"><span>{printLanguage === "ar" ? "المجموع" : "Subtotal"}</span><span dir="ltr">{formatMoney(subtotal)} {form.currency}</span></div>
+                <div className="cp-total-row"><span>{printLanguage === "ar" ? "الخصم" : "Discount"}{form.discount_type === "percent" && Number(form.discount_value || 0) > 0 ? ` (${Number(form.discount_value)}%)` : ""}</span><span dir="ltr">- {formatMoney(discountAmount)} {form.currency}</span></div>
+                <div className="cp-total-row"><span>{printLanguage === "ar" ? "الصافي قبل الضريبة" : "Net Before VAT"}</span><span dir="ltr">{formatMoney(netBeforeVat)} {form.currency}</span></div>
+                <div className="cp-total-row"><span>{printLanguage === "ar" ? `ضريبة القيمة المضافة (${form.tax_rate}%)` : `VAT (${form.tax_rate}%)`}</span><span dir="ltr">{formatMoney(taxAmount)} {form.currency}</span></div>
+                <div className="cp-total-row cp-grand-total"><span>{printLanguage === "ar" ? "الإجمالي شامل الضريبة" : "TOTAL DUE (INCL. VAT)"}</span><span dir="ltr">{formatMoney(totalAmount)} {form.currency}</span></div>
               </div>
             </div>
 
             <div className="cp-bank-verify">
-              <div className="cp-bank-box">
-                <div className="cp-box-title">بيانات الحساب البنكي / BANK DETAILS</div>
-                <div className="cp-bank-line">
-                  <span className="cp-bank-label">Bank / البنك</span>
-                  <span className="cp-bank-value">مصرف الراجحي / Al Rajhi Bank</span>
-                </div>
-                <div className="cp-bank-line">
-                  <span className="cp-bank-label">Account Name</span>
-                  <span className="cp-bank-value">بصمة النوابغ</span>
-                </div>
-                <div className="cp-bank-line">
-                  <span className="cp-bank-label">IBAN</span>
-                  <span className="cp-bank-value" dir="ltr">SA98800002262080197371903</span>
-                </div>
-              </div>
-
-              <div className="cp-verify-box">
-                <div className="cp-box-title">التحقق / VERIFICATION</div>
-                <div className="cp-verify-body">
-                  {form.verification_token && verificationQr ? (
-                    <>
-                      <img src={verificationQr} alt="Quotation verification QR" />
-                      <div>
-                        <p className="cp-verify-code" dir="ltr">{form.verification_code || "—"}</p>
-                        <p style={{ marginTop: "1mm", fontSize: "6.8px", color: "#64748b" }}>Scan QR to verify quotation authenticity.</p>
-                      </div>
-                    </>
-                  ) : (
-                    <p className="cp-verify-code">احفظ عرض السعر لإنشاء رمز التحقق.</p>
-                  )}
-                </div>
-              </div>
+              <div className="cp-bank-box"><div className="cp-box-title">{printLanguage === "ar" ? "بيانات الحساب البنكي" : "BANK DETAILS"}</div><div className="cp-bank-line"><span className="cp-bank-label">{printLanguage === "ar" ? "البنك" : "Bank"}</span><span className="cp-bank-value">{printLanguage === "ar" ? "مصرف الراجحي" : "Al Rajhi Bank"}</span></div><div className="cp-bank-line"><span className="cp-bank-label">{printLanguage === "ar" ? "اسم الحساب" : "Account Name"}</span><span className="cp-bank-value">{printLanguage === "ar" ? "بصمة النوابغ" : "Basmat Alnawabigh"}</span></div><div className="cp-bank-line"><span className="cp-bank-label">IBAN</span><span className="cp-bank-value" dir="ltr">SA98800002262080197371903</span></div></div>
+              <div className="cp-verify-box"><div className="cp-box-title">{printLanguage === "ar" ? "التحقق" : "VERIFICATION"}</div><div className="cp-verify-body">{form.verification_token && verificationQr ? <><img src={verificationQr} alt="Quotation verification QR" /><div><p className="cp-verify-code" dir="ltr">{form.verification_code || "—"}</p><p style={{ marginTop: "1mm", fontSize: "6.8px", color: "#64748b" }}>{printLanguage === "ar" ? "امسح الرمز للتحقق من صحة عرض السعر." : "Scan QR to verify quotation authenticity."}</p></div></> : <p className="cp-verify-code">{printLanguage === "ar" ? "احفظ عرض السعر لإنشاء رمز التحقق." : "Save the quotation to generate a verification code."}</p>}</div></div>
             </div>
 
-            <div className="cp-signatures">
-              <div className="cp-signature">
-                <p>التوقيع المعتمد / Authorized Signature</p>
-                <div className="cp-signature-line" />
-              </div>
-              <div className="cp-signature">
-                <p>اعتماد العميل / Customer Acceptance</p>
-                <div className="cp-signature-line" />
-              </div>
-            </div>
-
-            <footer className="cp-footer" dir="ltr">
-              +966 55 007 3576 &nbsp; • &nbsp; +966 53 480 7359 &nbsp; • &nbsp; info@ict.basmat-alnawabig.com.sa &nbsp; • &nbsp; ict.basmat-alnawabig.com.sa
-              <br />
-              CR: 7053976143 &nbsp; • &nbsp; VAT: 314712238300003 &nbsp; • &nbsp; Riyadh, Saudi Arabia
-            </footer>
+            <div className="cp-signatures"><div className="cp-signature"><p>{printLanguage === "ar" ? "التوقيع المعتمد" : "Authorized Signature"}</p><div className="cp-signature-line" /></div><div className="cp-signature"><p>{printLanguage === "ar" ? "اعتماد العميل" : "Customer Acceptance"}</p><div className="cp-signature-line" /></div></div>
+            <footer className="cp-footer" dir="ltr">+966 55 007 3576 &nbsp; • &nbsp; +966 53 480 7359 &nbsp; • &nbsp; info@ict.basmat-alnawabig.com.sa &nbsp; • &nbsp; ict.basmat-alnawabig.com.sa<br />CR: 7053976143 &nbsp; • &nbsp; VAT: 314712238300003 &nbsp; • &nbsp; Riyadh, Saudi Arabia</footer>
           </div>
         </section>
       </div>

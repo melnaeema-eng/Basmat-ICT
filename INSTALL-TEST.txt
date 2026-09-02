@@ -1,49 +1,46 @@
-BASMAT ICT — QUOTATION PRINT V2 CORPORATE
-==========================================
+BASMAT ICT — QUOTATION V3
+Discount + Arabic / English
+================================
 
-TARGET
-C:\projects\Basmat-ICT
+IMPORTANT ORDER
+1) Run Supabase SQL first:
+   supabase/QUOTATION_V3_DISCOUNT_AR_EN.sql
+   Both health checks must return PASS.
 
-WHAT CHANGED
-- New dedicated Corporate Print layout for quotation.
-- Editor screen remains unchanged.
-- Print no longer uses form inputs/textareas.
-- Font overlap fixed by controlled Arial/Tahoma print typography and line-height.
-- Customer information displayed as clean document fields.
-- Professional quotation header with number, date, validity and currency.
-- DESCRIPTION receives 43% of table width.
-- Full multi-line description wraps without clipping.
-- Balanced QTY / UNIT / UNIT PRICE / TOTAL / VAT / TOTAL VAT INCLUDED columns.
-- Clear Financial Summary with highlighted Grand Total.
-- Notes and Terms are printed as full text blocks.
-- Bank Details preserved with Al Rajhi IBAN.
-- QR Verification and verification code preserved.
-- Signature areas and corporate footer included.
-- No SQL or database changes.
+2) Extract ZIP into project root:
+   C:\projects\Basmat-ICT
 
-INSTALL
+PowerShell:
 cd C:\projects\Basmat-ICT
+Expand-Archive -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-QUOTATION-V3-DISCOUNT-AR-EN.zip" -DestinationPath . -Force
 
-Expand-Archive `
-  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-QUOTATION-CORPORATE-V2.zip" `
-  -DestinationPath . `
-  -Force
-
-RUN
+3) Test locally:
 npm run dev
 
-TEST
-1) Open a quotation with a long DESCRIPTION (several lines).
-2) Add several items.
-3) Add long Notes and Terms.
-4) Click Print and inspect Print Preview.
-5) Confirm no overlapping text and all 8 columns are visible.
-6) Confirm QR, IBAN and footer are visible.
+TEST CASE
+- Open/create quotation.
+- Fill Arabic + English subject.
+- Fill Arabic + English item description and unit.
+- Enter subtotal items.
+- Try Discount = Percentage 10%.
+- Verify: Subtotal -> Discount -> Net Before VAT -> VAT -> Total.
+- Try Discount = Fixed Amount.
+- Save/reopen quotation and verify values persist.
+- Click "طباعة عربي" and check RTL Arabic PDF.
+- Click "Print English" and check LTR English PDF.
+- Open customer portal quotation and switch Arabic/English.
+- Confirm QR / Verification Code / IBAN unchanged.
 
-BUILD
+4) Build:
 npm run build
 
-Only after PASS:
+5) Only after PASS:
 git add .
-git commit -m "Upgrade quotation print to corporate V2"
+git commit -m "Add quotation discounts and bilingual Arabic English versions"
 git push origin main
+
+NOTES
+- Discount is applied BEFORE VAT.
+- VAT is calculated on Net Before VAT.
+- Existing quotations remain compatible.
+- Existing quotation number, QR, verification token/code, IBAN and workflow are preserved.

@@ -1,12 +1,13 @@
-[PASS] Separate corporate print document added
-[PASS] Existing editor preserved for screen
-[PASS] Print font family and line-height controlled
-[PASS] Full DESCRIPTION printed as text
-[PASS] 8 quotation columns preserved
-[PASS] Financial summary included
-[PASS] Notes and Terms included
-[PASS] Al Rajhi IBAN preserved
-[PASS] QR verification preserved
-[PASS] CR and VAT preserved
-[PASS] No SQL changes
-[INFO] Container build not executed because node_modules/vite are not present in the uploaded archive; run npm run build in the local project after extraction.
+[PASS] V3 based on Corporate V2 editor
+[PASS] Discount supports percentage and fixed amount
+[PASS] Discount applied before VAT
+[PASS] Net before VAT persisted
+[PASS] Arabic/English subject fields
+[PASS] Arabic/English item descriptions and units
+[PASS] Arabic/English notes and terms
+[PASS] Separate Arabic and English print buttons
+[PASS] Customer portal language switch
+[PASS] Existing QR / Verification / IBAN preserved
+[PASS] Safe additive Supabase migration included
+[PASS] Package ZIP integrity verified
+[INFO] Run npm run build locally after installation

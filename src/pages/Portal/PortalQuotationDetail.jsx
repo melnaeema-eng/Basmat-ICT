@@ -16,6 +16,7 @@ export default function PortalQuotationDetail() {
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
   const [deciding, setDeciding] = useState(false);
+  const [language, setLanguage] = useState("ar");
 
   useEffect(() => { load(); }, [id]);
 
@@ -100,10 +101,16 @@ export default function PortalQuotationDetail() {
   const items = Array.isArray(quotation.items) ? quotation.items : [];
 
   return (
-    <div dir="rtl" className="px-4 py-10">
+    <div dir={language === "ar" ? "rtl" : "ltr"} className="px-4 py-10">
       <div className="mx-auto max-w-5xl rounded-3xl border border-slate-200 bg-white p-7 shadow-sm md:p-10">
-        <p dir="ltr" className="text-right font-black text-blue-700">{quotation.quotation_no}</p>
-        <h1 className="mt-2 text-3xl font-black text-[#071d49]">{quotation.subject || "عرض سعر"}</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p dir="ltr" className="font-black text-blue-700">{quotation.quotation_no}</p>
+          <div className="flex rounded-xl border border-slate-200 p-1">
+            <button type="button" onClick={() => setLanguage("ar")} className={`rounded-lg px-3 py-1.5 text-sm font-black ${language === "ar" ? "bg-[#071d49] text-white" : "text-slate-600"}`}>العربية</button>
+            <button type="button" onClick={() => setLanguage("en")} className={`rounded-lg px-3 py-1.5 text-sm font-black ${language === "en" ? "bg-[#071d49] text-white" : "text-slate-600"}`}>English</button>
+          </div>
+        </div>
+        <h1 className="mt-2 text-3xl font-black text-[#071d49]">{language === "ar" ? (quotation.subject_ar || quotation.subject || "عرض سعر") : (quotation.subject_en || quotation.subject_ar || quotation.subject || "Quotation")}</h1>
 
         <div className="mt-7 overflow-x-auto">
           <table className="w-full border-collapse">
@@ -114,7 +121,7 @@ export default function PortalQuotationDetail() {
             <tbody>
               {items.map((item, index) => (
                 <tr key={index} className="border-b border-slate-200">
-                  <td className="p-3">{item.description}</td>
+                  <td className="p-3">{language === "ar" ? (item.description_ar || item.description_en || item.description) : (item.description_en || item.description_ar || item.description)}</td>
                   <td className="p-3">{item.quantity}</td>
                   <td className="p-3">{item.unit_price}</td>
                   <td className="p-3">{Number(item.quantity || 0) * Number(item.unit_price || 0)}</td>
@@ -125,8 +132,10 @@ export default function PortalQuotationDetail() {
         </div>
 
         <div className="mt-7 rounded-2xl bg-slate-50 p-6">
-          <p className="flex justify-between"><span>قبل الضريبة</span><strong>{quotation.subtotal} {quotation.currency}</strong></p>
-          <p className="mt-3 flex justify-between"><span>الضريبة</span><strong>{quotation.tax_amount} {quotation.currency}</strong></p>
+          <p className="flex justify-between"><span>{language === "ar" ? "المجموع" : "Subtotal"}</span><strong>{quotation.subtotal} {quotation.currency}</strong></p>
+          {Number(quotation.discount_amount || 0) > 0 && <p className="mt-3 flex justify-between text-emerald-700"><span>{language === "ar" ? "الخصم" : "Discount"}</span><strong>- {quotation.discount_amount} {quotation.currency}</strong></p>}
+          <p className="mt-3 flex justify-between"><span>{language === "ar" ? "الصافي قبل الضريبة" : "Net Before VAT"}</span><strong>{quotation.net_before_vat ?? (Number(quotation.subtotal || 0) - Number(quotation.discount_amount || 0))} {quotation.currency}</strong></p>
+          <p className="mt-3 flex justify-between"><span>{language === "ar" ? "الضريبة" : "VAT"}</span><strong>{quotation.tax_amount} {quotation.currency}</strong></p>
           <p className="mt-5 flex justify-between border-t border-slate-300 pt-5 text-xl">
             <span className="font-black">الإجمالي</span><strong>{quotation.total_amount} {quotation.currency}</strong>
           </p>
