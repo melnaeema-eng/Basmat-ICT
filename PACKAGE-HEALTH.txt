@@ -1,13 +1,10 @@
-[PASS] V3 based on Corporate V2 editor
-[PASS] Discount supports percentage and fixed amount
-[PASS] Discount applied before VAT
-[PASS] Net before VAT persisted
-[PASS] Arabic/English subject fields
-[PASS] Arabic/English item descriptions and units
-[PASS] Arabic/English notes and terms
-[PASS] Separate Arabic and English print buttons
-[PASS] Customer portal language switch
-[PASS] Existing QR / Verification / IBAN preserved
-[PASS] Safe additive Supabase migration included
-[PASS] Package ZIP integrity verified
-[INFO] Run npm run build locally after installation
+[PASS] Current project baseline used: Basmat-ICT-CURRENT-2026-09-06-1026.zip
+[PASS] AdminQuotationEditor.jsx JSX syntax parsed successfully
+[PASS] Excel Arabic export added
+[PASS] Excel English export added
+[PASS] Word Arabic export added
+[PASS] Word English export added
+[PASS] Discount / VAT / totals included
+[PASS] Notes / Terms / Bank / Verification Code included
+[PASS] No SQL changes
+[PASS] No new npm dependencies

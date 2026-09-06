@@ -1,46 +1,47 @@
-BASMAT ICT — QUOTATION V3
-Discount + Arabic / English
-================================
+BASMAT ICT — QUOTATION EXPORT EXCEL + WORD
+===========================================
 
-IMPORTANT ORDER
-1) Run Supabase SQL first:
-   supabase/QUOTATION_V3_DISCOUNT_AR_EN.sql
-   Both health checks must return PASS.
+TARGET
+C:\projects\Basmat-ICT
 
-2) Extract ZIP into project root:
-   C:\projects\Basmat-ICT
+ADDED
+- Excel Arabic export
+- Excel English export
+- Word Arabic export
+- Word English export
+- Includes customer information, quotation items, discount, VAT, totals, notes, terms, bank details, and verification code.
+- No SQL/database changes.
+- No new npm packages required.
 
-PowerShell:
+NOTE
+The exported files are Microsoft Office-compatible formats:
+- Excel: .xls
+- Word: .doc
+They open directly in Microsoft Excel and Microsoft Word and can be re-saved as .xlsx/.docx if required.
+
+INSTALL
 cd C:\projects\Basmat-ICT
-Expand-Archive -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-QUOTATION-V3-DISCOUNT-AR-EN.zip" -DestinationPath . -Force
 
-3) Test locally:
+Expand-Archive `
+  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-QUOTATION-EXPORT-EXCEL-WORD.zip" `
+  -DestinationPath . `
+  -Force
+
+TEST
 npm run dev
 
-TEST CASE
-- Open/create quotation.
-- Fill Arabic + English subject.
-- Fill Arabic + English item description and unit.
-- Enter subtotal items.
-- Try Discount = Percentage 10%.
-- Verify: Subtotal -> Discount -> Net Before VAT -> VAT -> Total.
-- Try Discount = Fixed Amount.
-- Save/reopen quotation and verify values persist.
-- Click "طباعة عربي" and check RTL Arabic PDF.
-- Click "Print English" and check LTR English PDF.
-- Open customer portal quotation and switch Arabic/English.
-- Confirm QR / Verification Code / IBAN unchanged.
+Open any saved quotation and verify the new buttons:
+- Excel عربي
+- Excel English
+- Word عربي
+- Word English
 
-4) Build:
+Then test a quotation with discount and long descriptions.
+
+BUILD
 npm run build
 
-5) Only after PASS:
+After PASS:
 git add .
-git commit -m "Add quotation discounts and bilingual Arabic English versions"
+git commit -m "Add quotation Excel and Word export"
 git push origin main
-
-NOTES
-- Discount is applied BEFORE VAT.
-- VAT is calculated on Net Before VAT.
-- Existing quotations remain compatible.
-- Existing quotation number, QR, verification token/code, IBAN and workflow are preserved.

@@ -7,6 +7,8 @@ import {
   FaBuildingColumns,
   FaEnvelope,
   FaFloppyDisk,
+  FaFileExcel,
+  FaFileWord,
   FaGlobe,
   FaLocationDot,
   FaPhone,
@@ -326,6 +328,138 @@ export default function AdminQuotationEditor() {
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => window.print());
     });
+  }
+
+  function escapeOfficeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('\"', "&quot;")
+      .replaceAll("'", "&#039;")
+      .replace(/\n/g, "<br/>");
+  }
+
+  function downloadOfficeFile(content, fileName, mimeType) {
+    const blob = new Blob(["\ufeff", content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = fileName;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function getExportData(language) {
+    const isAr = language === "ar";
+    const subject = isAr
+      ? (form.subject_ar || form.subject_en || form.subject || "—")
+      : (form.subject_en || form.subject_ar || form.subject || "—");
+    const notes = isAr
+      ? (form.notes_ar || form.notes_en || form.notes || "—")
+      : (form.notes_en || form.notes_ar || form.notes || "—");
+    const terms = isAr
+      ? (form.terms_ar || form.terms_en || form.terms || "—")
+      : (form.terms_en || form.terms_ar || form.terms || "—");
+
+    return {
+      isAr,
+      subject,
+      notes,
+      terms,
+      rows: items.map((item, index) => {
+        const description = isAr
+          ? (item.description_ar || item.description_en || item.description || "—")
+          : (item.description_en || item.description_ar || item.description || "—");
+        const unit = isAr
+          ? (item.unit_ar || item.unit_en || item.unit || "—")
+          : (item.unit_en || item.unit_ar || item.unit || "—");
+        const qty = Number(item.quantity || 0);
+        const price = Number(item.unit_price || 0);
+        const rowSubtotal = qty * price;
+        const rowNet = rowSubtotal * (1 - discountRatio);
+        const rowVat = rowNet * (Number(form.tax_rate || 0) / 100);
+        return {
+          sn: index + 1,
+          description,
+          qty,
+          unit,
+          price,
+          rowSubtotal,
+          rowVat,
+          rowTotal: rowNet + rowVat,
+        };
+      }),
+    };
+  }
+
+  function exportQuotationExcel(language) {
+    const data = getExportData(language);
+    const t = data.isAr
+      ? { quotation: "عرض سعر", no: "رقم العرض", date: "التاريخ", customer: "العميل", company: "الشركة", email: "البريد الإلكتروني", phone: "الجوال", subject: "الموضوع", sn: "م", desc: "البيان", qty: "الكمية", unit: "الوحدة", unitPrice: "سعر الوحدة", total: "الإجمالي", vat: "الضريبة", inclVat: "شامل الضريبة", subtotal: "المجموع", discount: "الخصم", net: "الصافي قبل الضريبة", totalDue: "الإجمالي شامل الضريبة", notes: "ملاحظات", terms: "الشروط والأحكام" }
+      : { quotation: "QUOTATION", no: "Quotation No.", date: "Date", customer: "Customer", company: "Company", email: "Email", phone: "Mobile", subject: "Subject", sn: "S.N", desc: "DESCRIPTION", qty: "QTY", unit: "UNIT", unitPrice: "UNIT PRICE", total: "TOTAL", vat: "VAT", inclVat: "TOTAL VAT INCLUDED", subtotal: "Subtotal", discount: "Discount", net: "Net Before VAT", totalDue: "TOTAL DUE (INCL. VAT)", notes: "NOTES", terms: "TERMS & CONDITIONS" };
+
+    const rowsHtml = data.rows.map((row) => `
+      <tr>
+        <td>${row.sn}</td>
+        <td style="text-align:${data.isAr ? "right" : "left"};white-space:normal">${escapeOfficeHtml(row.description)}</td>
+        <td>${row.qty}</td>
+        <td>${escapeOfficeHtml(row.unit)}</td>
+        <td>${formatMoney(row.price)}</td>
+        <td>${formatMoney(row.rowSubtotal)}</td>
+        <td>${formatMoney(row.rowVat)}</td>
+        <td>${formatMoney(row.rowTotal)}</td>
+      </tr>`).join("");
+
+    const html = `<!doctype html><html><head><meta charset="utf-8"/><style>
+      body{font-family:Arial,Tahoma,sans-serif;direction:${data.isAr ? "rtl" : "ltr"}}
+      table{border-collapse:collapse;width:100%}td,th{border:1px solid #b7c4d6;padding:7px}th{background:#071d49;color:#fff;font-weight:bold}.title{font-size:20px;font-weight:bold;color:#071d49}.meta td{border:0}.summary{width:48%;margin-top:16px}.summary td:first-child{font-weight:bold}.grand{background:#071d49;color:white;font-weight:bold}
+    </style></head><body>
+      <table class="meta"><tr><td class="title" colspan="4">BASMAT ALNAWABIGH ICT — ${t.quotation}</td></tr>
+      <tr><td><b>${t.no}</b></td><td>${escapeOfficeHtml(form.quotation_no)}</td><td><b>${t.date}</b></td><td>${new Date().toLocaleDateString(data.isAr ? "ar-SA" : "en-GB")}</td></tr>
+      <tr><td><b>${t.customer}</b></td><td>${escapeOfficeHtml(form.customer_name || "—")}</td><td><b>${t.company}</b></td><td>${escapeOfficeHtml(form.company_name || "—")}</td></tr>
+      <tr><td><b>${t.email}</b></td><td>${escapeOfficeHtml(form.customer_email || "—")}</td><td><b>${t.phone}</b></td><td>${escapeOfficeHtml(form.customer_phone || "—")}</td></tr>
+      <tr><td><b>${t.subject}</b></td><td colspan="3">${escapeOfficeHtml(data.subject)}</td></tr></table><br/>
+      <table><thead><tr><th>${t.sn}</th><th>${t.desc}</th><th>${t.qty}</th><th>${t.unit}</th><th>${t.unitPrice}</th><th>${t.total}</th><th>${t.vat}</th><th>${t.inclVat}</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+      <table class="summary"><tr><td>${t.subtotal}</td><td>${formatMoney(subtotal)} ${form.currency}</td></tr><tr><td>${t.discount}${form.discount_type === "percent" ? ` (${Number(form.discount_value || 0)}%)` : ""}</td><td>- ${formatMoney(discountAmount)} ${form.currency}</td></tr><tr><td>${t.net}</td><td>${formatMoney(netBeforeVat)} ${form.currency}</td></tr><tr><td>VAT (${form.tax_rate}%)</td><td>${formatMoney(taxAmount)} ${form.currency}</td></tr><tr class="grand"><td>${t.totalDue}</td><td>${formatMoney(totalAmount)} ${form.currency}</td></tr></table>
+      <br/><table><tr><th>${t.notes}</th></tr><tr><td>${escapeOfficeHtml(data.notes)}</td></tr><tr><th>${t.terms}</th></tr><tr><td>${escapeOfficeHtml(data.terms)}</td></tr></table>
+    </body></html>`;
+
+    downloadOfficeFile(
+      html,
+      `Quotation-${form.quotation_no || "Draft"}-${language.toUpperCase()}.xls`,
+      "application/vnd.ms-excel;charset=utf-8"
+    );
+  }
+
+  function exportQuotationWord(language) {
+    const data = getExportData(language);
+    const isAr = data.isAr;
+    const t = isAr
+      ? { quotation: "عرض سعر", no: "رقم العرض", date: "التاريخ", validity: "الصلاحية", customerInfo: "بيانات العميل", customer: "اسم العميل", company: "الشركة", email: "البريد الإلكتروني", phone: "الجوال", subject: "موضوع العرض", sn: "م", desc: "البيان", qty: "الكمية", unit: "الوحدة", unitPrice: "سعر الوحدة", total: "الإجمالي", vat: "الضريبة", inclVat: "شامل الضريبة", financial: "الملخص المالي", subtotal: "المجموع", discount: "الخصم", net: "الصافي قبل الضريبة", totalDue: "الإجمالي شامل الضريبة", notes: "ملاحظات", terms: "الشروط والأحكام", bank: "بيانات الحساب البنكي", verify: "رمز التحقق" }
+      : { quotation: "QUOTATION", no: "Quotation No.", date: "Date", validity: "Validity", customerInfo: "CUSTOMER INFORMATION", customer: "Customer Name", company: "Company", email: "Email", phone: "Mobile", subject: "Subject", sn: "S.N", desc: "DESCRIPTION", qty: "QTY", unit: "UNIT", unitPrice: "UNIT PRICE", total: "TOTAL", vat: "VAT", inclVat: "TOTAL VAT INCLUDED", financial: "FINANCIAL SUMMARY", subtotal: "Subtotal", discount: "Discount", net: "Net Before VAT", totalDue: "TOTAL DUE (INCL. VAT)", notes: "NOTES", terms: "TERMS & CONDITIONS", bank: "BANK DETAILS", verify: "VERIFICATION CODE" };
+
+    const rowsHtml = data.rows.map((row) => `<tr><td>${row.sn}</td><td class="desc">${escapeOfficeHtml(row.description)}</td><td>${row.qty}</td><td>${escapeOfficeHtml(row.unit)}</td><td>${formatMoney(row.price)}</td><td>${formatMoney(row.rowSubtotal)}</td><td>${formatMoney(row.rowVat)}</td><td>${formatMoney(row.rowTotal)}</td></tr>`).join("");
+
+    const html = `<!doctype html><html><head><meta charset="utf-8"/><style>
+      @page{size:A4;margin:14mm} body{font-family:Arial,Tahoma,sans-serif;direction:${isAr ? "rtl" : "ltr"};color:#0f172a;font-size:10pt;line-height:1.45} table{border-collapse:collapse;width:100%} .head td{border:0;vertical-align:top}.brand{font-size:17pt;font-weight:800;color:#071d49}.qtitle{font-size:20pt;font-weight:900;color:#071d49;text-align:${isAr ? "left" : "right"}} .section{margin-top:12px;background:#f1f5f9;border-${isAr ? "right" : "left"}:4px solid #ff7417;padding:6px 9px;font-weight:800;color:#071d49}.info td{border:1px solid #dbe3ee;padding:7px}.items th{background:#071d49;color:#fff;border:1px solid #071d49;padding:6px;font-size:8pt}.items td{border:1px solid #cbd5e1;padding:6px;text-align:center;font-size:8.5pt}.items .desc{text-align:${isAr ? "right" : "left"};width:43%}.summary{width:52%;margin-${isAr ? "right" : "left"}:auto;margin-top:12px}.summary td{border:1px solid #cbd5e1;padding:6px}.grand td{background:#071d49;color:#fff;font-weight:800}.box{border:1px solid #dbe3ee;padding:9px;white-space:normal}.footer{margin-top:18px;border-top:2px solid #071d49;padding-top:7px;font-size:8pt;color:#475569}
+    </style></head><body>
+      <table class="head"><tr><td><div class="brand">BASMAT ALNAWABIGH ICT</div><div>Information & Communication Technology</div></td><td><div class="qtitle">${t.quotation}</div><b>${t.no}:</b> ${escapeOfficeHtml(form.quotation_no)}<br/><b>${t.date}:</b> ${new Date().toLocaleDateString(isAr ? "ar-SA" : "en-GB")}<br/><b>${t.validity}:</b> ${form.validity_days || 0} ${isAr ? "يوم" : "Days"}</td></tr></table>
+      <div class="section">${t.customerInfo}</div><table class="info"><tr><td><b>${t.customer}</b><br/>${escapeOfficeHtml(form.customer_name || "—")}</td><td><b>${t.company}</b><br/>${escapeOfficeHtml(form.company_name || "—")}</td></tr><tr><td><b>${t.email}</b><br/>${escapeOfficeHtml(form.customer_email || "—")}</td><td><b>${t.phone}</b><br/>${escapeOfficeHtml(form.customer_phone || "—")}</td></tr><tr><td colspan="2"><b>${t.subject}</b><br/>${escapeOfficeHtml(data.subject)}</td></tr></table>
+      <div class="section">${t.quotation}</div><table class="items"><thead><tr><th>${t.sn}</th><th>${t.desc}</th><th>${t.qty}</th><th>${t.unit}</th><th>${t.unitPrice}</th><th>${t.total}</th><th>${t.vat}</th><th>${t.inclVat}</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+      <div class="section">${t.financial}</div><table class="summary"><tr><td>${t.subtotal}</td><td>${formatMoney(subtotal)} ${form.currency}</td></tr><tr><td>${t.discount}${form.discount_type === "percent" ? ` (${Number(form.discount_value || 0)}%)` : ""}</td><td>- ${formatMoney(discountAmount)} ${form.currency}</td></tr><tr><td>${t.net}</td><td>${formatMoney(netBeforeVat)} ${form.currency}</td></tr><tr><td>VAT (${form.tax_rate}%)</td><td>${formatMoney(taxAmount)} ${form.currency}</td></tr><tr class="grand"><td>${t.totalDue}</td><td>${formatMoney(totalAmount)} ${form.currency}</td></tr></table>
+      <div class="section">${t.notes}</div><div class="box">${escapeOfficeHtml(data.notes)}</div><div class="section">${t.terms}</div><div class="box">${escapeOfficeHtml(data.terms)}</div>
+      <div class="section">${t.bank}</div><div class="box"><b>${isAr ? "البنك" : "Bank"}:</b> ${isAr ? "مصرف الراجحي" : "Al Rajhi Bank"}<br/><b>IBAN:</b> SA98800002262080197371903<br/><b>${t.verify}:</b> ${escapeOfficeHtml(form.verification_code || "—")}</div>
+      <div class="footer">C.R. 7053976143 &nbsp; | &nbsp; VAT 314712238300003 &nbsp; | &nbsp; info@ict.basmat-alnawabig.com.sa</div>
+    </body></html>`;
+
+    downloadOfficeFile(
+      html,
+      `Quotation-${form.quotation_no || "Draft"}-${language.toUpperCase()}.doc`,
+      "application/msword;charset=utf-8"
+    );
   }
 
   function updateField(name, value) {
@@ -1516,6 +1650,42 @@ export default function AdminQuotationEditor() {
             >
               <FaPrint />
               Print English
+            </button>
+
+            <button
+              type="button"
+              onClick={() => exportQuotationExcel("ar")}
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-4 py-3 font-black text-white"
+            >
+              <FaFileExcel />
+              Excel عربي
+            </button>
+
+            <button
+              type="button"
+              onClick={() => exportQuotationExcel("en")}
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-800 px-4 py-3 font-black text-white"
+            >
+              <FaFileExcel />
+              Excel English
+            </button>
+
+            <button
+              type="button"
+              onClick={() => exportQuotationWord("ar")}
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-3 font-black text-white"
+            >
+              <FaFileWord />
+              Word عربي
+            </button>
+
+            <button
+              type="button"
+              onClick={() => exportQuotationWord("en")}
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-800 px-4 py-3 font-black text-white"
+            >
+              <FaFileWord />
+              Word English
             </button>
 
             <button
