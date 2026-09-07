@@ -74,9 +74,33 @@ export default function PortalRequests() {
     <div dir="rtl" className="px-4 py-10">
       <div className="mx-auto max-w-7xl">
         <h1 className="text-4xl font-black text-[#071d49]">طلباتي</h1>
-        <p className="mt-3 text-slate-600">
-          طلبات عروض الأسعار والاستشارات وNDA في مكان واحد.
-        </p>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-slate-600">
+            طلبات عروض الأسعار والاستشارات وNDA في مكان واحد.
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/quote"
+              className="rounded-xl bg-[#071d49] px-5 py-3 font-black text-white shadow-sm transition hover:opacity-90"
+            >
+              + طلب عرض سعر جديد
+            </Link>
+            <Link
+              to="/consultation"
+              className="rounded-xl border-2 border-[#071d49] bg-white px-5 py-3 font-black text-[#071d49] transition hover:bg-slate-50"
+            >
+              + طلب استشارة جديدة
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-3xl border border-blue-100 bg-blue-50/60 p-5">
+          <p className="font-black text-[#071d49]">إضافة طلب جديد</p>
+          <p className="mt-1 text-sm leading-6 text-slate-600">
+            اختر نوع الطلب، أكمل البيانات، وسيظهر الطلب هنا تلقائيًا لمتابعة حالته.
+          </p>
+        </div>
 
         {errorMessage && (
           <div className="mt-6 rounded-2xl bg-red-50 p-5 text-red-700">

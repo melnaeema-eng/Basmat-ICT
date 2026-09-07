@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
+import InvoicePrintView from "../../components/InvoicePrintView";
 
 export default function PortalInvoices() {
   const [rows, setRows] = useState([]);
   const [payments, setPayments] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [printInvoice, setPrintInvoice] = useState(null);
 
   useEffect(() => {
     load();
@@ -16,18 +18,7 @@ export default function PortalInvoices() {
     const [invoiceResult, paymentResult] = await Promise.all([
       supabase
         .from("ict_invoices")
-        .select(`
-          id,
-          invoice_no,
-          project_id,
-          issue_date,
-          due_date,
-          currency,
-          total_amount,
-          amount_paid,
-          balance_due,
-          status
-        `)
+        .select("*")
         .order("created_at", { ascending: false }),
 
       supabase
@@ -58,7 +49,7 @@ export default function PortalInvoices() {
     setRows(
       (invoiceResult.data || []).filter(
         (row) =>
-          !["paid", "cancelled", "canceled"].includes(
+          !["cancelled", "canceled"].includes(
             String(row.status || "").toLowerCase()
           )
       )
@@ -72,6 +63,7 @@ export default function PortalInvoices() {
         <h1 className="text-4xl font-black text-[#071d49]">
           الفواتير والتحصيل
         </h1>
+        <p className="mt-2 text-sm text-slate-500">تظهر هنا جميع الفواتير المرتبطة بحسابك، بما فيها الفواتير المدفوعة بالكامل.</p>
 
         {errorMessage && (
           <div className="mt-6 rounded-2xl bg-red-50 p-5 text-red-700">
@@ -84,7 +76,7 @@ export default function PortalInvoices() {
             const invoicePayments = payments.filter(
               (payment) =>
                 payment.invoice_id === row.id &&
-                payment.status === "received"
+                String(payment.status || "").toLowerCase() === "received"
             );
 
             const paidFromPayments = invoicePayments.reduce(
@@ -158,6 +150,14 @@ export default function PortalInvoices() {
                     currency={row.currency}
                   />
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => setPrintInvoice(row)}
+                  className="mt-5 rounded-xl bg-[#123878] px-5 py-3 font-black text-white"
+                >
+                  عرض / طباعة / PDF
+                </button>
               </article>
             );
           })}
@@ -169,6 +169,14 @@ export default function PortalInvoices() {
           )}
         </div>
       </div>
+
+      {printInvoice && (
+        <InvoicePrintView
+          invoice={printInvoice}
+          payments={payments}
+          onClose={() => setPrintInvoice(null)}
+        />
+      )}
     </div>
   );
 }

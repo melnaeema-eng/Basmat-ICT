@@ -1,47 +1,34 @@
-BASMAT ICT — QUOTATION EXPORT EXCEL + WORD
-===========================================
+BASMAT ICT - PORTAL NEW REQUEST V1.5
 
-TARGET
-C:\projects\Basmat-ICT
+GOAL
+Add clear "new request" actions inside Customer Portal > Requests without changing database schema.
 
-ADDED
-- Excel Arabic export
-- Excel English export
-- Word Arabic export
-- Word English export
-- Includes customer information, quotation items, discount, VAT, totals, notes, terms, bank details, and verification code.
-- No SQL/database changes.
-- No new npm packages required.
-
-NOTE
-The exported files are Microsoft Office-compatible formats:
-- Excel: .xls
-- Word: .doc
-They open directly in Microsoft Excel and Microsoft Word and can be re-saved as .xlsx/.docx if required.
+CHANGED FILE
+src/pages/Portal/PortalRequests.jsx
 
 INSTALL
-cd C:\projects\Basmat-ICT
+1) Close the dev server if it is running.
+2) From PowerShell:
 
+cd C:\projects\Basmat-ICT
 Expand-Archive `
-  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-QUOTATION-EXPORT-EXCEL-WORD.zip" `
+  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-PORTAL-NEW-REQUEST-V1.5.zip" `
   -DestinationPath . `
   -Force
-
-TEST
 npm run dev
 
-Open any saved quotation and verify the new buttons:
-- Excel عربي
-- Excel English
-- Word عربي
-- Word English
+TEST
+1) Login as a customer.
+2) Open /portal/requests.
+3) Confirm these buttons appear:
+   - + طلب عرض سعر جديد
+   - + طلب استشارة جديدة
+4) Click طلب عرض سعر جديد -> /quote.
+5) Submit a test request and confirm it returns/appears in طلباتي according to the existing RFQ flow.
+6) Click طلب استشارة جديدة -> /consultation and test the same way.
 
-Then test a quotation with discount and long descriptions.
-
-BUILD
-npm run build
-
-After PASS:
-git add .
-git commit -m "Add quotation Excel and Word export"
-git push origin main
+NOTES
+- No SQL required.
+- Existing RFQ/Consultation forms and RLS are reused.
+- Existing request list behavior is preserved.
+- Build was not run in this packaging environment; run npm run build locally after functional testing and before GitHub push.

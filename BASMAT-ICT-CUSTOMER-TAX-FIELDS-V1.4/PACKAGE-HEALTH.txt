@@ -1,0 +1,13 @@
+BASMAT-ICT-CUSTOMER-TAX-FIELDS-V1.4
+
+Static package checks:
+- AdminCustomers.jsx included
+- SQL migration included
+- Install/test guide included
+- No new npm packages
+- No unrelated modules changed
+
+Runtime/build status:
+- Full app build was NOT executed for this patch in the assistant environment.
+- Live Supabase migration was NOT executed by the assistant.
+- User must run SQL health check and local npm run build before GitHub push.

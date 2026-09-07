@@ -6,11 +6,13 @@ import {
   FaFileInvoiceDollar,
   FaMoneyBillTransfer,
   FaPlus,
+  FaPrint,
   FaRotate,
   FaScrewdriverWrench,
 } from "react-icons/fa6";
 
 import { supabase } from "../../lib/supabase";
+import InvoicePrintView from "../../components/InvoicePrintView";
 
 const num = (value) => Number(value || 0);
 
@@ -61,6 +63,7 @@ export default function AdminProjectCommercial() {
   const [pos, setPos] = useState([]);
   const [invoices, setInvoices] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [printInvoice, setPrintInvoice] = useState(null);
 
   const [message, setMessage] = useState({
     type: "",
@@ -862,6 +865,15 @@ export default function AdminProjectCommercial() {
                   الاستحقاق:{" "}
                   {row.due_date || "—"}
                 </p>
+
+                <button
+                  type="button"
+                  onClick={() => setPrintInvoice(row)}
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#123878] px-4 py-2 text-sm font-black text-white"
+                >
+                  <FaPrint />
+                  عرض / طباعة الفاتورة
+                </button>
               </>
             )}
           />
@@ -933,6 +945,15 @@ export default function AdminProjectCommercial() {
           />
         </Section>
       </div>
+
+      {printInvoice && (
+        <InvoicePrintView
+          invoice={printInvoice}
+          payments={payments}
+          project={project}
+          onClose={() => setPrintInvoice(null)}
+        />
+      )}
     </div>
   );
 }
