@@ -1,34 +1,47 @@
-BASMAT ICT - PORTAL NEW REQUEST V1.5
+BASMAT ICT — INVOICE MERGE V1.6
+================================
+هدف هذه النسخة: دمج الخصائص بدون استبدال عشوائي:
+- نموذج الفاتورة الحالي + بيانات VAT/CR/العنوان.
+- QR + Verification Code للفاتورة.
+- توقيع الشركة + اعتماد العميل في الطباعة.
+- قبول/اعتماد الفاتورة من بوابة العميل.
+- صفحة عامة للتحقق: /verify-invoice/:token
+- لا تعديل على PortalRequests ولا AdminCustomers ولا Quotations.
 
-GOAL
-Add clear "new request" actions inside Customer Portal > Requests without changing database schema.
-
-CHANGED FILE
-src/pages/Portal/PortalRequests.jsx
-
-INSTALL
-1) Close the dev server if it is running.
-2) From PowerShell:
-
+1) تركيب الملفات:
 cd C:\projects\Basmat-ICT
+
 Expand-Archive `
-  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-PORTAL-NEW-REQUEST-V1.5.zip" `
+  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-INVOICE-MERGE-V1.6.zip" `
   -DestinationPath . `
   -Force
+
+2) Supabase SQL Editor:
+نفذ الملف:
+supabase/INVOICE_VERIFICATION_ACCEPTANCE_V1_6.sql
+
+المتوقع في آخر نتيجة:
+invoice_v1_6_health = PASS
+
+3) تشغيل محلي:
 npm run dev
 
-TEST
-1) Login as a customer.
-2) Open /portal/requests.
-3) Confirm these buttons appear:
-   - + طلب عرض سعر جديد
-   - + طلب استشارة جديدة
-4) Click طلب عرض سعر جديد -> /quote.
-5) Submit a test request and confirm it returns/appears in طلباتي according to the existing RFQ flow.
-6) Click طلب استشارة جديدة -> /consultation and test the same way.
+4) اختبار Admin:
+- افتح فاتورة صادرة.
+- تأكد من ظهور بيانات البائع والعميل.
+- تأكد من Verification Code وQR.
+- تأكد من وجود Authorized Signature وCustomer Acceptance.
+- افتح QR أو /verify-invoice/<token> وتأكد من صفحة التحقق.
 
-NOTES
-- No SQL required.
-- Existing RFQ/Consultation forms and RLS are reused.
-- Existing request list behavior is preserved.
-- Build was not run in this packaging environment; run npm run build locally after functional testing and before GitHub push.
+5) اختبار Portal:
+- ادخل بحساب العميل المرتبط بالفاتورة.
+- افتح /portal/invoices
+- يجب ظهور الفاتورة حتى لو كانت مدفوعة.
+- اضغط "قبول / اعتماد الفاتورة".
+- بعد الاعتماد يجب ظهور حالة "مقبولة ومعتمدة" وتاريخ الاعتماد.
+- افتح/اطبع الفاتورة وتأكد من ظهور الاعتماد.
+
+6) Build قبل GitHub:
+npm run build
+
+لا ترفع GitHub إذا ظهر أي Error في build أو الاختبارات.

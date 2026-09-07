@@ -1,14 +1,18 @@
-PACKAGE: BASMAT-ICT-PORTAL-NEW-REQUEST-V1.5
-STATUS: STATIC PACKAGE CHECK PASS
+PACKAGE: BASMAT-ICT-INVOICE-MERGE-V1.6
+FILES:
+- src/components/InvoicePrintView.jsx
+- src/pages/Portal/PortalInvoices.jsx
+- src/pages/VerifyInvoice/VerifyInvoice.jsx
+- src/App.jsx
+- supabase/INVOICE_VERIFICATION_ACCEPTANCE_V1_6.sql
 
-Verified:
-- ZIP root contains src/pages/Portal/PortalRequests.jsx directly.
-- New RFQ button links to /quote.
-- New consultation button links to /consultation.
-- Existing requests loading/filtering/NDA logic preserved.
-- No database migration included.
+STATIC INTENT CHECKS:
+- Customer VAT/CR/address lookup retained.
+- Invoice clean print-window method retained.
+- QR + verification code added.
+- Signature/acceptance area added.
+- Portal acceptance button/RPC added.
+- Public invoice verification route added.
+- No PortalRequests/AdminCustomers/Quotation files included.
 
-Not verified here:
-- Browser runtime behavior.
-- Supabase RLS behavior after submission.
-- npm production build.
+Runtime/build status is only valid after local npm run build and user testing.

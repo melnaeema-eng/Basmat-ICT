@@ -7,6 +7,8 @@ export default function PortalInvoices() {
   const [payments, setPayments] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [printInvoice, setPrintInvoice] = useState(null);
+  const [actionId, setActionId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     load();
@@ -57,6 +59,28 @@ export default function PortalInvoices() {
     setPayments(paymentResult.data || []);
   }
 
+
+  async function acceptInvoice(invoiceId) {
+    if (!window.confirm("تأكيد قبول واعتماد هذه الفاتورة؟")) return;
+    setActionId(invoiceId);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    const { error } = await supabase.rpc("ict_customer_accept_invoice", {
+      p_invoice_id: invoiceId,
+    });
+
+    if (error) {
+      setErrorMessage(error.message);
+      setActionId(null);
+      return;
+    }
+
+    setSuccessMessage("تم قبول واعتماد الفاتورة بنجاح.");
+    await load();
+    setActionId(null);
+  }
+
   return (
     <div dir="rtl" className="px-4 py-10">
       <div className="mx-auto max-w-7xl">
@@ -68,6 +92,12 @@ export default function PortalInvoices() {
         {errorMessage && (
           <div className="mt-6 rounded-2xl bg-red-50 p-5 text-red-700">
             {errorMessage}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="mt-6 rounded-2xl bg-emerald-50 p-5 font-bold text-emerald-700">
+            {successMessage}
           </div>
         )}
 
@@ -151,13 +181,30 @@ export default function PortalInvoices() {
                   />
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setPrintInvoice(row)}
-                  className="mt-5 rounded-xl bg-[#123878] px-5 py-3 font-black text-white"
-                >
-                  عرض / طباعة / PDF
-                </button>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPrintInvoice(row)}
+                    className="rounded-xl bg-[#123878] px-5 py-3 font-black text-white"
+                  >
+                    عرض / طباعة / PDF
+                  </button>
+
+                  {row.customer_accepted_at ? (
+                    <span className="rounded-xl bg-emerald-100 px-5 py-3 font-black text-emerald-800">
+                      ✓ مقبولة ومعتمدة {row.customer_accepted_at ? `- ${formatDate(row.customer_accepted_at)}` : ""}
+                    </span>
+                  ) : !["draft", "cancelled", "canceled"].includes(String(row.status || "").toLowerCase()) ? (
+                    <button
+                      type="button"
+                      disabled={actionId === row.id}
+                      onClick={() => acceptInvoice(row.id)}
+                      className="rounded-xl bg-emerald-600 px-5 py-3 font-black text-white disabled:opacity-60"
+                    >
+                      {actionId === row.id ? "جارٍ الاعتماد..." : "قبول / اعتماد الفاتورة"}
+                    </button>
+                  ) : null}
+                </div>
               </article>
             );
           })}

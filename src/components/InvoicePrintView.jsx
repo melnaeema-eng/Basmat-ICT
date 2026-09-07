@@ -1,5 +1,6 @@
 import { useMemo, useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/supabase";
+import QRCode from "qrcode";
 
 const num = (value) => Number(value || 0);
 const money = (value) =>
@@ -41,6 +42,7 @@ export default function InvoicePrintView({
   const printRef = useRef(null);
   const [customerRecord, setCustomerRecord] = useState(null);
   const [customerError, setCustomerError] = useState("");
+  const [verificationQr, setVerificationQr] = useState("");
   useEffect(() => {
     let active = true;
     setCustomerRecord(null);
@@ -55,6 +57,26 @@ export default function InvoicePrintView({
       });
     return () => { active = false; };
   }, [invoice?.customer_id]);
+
+  useEffect(() => {
+    let active = true;
+    async function buildInvoiceVerificationQr() {
+      if (!invoice?.verification_token) {
+        if (active) setVerificationQr("");
+        return;
+      }
+      try {
+        const url = `${window.location.origin}/verify-invoice/${invoice.verification_token}`;
+        const dataUrl = await QRCode.toDataURL(url, { width: 220, margin: 1 });
+        if (active) setVerificationQr(dataUrl);
+      } catch {
+        if (active) setVerificationQr("");
+      }
+    }
+    buildInvoiceVerificationQr();
+    return () => { active = false; };
+  }, [invoice?.verification_token]);
+
   const receivedPayments = useMemo(
     () =>
       (payments || []).filter(
@@ -328,6 +350,21 @@ ${content.outerHTML}
         )}
 
         <div className="inv-section mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <InfoBox title="VERIFICATION" titleAr="التحقق من الفاتورة">
+            {verificationQr ? (
+              <div className="flex items-center gap-4">
+                <img src={verificationQr} alt="Invoice verification QR" className="h-24 w-24 object-contain" />
+                <div>
+                  <p className="text-xs font-bold text-slate-500">Verification Code / رمز التحقق</p>
+                  <p dir="ltr" className="mt-1 font-mono text-sm font-black text-[#071d49]">{invoice.verification_code || "—"}</p>
+                  <p className="mt-2 text-[10px] leading-5 text-slate-500">Scan the QR to verify this invoice / امسح الرمز للتحقق من صحة الفاتورة</p>
+                </div>
+              </div>
+            ) : (
+              <InfoRow label="Verification Code" labelAr="رمز التحقق" value={invoice.verification_code || "—"} ltr />
+            )}
+          </InfoBox>
+
           <InfoBox title="BANK DETAILS" titleAr="البيانات البنكية">
             <InfoRow label="Bank" labelAr="البنك" value="Al Rajhi Bank / مصرف الراجحي" />
             <InfoRow label="Account Name" labelAr="اسم الحساب" value="Basmat Alnawabigh / بصمة النوابغ" />
@@ -339,6 +376,19 @@ ${content.outerHTML}
             <InfoRow label="VAT No." labelAr="الرقم الضريبي" value="314712238300003" ltr />
             <InfoRow label="Website" labelAr="الموقع" value="ict.basmat-alnawabig.com.sa" ltr />
           </InfoBox>
+        </div>
+
+        <div className="inv-keep mt-8 grid grid-cols-1 gap-8 border-t border-slate-200 pt-6 md:grid-cols-2">
+          <div className="text-center">
+            <p className="font-black text-[#071d49]">Authorized Signature / التوقيع المعتمد</p>
+            <div className="mx-auto mt-12 w-48 border-b border-dotted border-slate-500" />
+            <p className="mt-2 text-xs text-slate-500">Basmat Alnawabigh ICT</p>
+          </div>
+          <div className="text-center">
+            <p className="font-black text-[#071d49]">Customer Acceptance / اعتماد العميل</p>
+            <div className="mx-auto mt-12 w-48 border-b border-dotted border-slate-500" />
+            <p className="mt-2 text-xs text-slate-500">{invoice.customer_accepted_at ? `Accepted: ${formatDate(invoice.customer_accepted_at)}` : "Name / Signature / الاسم والتوقيع"}</p>
+          </div>
         </div>
 
         <footer className="mt-8 border-t border-slate-200 pt-4 text-center text-[10px] leading-5 text-slate-500">
