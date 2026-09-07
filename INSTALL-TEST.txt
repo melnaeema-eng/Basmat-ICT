@@ -1,47 +1,85 @@
-BASMAT ICT — INVOICE MERGE V1.6
-================================
-هدف هذه النسخة: دمج الخصائص بدون استبدال عشوائي:
-- نموذج الفاتورة الحالي + بيانات VAT/CR/العنوان.
-- QR + Verification Code للفاتورة.
-- توقيع الشركة + اعتماد العميل في الطباعة.
-- قبول/اعتماد الفاتورة من بوابة العميل.
-- صفحة عامة للتحقق: /verify-invoice/:token
-- لا تعديل على PortalRequests ولا AdminCustomers ولا Quotations.
+BASMAT ICT — PROJECT / CONTRACT GUARD V1.7
+==========================================
 
-1) تركيب الملفات:
+GOAL
+----
+1) Stop accidental duplicate contracts from repeated clicks.
+2) Remove the misleading "Restore / Open Contract" action.
+3) Accept a draft contract and automatically activate the project.
+4) Safely archive duplicate draft contracts only when they have no linked records.
+5) Do not delete projects/contracts automatically.
+
+IMPORTANT ORDER
+---------------
+Run the SQL first, then install the React file.
+
+STEP 1 — SUPABASE SQL EDITOR
+----------------------------
+Run the full file:
+
+supabase/PROJECT_CONTRACT_GUARD_V1_7.sql
+
+Expected health result:
+
+project_contract_guard_v1_7_health = PASS
+
+The final query may list projects that currently have duplicate live contracts.
+This is a report only; nothing is automatically deleted.
+
+STEP 2 — INSTALL ZIP INTO PROJECT
+---------------------------------
+PowerShell:
+
 cd C:\projects\Basmat-ICT
 
 Expand-Archive `
-  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-INVOICE-MERGE-V1.6.zip" `
+  -Path "$env:USERPROFILE\Downloads\BASMAT-ICT-PROJECT-CONTRACT-GUARD-V1.7.zip" `
   -DestinationPath . `
   -Force
 
-2) Supabase SQL Editor:
-نفذ الملف:
-supabase/INVOICE_VERIFICATION_ACCEPTANCE_V1_6.sql
+STEP 3 — LOCAL TEST
+-------------------
 
-المتوقع في آخر نتيجة:
-invoice_v1_6_health = PASS
-
-3) تشغيل محلي:
 npm run dev
 
-4) اختبار Admin:
-- افتح فاتورة صادرة.
-- تأكد من ظهور بيانات البائع والعميل.
-- تأكد من Verification Code وQR.
-- تأكد من وجود Authorized Signature وCustomer Acceptance.
-- افتح QR أو /verify-invoice/<token> وتأكد من صفحة التحقق.
+Open:
+/admin/project-commercial
 
-5) اختبار Portal:
-- ادخل بحساب العميل المرتبط بالفاتورة.
-- افتح /portal/invoices
-- يجب ظهور الفاتورة حتى لو كانت مدفوعة.
-- اضغط "قبول / اعتماد الفاتورة".
-- بعد الاعتماد يجب ظهور حالة "مقبولة ومعتمدة" وتاريخ الاعتماد.
-- افتح/اطبع الفاتورة وتأكد من ظهور الاعتماد.
+TEST A — DUPLICATE PREVENTION
+- Select a project that already has a contract.
+- The old "استرجاع / فتح عقد المشروع" button must no longer appear.
+- A message should say that the project already has a contract and no new one will be created.
 
-6) Build قبل GitHub:
+TEST B — CONTRACT ACCEPTANCE
+- For the contract you want to keep, click:
+  "اعتماد العقد وتفعيل المشروع"
+- Contract status should become "معتمد / نشط".
+- Project status should become "مقبول / نشط" (DB value: active).
+
+TEST C — ARCHIVE DUPLICATES
+- For each extra draft contract, click:
+  "أرشفة العقد المكرر"
+- The system will archive it only if it has no FK-linked records.
+- If there are linked records, archiving is blocked and the linked table name is returned.
+- The active contract cannot be archived by this action.
+
+STEP 4 — BUILD BEFORE GITHUB
+----------------------------
+
 npm run build
 
-لا ترفع GitHub إذا ظهر أي Error في build أو الاختبارات.
+Only after build succeeds:
+
+git status
+git add .
+git commit -m "Prevent duplicate contracts and add contract acceptance workflow"
+git push origin main
+
+NOTES
+-----
+- Existing duplicate contracts are NOT deleted by the SQL.
+- Archived contracts remain in the database for history.
+- The patch adds ict_contracts.is_archived and archived_at.
+- The create_contract_from_project RPC is replaced with an idempotent version.
+- A database trigger blocks future duplicate live contracts, even outside this page.
+- Contract acceptance maps draft -> active and project planning -> active.

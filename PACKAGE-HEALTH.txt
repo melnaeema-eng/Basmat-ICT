@@ -1,18 +1,28 @@
-PACKAGE: BASMAT-ICT-INVOICE-MERGE-V1.6
-FILES:
-- src/components/InvoicePrintView.jsx
-- src/pages/Portal/PortalInvoices.jsx
-- src/pages/VerifyInvoice/VerifyInvoice.jsx
-- src/App.jsx
-- supabase/INVOICE_VERIFICATION_ACCEPTANCE_V1_6.sql
+BASMAT ICT — PROJECT / CONTRACT GUARD V1.7
 
-STATIC INTENT CHECKS:
-- Customer VAT/CR/address lookup retained.
-- Invoice clean print-window method retained.
-- QR + verification code added.
-- Signature/acceptance area added.
-- Portal acceptance button/RPC added.
-- Public invoice verification route added.
-- No PortalRequests/AdminCustomers/Quotation files included.
+SOURCE BASELINE:
+Basmat-ICT-CURRENT-2026-09-07-1408.zip
 
-Runtime/build status is only valid after local npm run build and user testing.
+FILES CHANGED:
+- src/pages/Admin/AdminProjectCommercial.jsx
+- supabase/PROJECT_CONTRACT_GUARD_V1_7.sql
+
+FILES NOT TOUCHED:
+- InvoicePrintView.jsx
+- PortalInvoices.jsx
+- PortalRequests.jsx
+- AdminCustomers.jsx
+- quotation pages
+- App.jsx
+
+STATIC REVIEW:
+PASS - patch ZIP contains only the intended React page + SQL + docs.
+PASS - misleading restore/open action removed from the current source page.
+PASS - acceptance and safe archive UI actions added.
+PASS - SQL has no automatic DELETE of contracts/projects.
+PASS - existing duplicates are reported, not auto-removed.
+
+BUILD STATUS:
+NOT VERIFIED IN CONTAINER.
+npm ci did not complete within the available container time, so no claim is made that Vite build passed.
+Run npm run build locally before GitHub push.

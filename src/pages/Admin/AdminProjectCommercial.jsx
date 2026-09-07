@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
+  FaBoxArchive,
   FaBuilding,
+  FaCheck,
   FaFileContract,
   FaFileInvoiceDollar,
   FaMoneyBillTransfer,
@@ -29,7 +31,17 @@ const makeNo = (prefix) =>
 
 const contractStatusLabels = {
   draft: "مسودة",
-  active: "نشط",
+  active: "معتمد / نشط",
+  completed: "مكتمل",
+  expired: "منتهي",
+  closed: "مغلق",
+  cancelled: "ملغي",
+};
+
+const projectStatusLabels = {
+  planning: "مسودة / تخطيط",
+  active: "مقبول / نشط",
+  on_hold: "معلق",
   completed: "مكتمل",
   cancelled: "ملغي",
 };
@@ -159,6 +171,7 @@ export default function AdminProjectCommercial() {
         .from("ict_contracts")
         .select("*")
         .eq("project_id", projectId)
+        .eq("is_archived", false)
         .order("created_at", {
           ascending: false,
         }),
@@ -347,6 +360,64 @@ export default function AdminProjectCommercial() {
     } finally {
       setCreatingContract(false);
     }
+  }
+
+  async function acceptContract(contractId) {
+    if (!contractId) return;
+
+    setMessage({ type: "", text: "" });
+
+    const { error } = await supabase.rpc(
+      "accept_project_contract",
+      { p_contract_id: contractId }
+    );
+
+    if (error) {
+      setMessage({
+        type: "error",
+        text: error.message,
+      });
+      return;
+    }
+
+    setMessage({
+      type: "success",
+      text: "تم اعتماد العقد وتفعيل المشروع بنجاح.",
+    });
+
+    await Promise.all([loadBase(), loadProjectData()]);
+  }
+
+  async function archiveContract(contractId) {
+    if (!contractId) return;
+
+    const confirmed = window.confirm(
+      "سيتم أرشفة هذا العقد المكرر فقط إذا لم تكن لديه سجلات مرتبطة. هل تريد المتابعة؟"
+    );
+
+    if (!confirmed) return;
+
+    setMessage({ type: "", text: "" });
+
+    const { error } = await supabase.rpc(
+      "archive_duplicate_project_contract",
+      { p_contract_id: contractId }
+    );
+
+    if (error) {
+      setMessage({
+        type: "error",
+        text: error.message,
+      });
+      return;
+    }
+
+    setMessage({
+      type: "success",
+      text: "تمت أرشفة العقد المكرر بأمان.",
+    });
+
+    await loadProjectData();
   }
 
   async function createInvoice(values) {
@@ -553,31 +624,33 @@ export default function AdminProjectCommercial() {
           icon={<FaFileContract />}
         >
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={
-                createContractFromProject
-              }
-              disabled={
-                creatingContract ||
-                !projectId
-              }
-              className="inline-flex items-center gap-2 rounded-xl bg-[#ff7417] px-5 py-3 font-black text-white disabled:opacity-60"
-            >
-              <FaPlus />
-              {creatingContract
-                ? "جارٍ إنشاء العقد..."
-                : contracts.length
-                ? "استرجاع / فتح عقد المشروع"
-                : "إنشاء عقد من المشروع"}
-            </button>
+            {!contracts.length ? (
+              <button
+                type="button"
+                onClick={createContractFromProject}
+                disabled={creatingContract || !projectId}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#ff7417] px-5 py-3 font-black text-white disabled:opacity-60"
+              >
+                <FaPlus />
+                {creatingContract
+                  ? "جارٍ إنشاء العقد..."
+                  : "إنشاء عقد من المشروع"}
+              </button>
+            ) : (
+              <span className="rounded-xl bg-blue-50 px-4 py-3 text-sm font-black text-blue-800">
+                يوجد عقد للمشروع بالفعل — لن يتم إنشاء عقد جديد عند الضغط مرة أخرى.
+              </span>
+            )}
 
             {activeContract && (
               <span className="rounded-full bg-green-100 px-4 py-2 text-sm font-black text-green-800">
-                العقد الحالي:{" "}
-                {
-                  activeContract.contract_no
-                }
+                العقد الحالي: {activeContract.contract_no}
+              </span>
+            )}
+
+            {project && (
+              <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-black text-slate-700">
+                حالة المشروع: {projectStatusLabels[project.status] || project.status}
               </span>
             )}
           </div>
@@ -639,6 +712,30 @@ export default function AdminProjectCommercial() {
                     {row.scope}
                   </p>
                 )}
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {row.status === "draft" && (
+                    <button
+                      type="button"
+                      onClick={() => acceptContract(row.id)}
+                      className="inline-flex items-center gap-2 rounded-xl bg-green-700 px-4 py-2 text-sm font-black text-white"
+                    >
+                      <FaCheck />
+                      اعتماد العقد وتفعيل المشروع
+                    </button>
+                  )}
+
+                  {contracts.length > 1 && row.status !== "active" && (
+                    <button
+                      type="button"
+                      onClick={() => archiveContract(row.id)}
+                      className="inline-flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-black text-amber-800"
+                    >
+                      <FaBoxArchive />
+                      أرشفة العقد المكرر
+                    </button>
+                  )}
+                </div>
               </>
             )}
           />
