@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>دليل السودان الشامل | بصمة النوابغ</title><meta name="description" content="دليل السودان الشامل: ابحث عن الأنشطة التجارية والصحية والتعليمية والخدمية في جميع الولايات."><style>
+:root{font-family:Tahoma,Arial,sans-serif;color:#21352b;background:#f6f9f5}*{box-sizing:border-box}body{margin:0}header{background:linear-gradient(120deg,#16754f,#2e9c65);color:white;padding:24px 5% 65px}nav{display:flex;justify-content:space-between;align-items:center;gap:14px;max-width:1120px;margin:auto}nav a{color:white;text-decoration:none}h1{font-size:clamp(28px,4vw,46px);margin:46px 0 12px;text-align:center}header p{text-align:center;opacity:.94}.wrap{max-width:1120px;margin:-36px auto 35px;padding:0 18px}.filters{background:#fff;box-shadow:0 8px 36px #0001;border-radius:17px;padding:21px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}input,select{width:100%;padding:15px;border:1px solid #d9e5db;border-radius:10px;font-size:16px;background:#fff;color:#21352b}input:focus,select:focus{outline:2px solid #4aaf70}.info{margin:26px 0;color:#536257;display:flex;justify-content:space-between;gap:14px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}.card{background:white;border:1px solid #e4eee5;border-radius:15px;padding:19px;min-height:175px}.card h3{margin:0 0 12px;font-size:19px}.tag{display:inline-block;background:#e7f7ec;color:#147746;padding:5px 9px;border-radius:20px;font-size:12px;margin:0 0 12px}.muted{color:#647369;font-size:14px;line-height:1.8}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}.actions a{color:#157b4b;text-decoration:none;font-weight:bold}.empty{grid-column:1/-1;background:white;border-radius:14px;text-align:center;padding:55px 18px;color:#5f6f62}.notice{background:#fff5e9;border:1px solid #ffdcaa;border-radius:12px;padding:14px 18px;margin:22px 0;color:#704514}footer{padding:26px;text-align:center;color:#57655c;font-size:13px}@media(max-width:720px){.filters{grid-template-columns:1fr}nav{flex-wrap:wrap}header{padding-bottom:60px}.info{display:block}}
+</style></head><body>
+<header><nav><strong>🇸🇩 دليل السودان الشامل</strong><a href="/">بصمة النوابغ | الرئيسية</a></nav><h1>كل السودان في دليل واحد</h1><p>ابحث عن الشركات والمستشفيات والمدارس والخدمات والأماكن العامة — مجانًا</p></header>
+<main class="wrap"><section class="filters" aria-label="مرشحات البحث"><input id="search" type="search" placeholder="ابحث بالاسم أو المدينة أو التخصص..."><select id="category"><option value="">جميع الأدلة</option></select><select id="state"><option value="">جميع الولايات</option></select></section>
+<div class="info"><strong id="count">جار تحميل البيانات...</strong><span>المعلومات المنشورة موثقة بمستويات مختلفة، راجع تاريخ التحقق</span></div><section class="grid" id="cards" aria-live="polite"></section>
+<div class="notice">هل تملك نشاطًا ترغب بإضافته؟ التسجيل المجاني وطلبات التحقق ستتوفر بعد تفعيل بوابة أصحاب الأنشطة. لن ننشر بيانات غير مؤكدة بوصفها موثقة.</div></main>
+<footer>© <span id="year"></span> دليل السودان الشامل — بصمة النوابغ | Basmat Alnawabigh</footer>
+<script>
+const API='https://ajcioetohfbrgaihbncv.supabase.co/rest/v1/';
+const KEY='sb_publishable_Zs8iWbXjSnK6Q91SUq6R-A_-gpl0nBt';
+const STATES=['الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','نهر النيل','الشمالية','النيل الأبيض','النيل الأزرق','سنار','شمال كردفان','جنوب كردفان','غرب كردفان','شمال دارفور','جنوب دارفور','شرق دارفور','وسط دارفور','غرب دارفور'];
+const $=s=>document.querySelector(s);
+let categories=[], records=[];
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function link(s){try{const u=new URL(s);return ['https:','http:'].includes(u.protocol)?u.href:null}catch{return null}}
+async function get(path){const res=await fetch(API+path,{headers:{apikey:KEY,Accept:'application/json'}});if(!res.ok)throw Error('تعذر الاتصال بقاعدة البيانات');return res.json()}
+function render(){
+const q=$('#search').value.trim().toLocaleLowerCase('ar'),cat=$('#category').value,state=$('#state').value;
+const filtered=records.filter(x=>(!cat||String(x.category_id)===cat)&&(!state||x.state_ar===state)&&(!q||[x.name_ar,x.name_en,x.city_ar,x.locality_ar,x.district_ar,x.description_ar,x.address_ar].some(v=>String(v||'').toLocaleLowerCase('ar').includes(q))));
+$('#count').textContent='عدد الأنشطة المنشورة: '+filtered.length;
+$('#cards').innerHTML=filtered.length?filtered.map(x=>{
+const category=categories.find(c=>c.id===x.category_id);
+const address=[x.state_ar,x.city_ar,x.locality_ar,x.district_ar,x.street_ar].filter(Boolean).join('، ');
+const details=x.verification_level==='owner_verified'?'موثق من صاحب النشاط':x.verification_level==='source_checked'?'تمت مراجعة مصدر':'قيد التحقق';
+const call=x.phone_public?' <a href="tel:'+encodeURIComponent(x.phone_public)+'">اتصال</a>':'';
+const site=link(x.website_url);const web=site?' <a target="_blank" rel="noopener noreferrer" href="'+safe(site)+'">الموقع الإلكتروني</a>':'';
+const map=(x.latitude!==null&&x.longitude!==null)?' <a target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/?mlat='+encodeURIComponent(x.latitude)+'&mlon='+encodeURIComponent(x.longitude)+'#map=15/'+encodeURIComponent(x.latitude)+'/'+encodeURIComponent(x.longitude)+'">الخريطة</a>':'';
+return '<article class="card"><span class="tag">'+safe((category&&category.icon)||'📍')+' '+safe((category&&category.name_ar)||'نشاط')+'</span><h3>'+safe(x.name_ar)+'</h3><div class="muted">'+safe(address||'عنوان غير مكتمل')+'</div><div class="muted">'+safe(details)+' · '+safe(x.operating_status==='open'?'معلن أنه يعمل':x.operating_status==='temporarily_closed'?'مغلق مؤقتًا':'حالة التشغيل غير مؤكدة')+'</div><div class="muted">آخر تحقق: '+safe(x.verified_at?new Date(x.verified_at).toLocaleDateString('ar-SD'):'غير متوفر')+'</div><div class="actions">'+call+web+map+'</div></article>'
+}).join(''):'<div class="empty">لا توجد أنشطة منشورة تطابق البحث حاليًا. سيتم عرض الأنشطة بعد توثيقها واعتمادها.</div>'
+}
+async function start(){try{
+categories=await get('sd_categories?select=id,slug,name_ar,name_en,icon&order=sort_order.asc');
+$('#category').innerHTML='<option value="">جميع الأدلة</option>'+categories.map(c=>'<option value="'+c.id+'">'+safe(c.icon+' '+c.name_ar)+'</option>').join('');
+$('#state').innerHTML='<option value="">جميع الولايات</option>'+STATES.map(s=>'<option>'+safe(s)+'</option>').join('');
+records=await get('sd_listings?select=id,name_ar,name_en,category_id,state_ar,locality_ar,city_ar,district_ar,street_ar,address_ar,latitude,longitude,phone_public,website_url,description_ar,verified_at,verification_level,operating_status&publication_status=eq.published&order=created_at.desc&limit=1000');
+render();
+}catch(e){$('#count').textContent='تعذر تحميل البيانات';$('#cards').innerHTML='<div class="empty">'+safe(e.message)+'</div>'}}
+['search','category','state'].forEach(id=>$('#'+id).addEventListener(id==='search'?'input':'change',render));
+$('#year').textContent=new Date().getFullYear();start();
+</script></body></html>
